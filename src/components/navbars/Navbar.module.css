@@ -1,0 +1,5 @@
+.NavLink-custom.active {
+    background-color: var(--active-link-color);
+    /* Use a custom variable */
+    /* Add other styles for active links as needed */
+}
