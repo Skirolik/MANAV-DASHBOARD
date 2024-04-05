@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Table,
-  Pagination,
-  Text,
-  useMantineTheme,
-  Card,
-  Grid,
-  Modal,
-  Button,
-} from "@mantine/core";
+import { Table, Pagination, Text, Card, Grid, Modal } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { EditOff, Lock } from "tabler-icons-react";
 
@@ -26,24 +17,36 @@ import {
 } from "react-map-gl";
 import { getTextColor } from "../utils";
 
-const MAPBOX_TOKEN =
-  "pk.eyJ1Ijoic2tpcm8iLCJhIjoiY2w1aTZjN2x2MDI3ODNkcHp0cnhuZzVicSJ9.HMjwHtHf_ttkh_aImSX-oQ";
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleDateString();
 };
 
-const Device_entries = ({ back }) => {
-  const [data, setData] = useState([]);
-  const theme = useMantineTheme();
+const Device_entries: React.FC<{ back: string }> = ({ back }) => {
+  interface DataEntry {
+    id: number;
+    title: string;
+    name: string;
+    latitude: string;
+    longitude: string;
+    resistance: string;
+    date_collected: string;
+    next_collection: string;
+    description: string;
+  }
+  // const computedColorScheme = useComputedColorScheme("light");
+  const [data, setData] = useState<DataEntry[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const [selectedEntry, setSelectedEntry] = useState(null);
-  const [selectedMarker, setSelectedMarker] = useState(null);
-  const [editedDateCollected, setEditedDateCollected] = useState("");
-  const [editedNextCollection, setEditedNextCollection] = useState("");
-  const [editedRowId, setEditedRowId] = useState(null);
+  const [selectedEntry, setSelectedEntry] = useState<Row | null>(null);
+
+  const [selectedMarker, setSelectedMarker] = useState<DataEntry | null>(null);
+  const [editedDateCollected, setEditedDateCollected] = useState<string>("");
+  const [editedNextCollection, setEditedNextCollection] = useState<string>("");
+  const [editedRowId, setEditedRowId] = useState<number | null>(null);
 
   useEffect(() => {
     // Fetch data from the API endpoint
@@ -57,7 +60,7 @@ const Device_entries = ({ back }) => {
       });
   }, []);
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
 
@@ -68,21 +71,36 @@ const Device_entries = ({ back }) => {
   const getPaginatedData = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    const sortedData = data.slice().sort((a, b) => b[0] - a[0]); // Sort data in descending order based on row[0]
-    // console.log("sorted data", sortedData);
+
+    // Sort data in descending order based on specific properties of DataEntry objects
+    const sortedData = data.slice().sort((a, b) => b.id - a.id);
+
     return sortedData.slice(startIndex, endIndex);
   };
 
   const totalPages = getTotalPages();
 
-  const activePageStyle = {
-    backgroundImage:
-      theme.colorScheme === "dark"
-        ? "linear-gradient(45deg, #FFC0CB, violet)"
-        : theme.colors.blue[6],
-    border: 0,
-  };
-  const handleRowClick = (row) => {
+  // const activePageStyle = {
+  //   backgroundImage:
+  //     computedColorScheme === "dark"
+  //       ? "linear-gradient(45deg, #FFC0CB, violet)"
+  //       : "teal",
+  //   border: 0,
+  // };
+
+  interface Row {
+    id: number;
+    title: string;
+    name: string;
+    latitude: string;
+    longitude: string;
+    resistance: string;
+    date_collected: string;
+    next_collection: string;
+    description: string;
+  }
+
+  const handleRowClick = (row: Row) => {
     if (editedRowId !== row.id) {
       setSelectedEntry(row);
       // Check if next_collection date has passed the current date
@@ -124,7 +142,7 @@ const Device_entries = ({ back }) => {
     boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.15)",
     color: "black",
   };
-  const handleEditClick = (row) => {
+  const handleEditClick = (row: Row) => {
     // Set the edited dates to the current row's dates
     setEditedDateCollected(row.date_collected);
     setEditedNextCollection(row.next_collection);
@@ -165,8 +183,8 @@ const Device_entries = ({ back }) => {
 
         // Clear the edited row state variables
         setEditedRowId(null);
-        setEditedDateCollected(null);
-        setEditedNextCollection(null);
+        setEditedDateCollected("");
+        setEditedNextCollection("");
       })
       .catch((error) => {
         console.error("Error updating entry:", error);
@@ -211,10 +229,14 @@ const Device_entries = ({ back }) => {
                     <Table.Td>
                       {editedRowId === row.id ? (
                         <DateInput
-                          value={new Date(editedDateCollected)}
+                          value={
+                            editedDateCollected
+                              ? new Date(editedDateCollected)
+                              : null
+                          }
                           onChange={(date) =>
                             setEditedDateCollected(
-                              date.toISOString().split("T")[0]
+                              date ? date.toISOString().split("T")[0] : ""
                             )
                           }
                         />
@@ -225,17 +247,22 @@ const Device_entries = ({ back }) => {
                     <Table.Td>
                       {editedRowId === row.id ? (
                         <DateInput
-                          value={new Date(editedNextCollection)}
+                          value={
+                            editedNextCollection
+                              ? new Date(editedNextCollection)
+                              : null
+                          }
                           onChange={(date) =>
                             setEditedNextCollection(
-                              date.toISOString().split("T")[0]
+                              date ? date.toISOString().split("T")[0] : ""
                             )
                           }
                         />
                       ) : (
-                        formatDate(row.next_collection)
+                        formatDate(row.date_collected)
                       )}
                     </Table.Td>
+
                     <Table.Td>
                       {editedRowId === row.id ? (
                         <Lock
@@ -264,15 +291,8 @@ const Device_entries = ({ back }) => {
                 onChange={handlePageChange}
                 size="sm"
                 siblings={2}
-                limit={1}
                 boundaries={1}
-                position="right"
                 style={{ marginTop: "20px" }}
-                styles={(currentTheme) => ({
-                  control: {
-                    "&[data-active]": activePageStyle,
-                  },
-                })}
               />
             )}
             {data.length === 0 && <Text>No data available.</Text>}
@@ -288,16 +308,14 @@ const Device_entries = ({ back }) => {
                   longitude: 77.7908816,
                   zoom: 3.5,
                 }}
-                mapStyle="mapbox://styles/mapbox/streets-v9"
+                mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
                 mapboxAccessToken={MAPBOX_TOKEN}
               >
                 {data.map((entry) => (
                   <Marker
                     key={entry.id}
-                    longitude={entry.longitude}
-                    latitude={entry.latitude}
-                    offsetLeft={-12}
-                    offsetTop={-24}
+                    longitude={parseFloat(entry.longitude)} // Parse string to number
+                    latitude={parseFloat(entry.latitude)} // Parse string to number
                     color="red"
                     onClick={() => setSelectedMarker(entry)}
                   >
@@ -308,8 +326,8 @@ const Device_entries = ({ back }) => {
                 <NavigationControl position="top-left" />
                 {selectedMarker && (
                   <Popup
-                    latitude={selectedMarker.latitude}
-                    longitude={selectedMarker.longitude}
+                    latitude={parseFloat(selectedMarker.latitude)}
+                    longitude={parseFloat(selectedMarker.longitude)}
                     style={popupStyle}
                     // closeButton={true}
                     onClose={() => setSelectedMarker(null)} // To close the popup when the close button is clicked
@@ -347,7 +365,6 @@ const Device_entries = ({ back }) => {
           opened={!!selectedEntry}
           onClose={() => setSelectedEntry(null)}
           title={`Details of the Entry ID ${selectedEntry.id}`}
-          overflow="outside"
         >
           <div>
             <Text mt="xl">Title: {selectedEntry.title}</Text>

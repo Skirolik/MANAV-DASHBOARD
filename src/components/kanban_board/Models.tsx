@@ -6,16 +6,14 @@ import {
   Badge,
   Grid,
   Card,
-  useMantineTheme,
   Group,
   Modal,
   Tooltip,
   useComputedColorScheme,
-  useMantineColorScheme,
 } from "@mantine/core";
 
-import AssignmentModal from "./AssignmentModal";
-import Delete_confirmation from "./Delete_confirmation";
+// import AssignmentModal from "./AssignmentModal";
+// import Delete_confirmation from "./Delete_confirmation";
 
 import { useDisclosure } from "@mantine/hooks";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
@@ -28,9 +26,22 @@ import axios from "axios";
 
 ///Kanban dragable items
 
-const DraggableTask = ({ task, index, moveTask, deleteTask }) => {
-  const theme = useMantineTheme();
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  assigned: string;
+  date: string;
+  status: string;
+}
+
+const DraggableTask: React.FC<{
+  task: Task;
+  index: number;
+
+  deleteTask: (id: string) => void;
+}> = ({ task, index, deleteTask }) => {
+  const [, setDeleteModalOpen] = useState(false);
 
   const [{ isDragging }, drag] = useDrag({
     type: "TASK",
@@ -40,16 +51,19 @@ const DraggableTask = ({ task, index, moveTask, deleteTask }) => {
     }),
   });
 
-  const handleDelete = () => {
-    setDeleteModalOpen(true);
-  };
+  // const handleDelete = () => {
+  //   setDeleteModalOpen(true);
+  // };
 
   const handleDeleteConfirmation = () => {
-    deleteTask(task.id);
+    console.log("Task id", task.id);
+    if (typeof task.id === "number") {
+      deleteTask(task.id);
+    }
     setDeleteModalOpen(false);
   };
 
-  const getInitials = (name) => {
+  const getInitials = (name: string) => {
     if (typeof name === "string" && name.trim() !== "") {
       return name
         .split(" ")
@@ -60,7 +74,7 @@ const DraggableTask = ({ task, index, moveTask, deleteTask }) => {
     return ""; // Return an empty string if name is not defined or not a string
   };
 
-  const getRandomColor = (index) => {
+  const getRandomColor = (index: number) => {
     const colors = ["red", "green", "blue", "orange", "purple", "pink"];
     return colors[index % colors.length];
   };
@@ -96,7 +110,10 @@ const DraggableTask = ({ task, index, moveTask, deleteTask }) => {
                 {(() => {
                   const dateObj = new Date(task.date);
 
-                  if (isNaN(dateObj) || !isFinite(dateObj)) {
+                  if (
+                    isNaN(dateObj.getTime()) ||
+                    !isFinite(dateObj.getTime())
+                  ) {
                     return "Invalid Date";
                   }
 
@@ -123,17 +140,17 @@ const DraggableTask = ({ task, index, moveTask, deleteTask }) => {
               <Button
                 radius="xl"
                 style={{ marginTop: 8 }}
-                onClick={handleDelete}
+                onClick={handleDeleteConfirmation}
               >
                 Delete
               </Button>
-              <Delete_confirmation
+              {/* <Delete_confirmation
                 isOpen={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 onConfirm={handleDeleteConfirmation}
                 taskTitle={task.title}
                 tasks={task}
-              />
+              /> */}
             </>
           )}
         </Card>
@@ -143,16 +160,15 @@ const DraggableTask = ({ task, index, moveTask, deleteTask }) => {
 };
 
 //Kanban Columns
-const DroppableColumn = ({
-  status,
-  tasks,
-  moveTask,
-  deleteTask,
-  newStatus,
-}) => {
+const DroppableColumn: React.FC<{
+  tasks: Task[];
+  status: string;
+  moveTask: (taskID: string, newStatus: string) => void;
+  deleteTask: (id: string) => void;
+}> = ({ status, tasks, moveTask, deleteTask }) => {
   const [, drop] = useDrop({
     accept: "TASK",
-    drop: (item) => moveTask(item.id, status),
+    drop: (item: { id: string; index: number }) => moveTask(item.id, status),
   });
 
   const tasksInColumn = tasks.filter((task) => task.status === status);
@@ -172,18 +188,18 @@ const DroppableColumn = ({
       <Badge
         variant="light"
         color={
-          status === "tasks"
+          String(status) === "tasks"
             ? "#FF0000"
-            : status === "ongoing"
+            : String(status) === "ongoing"
             ? "red"
-            : status === "finished"
+            : String(status) === "finished"
             ? "green"
             : "#37b24d"
         }
         radius="xl"
         mb="xl"
       >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {String(status).charAt(0).toUpperCase() + String(status).slice(1)}
       </Badge>
 
       <div
@@ -199,7 +215,6 @@ const DroppableColumn = ({
             key={task.id}
             task={task}
             index={index}
-            moveTask={moveTask}
             deleteTask={deleteTask} // Pass deleteTask function to DraggableTask
           />
         ))}
@@ -212,31 +227,38 @@ const DroppableColumn = ({
 
 const Models = () => {
   const computedColorScheme = useComputedColorScheme();
-  const { setColorScheme } = useMantineColorScheme();
-  const [data, setData] = useState([]);
+
+  const [, setData] = useState([]);
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [tasks, setTasks] = useState([
-    { id: "task1", title: "Task 1", description: "Example", status: "tasks" },
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: "task1",
+      title: "Task 1",
+      description: "Example",
+      assigned: "Niju",
+      date: "2024-01-26",
+      status: "tasks",
+    },
     {
       id: "task2",
       title: "Task 2",
       description: "Example2",
+      assigned: "Niju",
+      date: "2024-01-26",
       status: "ongoing",
     },
     {
       id: "task3",
       title: "Task 3",
       description: "Example3",
+      assigned: "Niju",
+      date: "2024-01-26",
       status: "finished",
     },
   ]);
 
-  const [extractedIds, setExtractedIds] = useState([]);
-  const [assignmentModalOpened, setAssignmentModalOpened] = useState(false);
-  const [unassignedTasks, setUnassignedTasks] = useState([]);
-  const [assignedValues, setAssignedValues] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [, setIsModalOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newAssigned, setNewAssigned] = useState("");
@@ -297,7 +319,7 @@ const Models = () => {
       setNewTaskTitle("");
       setNewTaskDescription("");
       setNewAssigned("");
-      setNewDate(null);
+      setNewDate("");
       notifications.show({
         title: "Success !!",
         message: "Task added sucessfully",
@@ -324,10 +346,11 @@ const Models = () => {
   };
 
   //Deleting Tasks
-  const deleteTask = (taskID) => {
+  const deleteTask = (taskID: string) => {
+    console.log("task ID", taskID);
     axios
       .delete(`http://192.168.10.251:3000/api/tasks/${taskID}`)
-      .then((response) => {
+      .then(() => {
         console.log("Task deleted from the database!");
         // Update the local state to remove the deleted task
         const updatedTasks = tasks.filter((task) => task.id !== taskID);
@@ -351,7 +374,8 @@ const Models = () => {
     });
   };
   // Moving Tasks
-  const moveTask = (taskID, newStatus) => {
+  const moveTask = (taskID: string, newStatus: string) => {
+    console.log("Move TaskID", newStatus);
     const updatedTasks = tasks.map((task) =>
       task.id === taskID ? { ...task, status: newStatus } : task
     );
@@ -361,7 +385,7 @@ const Models = () => {
       .put(`http://192.168.10.251:3000/api/tasks/${taskID}`, {
         status: newStatus,
       })
-      .then((response) => {
+      .then(() => {
         console.log("Task status updated in the database!");
         // Update the local state to reflect the new status of the task
         const updatedTasks = tasks.map((task) =>
@@ -382,18 +406,20 @@ const Models = () => {
       });
   };
 
-  const handleOpenAssignmentModal = () => {
-    setIsModalOpen(true);
-  };
+  // const handleOpenAssignmentModal = () => {
+  //   setIsModalOpen(true);
+  // };
 
-  const handleCloseAssignmentModal = () => {
-    setIsModalOpen(false);
-  };
+  // const handleCloseAssignmentModal = () => {
+  //   setIsModalOpen(false);
+  // };
 
   // const handleDelete = (taskId) => {
   //   // Open the DeleteConfirmationModal and pass tasks as a prop
   //   openDeleteConfirmationModal(taskId, tasks);
   // };
+
+  console.log("tasks data structure", moveTask);
 
   return (
     <div style={{ gap: 20, justifyContent: "center" }}>
@@ -477,7 +503,6 @@ const Models = () => {
               tasks={tasks}
               moveTask={moveTask}
               deleteTask={deleteTask}
-              newStatus={newStatus}
             />
           </DndProvider>
         </Grid.Col>
@@ -489,7 +514,6 @@ const Models = () => {
                 tasks={tasks}
                 moveTask={moveTask}
                 deleteTask={deleteTask}
-                newStatus={newStatus}
               />
             </div>
           </DndProvider>
@@ -502,7 +526,6 @@ const Models = () => {
               tasks={tasks}
               moveTask={moveTask}
               deleteTask={deleteTask}
-              newStatus={newStatus}
             />
           </DndProvider>
         </Grid.Col>

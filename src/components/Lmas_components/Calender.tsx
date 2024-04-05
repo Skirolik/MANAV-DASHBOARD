@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ResponsiveCalendar } from "@nivo/calendar";
-import {
-  Grid,
-  Text,
-  Divider,
-  useMantineColorScheme,
-  useComputedColorScheme,
-} from "@mantine/core";
+import { Grid, Text, Divider, useComputedColorScheme } from "@mantine/core";
 
-const Calender = ({ data }) => {
-  // console.log("calender", data);
+interface CalenderData {
+  x: "string";
+  y: number;
+}
+interface CalendarProps {
+  data: CalenderData[];
+}
 
-  const { setColorScheme } = useMantineColorScheme();
+const Calender: React.FC<CalendarProps> = ({ data }) => {
+  console.log("calender.data", data);
+
   const computedColorScheme = useComputedColorScheme();
 
   const countCallsByDate = () => {
-    const callCounts = {};
+    const callCounts: { [key: string]: number } = {}; // Type assertion here
 
     // Iterate through the call data
     data.forEach((row) => {
       if (row.y >= 40) {
         const dateTime = new Date(row.x); // Assuming `row.x` contains the date and time information
-        // console.log("datetime", dateTime);
-        // console.log(row.x);
-
-        // Extract the date (year, month, day) from the DateTime object
         const date = dateTime.toISOString().substring(0, 10);
 
         // Increment the count for the corresponding date
@@ -38,6 +35,7 @@ const Calender = ({ data }) => {
 
     return callCounts;
   };
+
   // Count the calls by date
   const callCounts = countCallsByDate();
   const calendarData = Object.keys(callCounts).map((date) => ({
@@ -100,7 +98,7 @@ const Calender = ({ data }) => {
             </style>
           </div>
         </Grid.Col>
-        <Grid.Col md={2} lg={2} mt="xl">
+        <Grid.Col span={{ base: 12, md: 2, lg: 2 }} mt="xl">
           <div
             style={{
               display: "flex",

@@ -3,10 +3,10 @@ import LmasHome from "../LmasPages/LmasHome";
 import Maintenace from "../Maintenace";
 import Earthpit_data from "../Earthpit_data";
 import Settings from "../Settings";
-import Login from "../Login";
+
 import { Routes, Route } from "react-router-dom";
 
-const RouterSwitcherLmas = ({ backcolor }) => {
+const RouterSwitcherLmas: React.FC<{ backcolor: string }> = ({ backcolor }) => {
   return (
     <Routes>
       <Route path="/" element={<LmasHome back={backcolor} />} />

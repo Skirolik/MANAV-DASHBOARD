@@ -1,8 +1,20 @@
-import React, { useState } from "react";
-import { Button, Popover, Paper, ColorSwatch, Text } from "@mantine/core";
+import React, { useState, useEffect } from "react";
+import {
+  Popover,
+  Paper,
+  ColorSwatch,
+  Text,
+  CheckIcon,
+  rem,
+} from "@mantine/core";
 
-const Color_Swatch = ({ onSelect }) => {
+interface ColorSwatchProps {
+  onSelect: (color: string) => void; // Define the type of onSelect
+}
+
+const Color_Swatch: React.FC<ColorSwatchProps> = ({ onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   const colors = [
     "#ffffff",
@@ -33,19 +45,24 @@ const Color_Swatch = ({ onSelect }) => {
     "#D04437",
   ];
 
-  const handleColorSelect = (color) => {
+  useEffect(() => {
+    // Load selected color from localStorage when component mounts
+    const storedColor = localStorage.getItem("selectedColor");
+    if (storedColor && colors.includes(storedColor)) {
+      setSelectedColor(storedColor);
+    }
+  }, []); // Empty dependency array to run the effect only once when component mounts
+
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
     onSelect(color);
     setIsOpen(false);
+    // Save selected color to localStorage
+    localStorage.setItem("selectedColor", color);
   };
+
   return (
-    <Popover
-      opened={isOpen}
-      onClose={() => setIsOpen(false)}
-      target={
-        <Button onClick={() => setIsOpen((prev) => !prev)}>Select Color</Button>
-      }
-      position="bottom"
-    >
+    <Popover opened={isOpen} onClose={() => setIsOpen(false)} position="bottom">
       <Text>Pick a Colour:</Text>
       <Paper mt="lg">
         <div
@@ -57,10 +74,15 @@ const Color_Swatch = ({ onSelect }) => {
         >
           {colors.map((color) => (
             <ColorSwatch
+              key={color}
               color={color}
               onClick={() => handleColorSelect(color)}
               style={{ cursor: "pointer" }}
-            />
+            >
+              {selectedColor === color && (
+                <CheckIcon style={{ width: rem(12), height: rem(12) }} />
+              )}
+            </ColorSwatch>
           ))}
         </div>
       </Paper>

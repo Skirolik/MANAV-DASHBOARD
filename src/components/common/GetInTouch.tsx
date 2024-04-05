@@ -6,17 +6,14 @@ import {
   Card,
   Textarea,
   Accordion,
-  Text,
   Select,
-  useMantineColorScheme,
   useComputedColorScheme,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { LoremIpsum } from "react-lorem-ipsum";
 import { getTextColor } from "../utils";
 
-const GetInTouch = ({ back }) => {
-  const { setColorScheme } = useMantineColorScheme();
+const GetInTouch: React.FC<{ back: string }> = ({ back }) => {
   const computedColorScheme = useComputedColorScheme("light");
   const contactDetailsStyle = {
     background:
@@ -135,12 +132,9 @@ const GetInTouch = ({ back }) => {
                   required
                 />
                 <Select
-                  dropdownPosition="top"
                   label="Pick the subject"
                   placeholder="Pick one"
                   searchable
-                  nothingFound="No options"
-                  dropdownComponent="div"
                   data={[
                     { value: "lmas", label: "LMAS" },
                     { value: "smart_earthing", label: "Smart Earthing" },

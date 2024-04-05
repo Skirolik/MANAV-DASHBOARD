@@ -1,20 +1,29 @@
 import { useState, useEffect } from "react";
-import { Map, Marker, GeolocateControl, NavigationControl } from "react-map-gl";
+import { Map, Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { Card, Text } from "@mantine/core";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoic2tpcm8iLCJhIjoiY2w1aTZjN2x2MDI3ODNkcHp0cnhuZzVicSJ9.HMjwHtHf_ttkh_aImSX-oQ";
 
-const Lmap = (data) => {
-  console.log("map", data);
+interface MapData {
+  x: number;
+  y: number;
+  z: number;
+}
+
+interface MapProp {
+  data: MapData[];
+}
+
+const Lmap: React.FC<MapProp> = (data) => {
+  // console.log("map", data);
   const lat = data.data.length > 0 ? data.data[0].x : 0;
   const long = data.data.length > 0 ? data.data[0].y : 0;
   const initialPercentage = data.data.length > 0 ? data.data[0].z : 0;
 
   const [percentage, setPercentage] = useState(initialPercentage);
 
-  const getColor = (perval) => {
+  const getColor = (perval: number) => {
     if (perval < 50) {
       return "green";
     } else if (perval >= 50 && perval <= 60) {

@@ -1,4 +1,4 @@
-export const getTextColor = (bgColor) => {
+export const getTextColor = (bgColor:string) => {
     // Convert the background color to RGB
     const rgb = hexToRgb(bgColor);
     // Calculate brightness using a standard formula
@@ -7,7 +7,7 @@ export const getTextColor = (bgColor) => {
     return brightness > 128 ? "#000000" : "#FFFFFF";
 };
 
-export const hexToRgb = (hex) => {
+export const hexToRgb = (hex:string) => {
     // Remove the hash if it's present
     hex = hex.replace(/^#/, "");
     // Parse the hex values into RGB components

@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Progress, Card, Text, Grid, Divider } from "@mantine/core";
+import { Progress, Card, Text, Grid } from "@mantine/core";
 // import Field_values from "./Field_values";
 
-const Progress_bar = ({ data, value, env, diac, temp, pressure, humidity }) => {
+interface ProgressProps {
+  data: { x: number; y: number }[];
+  temp: { x: number; y: number }[];
+  pressure: { x: number; y: number }[];
+  humidity: { x: number; y: number }[];
+}
+
+const Progress_bar: React.FC<ProgressProps> = ({
+  data,
+  temp,
+  pressure,
+  humidity,
+}) => {
   //   console.log("nar", data);
   // console.log("val", temp);
   const initialYValue = data.length > 0 ? data[0].y : 0;
@@ -15,7 +27,7 @@ const Progress_bar = ({ data, value, env, diac, temp, pressure, humidity }) => {
   // console.log("initial Temp Value", initialHumidityValue);
 
   const [latestTempValue, setLatestTempValue] = useState(initialTempValue);
-  const [tempValue, setTempValue] = useState(0);
+  // const [tempValue, setTempValue] = useState(0);
   const [latestPressureValue, setLatestPressureValue] =
     useState(initialPressureValue);
   const [latestHumidityValue, setLatestHumidityValue] =
@@ -108,7 +120,7 @@ const Progress_bar = ({ data, value, env, diac, temp, pressure, humidity }) => {
     return () => clearInterval(id);
   }, [humidity]);
 
-  const getColor = (yValue) => {
+  const getColor = (yValue: number) => {
     if (yValue < 50) {
       return "green";
     } else if (yValue >= 50 && yValue <= 60) {
@@ -161,10 +173,9 @@ const Progress_bar = ({ data, value, env, diac, temp, pressure, humidity }) => {
           </Text>
           <Progress
             value={latestYValue}
-            max={100} // Assuming yValue is already a percentage
             color={color}
-            label={Math.round(latestYValue) + "%"}
-            animate
+            animated
+            striped
             size="xl"
             mb="xl"
             mt="xl"

@@ -12,13 +12,46 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 
-const HomeTable = ({ data }) => {
+interface DataRow {
+  0: number;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: number;
+  6: number;
+  7: number;
+  8: string;
+  9: string;
+  10: string;
+  11: string;
+  12: string;
+  13: string;
+  14: string;
+  15: string;
+  16: string;
+  17: string;
+  18: string;
+  19: string;
+  20: string;
+  21: string;
+  22: string;
+  23: string;
+  24: string;
+  25: string;
+}
+
+interface HomeTableProps {
+  data: DataRow[];
+}
+
+const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState(data);
   const isLargeScreen = useMediaQuery("(min-width:1880px)");
-  console.log("screen", isLargeScreen);
+
   const rowsPerPage = isLargeScreen ? 8 : 5;
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, setSelectedRow] = useState<DataRow | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterDateTime, setFilterDateTime] = useState("");
   const [filterAlert, setFilterAlert] = useState("");
@@ -56,7 +89,7 @@ const HomeTable = ({ data }) => {
     setFilterAlert("");
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
 
@@ -74,9 +107,15 @@ const HomeTable = ({ data }) => {
 
   const totalPages = getTotalPages();
 
-  const handleRowClick = (row) => {
+  const handleRowClick = (row: DataRow) => {
     setSelectedRow(row);
+
     setIsModalOpen(true);
+  };
+
+  const isValidDate = (dateString: string): boolean => {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date.getTime());
   };
 
   return (
@@ -100,9 +139,13 @@ const HomeTable = ({ data }) => {
             </Table.Th>
             <Table.Th>
               <DateInput
-                value={filterDateTime}
+                value={
+                  isValidDate(filterDateTime) ? new Date(filterDateTime) : null
+                }
                 placeholder="Filter Date & Time"
-                onChange={(value) => setFilterDateTime(value)}
+                onChange={(value) =>
+                  setFilterDateTime(value ? value.toISOString() : "")
+                }
               />{" "}
               Date
             </Table.Th>
@@ -140,9 +183,7 @@ const HomeTable = ({ data }) => {
           onChange={handlePageChange}
           size="sm"
           siblings={2}
-          limit={1}
           boundaries={1}
-          position="right"
           style={{ marginTop: "20px" }}
         />
       )}

@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const useVariablecount = ({ data }) => {
+interface Row {
+  x: string;
+  y: number;
+}
+
+const useVariablecount = ({ data }: { data?: Row[] }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [progress, setProgress] = useState(0);
 

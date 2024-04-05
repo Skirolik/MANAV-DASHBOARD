@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const useBatteryCal = ({ data }) => {
+interface BatteryData {
+  x: string;
+  y: number;
+}
+
+const useBatteryCal = ({ data }: { data?: BatteryData[] }) => {
   const [totalBatteryCount, setTotalBatteryCount] = useState(0);
 
   useEffect(() => {

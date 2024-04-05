@@ -14,23 +14,26 @@ import axios from "axios";
 import { CircleCheck, AlertCircle } from "tabler-icons-react";
 
 import { Map, Marker, GeolocateControl, NavigationControl } from "react-map-gl";
+import { MapMouseEvent } from "mapbox-gl";
 
-const MAPBOX_TOKEN =
-  "pk.eyJ1Ijoic2tpcm8iLCJhIjoiY2w1aTZjN2x2MDI3ODNkcHp0cnhuZzVicSJ9.HMjwHtHf_ttkh_aImSX-oQ";
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
 const Device_details = () => {
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState<number>(0);
+  const [longitude, setLongitude] = useState<number>(0);
   const [resistance, setResistance] = useState(0);
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
-  const [dateCollected, setDateCollected] = useState(null);
-  const [nextCollection, setNextCollection] = useState(null);
-  const [description, setDescription] = useState("");
-  const [newPlace, setNewPlace] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [dateCollected, setDateCollected] = useState<Date | null>(null);
+  const [nextCollection, setNextCollection] = useState<Date | null>(null);
 
-  const handleSubmit = (e) => {
+  const [description, setDescription] = useState("");
+  const [newPlace, setNewPlace] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+  const [isLoading] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formattedDateCollected =
       dateCollected && dateCollected.toISOString().substr(0, 10);
@@ -52,11 +55,11 @@ const Device_details = () => {
     // Send the form data to the backend server
     axios
       .post("http://192.168.10.251:3000/api/submit-form", formData)
-      .then((response) => {
+      .then(() => {
         // console.log(response.data.message); // Success message from the backend
         // Reset form fields after successful submission
-        setLatitude("");
-        setLongitude("");
+        setLatitude(0);
+        setLongitude(0);
         setResistance(0);
         setName("");
         setTitle("");
@@ -83,16 +86,13 @@ const Device_details = () => {
       });
   };
 
-  const handleAddClick = (e) => {
+  const handleAddClick = (e: MapMouseEvent) => {
     // console.log("map clicked");
     const { lng, lat } = e.lngLat;
     // console.log("lng", lng);
     setLatitude(lat);
     setLongitude(lng);
-    setNewPlace({
-      lat,
-      lng,
-    });
+    setNewPlace({ lat, lng });
   };
 
   return (
@@ -103,21 +103,21 @@ const Device_details = () => {
           <form onSubmit={handleSubmit}>
             <TextInput
               value={latitude}
-              onChange={(e) => setLatitude(e.currentTarget.value)}
+              onChange={(e) => setLatitude(parseFloat(e.currentTarget.value))}
               label="Latitude"
               placeholder="Latitude"
               required
             />
             <TextInput
               value={longitude}
-              onChange={(e) => setLongitude(e.currentTarget.value)}
+              onChange={(e) => setLongitude(parseFloat(e.currentTarget.value))}
               label="Longitude"
               placeholder="Longitude"
               required
             />
             <NumberInput
               value={resistance}
-              onChange={(value) => setResistance(value)}
+              onChange={(value) => setResistance(parseFloat(value.toString()))}
               label="Resistance"
               withAsterisk
             />
@@ -175,7 +175,7 @@ const Device_details = () => {
             zoom: 3.5,
           }}
           style={{ width: "100%", height: 620 }}
-          mapStyle="mapbox://styles/mapbox/streets-v9"
+          mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
           mapboxAccessToken={MAPBOX_TOKEN}
           onClick={handleAddClick}
           onRender={(event) => event.target.resize()}

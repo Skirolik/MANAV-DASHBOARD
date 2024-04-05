@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const useWebsocket = (email) => {
+const useWebsocket = (email: string) => {
   const [chartData, setChartData] = useState([]);
   const [data, setData] = useState([]);
 

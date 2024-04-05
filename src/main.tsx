@@ -1,28 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import { createTheme, MantineProvider, rem } from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 import "./index.css";
 import "@mantine/core/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/dates/styles.css";
-import { BrowserRouter, createBrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
+
+const color = localStorage.getItem("color") || "teal";
+
+console.log("color in main", color);
 
 const theme = createTheme({
-  fontFamily: "Open Sans, sans-serif",
+  fontFamily: "Verdana, sans-serif",
+  headings: { fontFamily: "Greycliff CF, sans-serif" },
 
-  primaryColor: "teal",
+  primaryColor: color,
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <MantineProvider theme={theme}>
+  <MantineProvider theme={theme}>
+    <React.StrictMode>
       <BrowserRouter>
         <Notifications />
         <App />
       </BrowserRouter>
-    </MantineProvider>
-  </React.StrictMode>
+    </React.StrictMode>
+  </MantineProvider>
 );

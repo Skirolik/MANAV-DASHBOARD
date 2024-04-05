@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Progress, Text } from "@mantine/core";
 
-const Field_values = ({ data, color, title }) => {
+interface FieldProps {
+  data: { x: number; y: number }[];
+  color: string;
+  title: string;
+}
+
+const Field_values: React.FC<FieldProps> = ({ data, color, title }) => {
   // console.log("nar", data);
   //   console.log("val", val);
   const initialYValue = data.length > 0 ? data[0].y : 0;
@@ -24,7 +30,7 @@ const Field_values = ({ data, color, title }) => {
       const triggerTime = new Date(lastDataPoint.x).getTime();
       const timeDifference = currentTime - triggerTime;
 
-      const timeDifferenceMinutes = (currentTime - triggerTime) / (1000 * 60);
+      // const timeDifferenceMinutes = (currentTime - triggerTime) / (1000 * 60);
 
       // Calculate the reduced percentage based on time difference
       const calculatedPercentage = Math.max(
@@ -54,10 +60,9 @@ const Field_values = ({ data, color, title }) => {
 
       <Progress
         value={latestPercentage}
-        max={100} // Assuming yValue is already a percentage
         color={color}
-        label={Math.round(latestPercentage) + "%"}
-        animate
+        animated
+        striped
         size="xl"
         mb="lg"
         mt="md"

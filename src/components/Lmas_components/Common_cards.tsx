@@ -1,7 +1,18 @@
 import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
 import React from "react";
 
-const IndividualCard = ({ color, data }) => {
+interface CardItem {
+  title: string;
+  value: string | number;
+  description: string;
+}
+
+interface LmasCardProps {
+  color: string;
+  data: CardItem;
+}
+
+const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
   //   console.log("data for individual cards", data);
   if (!data) {
     return <Paper p="md">Loading...</Paper>; // Or a custom message
@@ -36,7 +47,11 @@ const IndividualCard = ({ color, data }) => {
   );
 };
 
-const CommonCards = ({ data }) => {
+interface LmasDataProp {
+  data: CardItem[];
+}
+
+const CommonCards: React.FC<LmasDataProp> = ({ data }) => {
   if (!data) {
     return <p>Data is not available yet.</p>;
   }

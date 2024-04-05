@@ -39,14 +39,16 @@
   justify-content: center;
 }
 
-a {
+/* a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
-}
+} */
 
 a:hover {
-  color: #535bf2;
+  color: #4CAF50;
+  background-color: transparent;
+  /* Add this line to remove the box */
 }
 
 h1 {
@@ -89,26 +91,4 @@ button {
 
 #greet-input {
   margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6c4;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #087f5b;
-  }
- 
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-
-  button:active {
-    background-color: #0f0f0f69;
-  }
 }

@@ -1,15 +1,11 @@
 import React from "react";
-import { Tabs, Text, rem } from "@mantine/core";
-import {
-  IconPhoto,
-  IconMessageCircle,
-  IconSettings,
-} from "@tabler/icons-react";
+import { Tabs, rem } from "@mantine/core";
+import { IconPhoto, IconMessageCircle } from "@tabler/icons-react";
 import { getTextColor } from "./components/utils";
 import Device_details from "./components/common/Device_details";
 import Device_entries from "./components/common/Device_entries";
 
-const Earthpit_data = ({ back }) => {
+const Earthpit_data: React.FC<{ back: string }> = ({ back }) => {
   const iconStyle = { width: rem(12), height: rem(12) };
   return (
     <div>

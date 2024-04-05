@@ -5,7 +5,6 @@ import {
   Anchor,
   Paper,
   Title,
-  Text,
   Container,
   Group,
   Button,
@@ -16,16 +15,20 @@ import React, { useState } from "react";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
 
-const Login = ({ onLogin }) => {
+interface LoginProps {
+  onLogin: (domainVersion: string) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   console.log("login");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState("")
+  const [, setIsLoading] = useState(false);
 
-    // Set the default base URL for Axios
+  // Set the default base URL for Axios
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
 
-  const handleSignin = async() => {
+  const handleSignin = async () => {
     console.log("singin clicked");
     console.log(userName);
     console.log(password);
@@ -68,8 +71,8 @@ const Login = ({ onLogin }) => {
         localStorage.setItem("userStartDate", userStartDate);
         localStorage.setItem("userEndDate", userEndDate);
 
-        const abc = localStorage.getItem("user")
-        console.log("user", abc)
+        const abc = localStorage.getItem("user");
+        console.log("user", abc);
 
         console.log(userEmail, userFirstname);
 
@@ -78,10 +81,6 @@ const Login = ({ onLogin }) => {
           message: "Login Successful: Welcome back! ",
           color: "teal",
         });
-        // const delay = 700; // Adjust the delay as needed
-        // setTimeout(() => {
-        //   window.location.href = "/";
-        // }, delay);
         onLogin(domainVersion);
       } else {
         setIsLoading(false);

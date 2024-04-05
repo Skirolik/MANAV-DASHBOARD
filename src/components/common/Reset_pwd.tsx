@@ -1,27 +1,28 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Paper,
-  TextInput,
   PasswordInput,
   Button,
   Text,
-  Image,
   Card,
-  useMantineTheme,
-  Grid,
   Progress,
   Group,
   Center,
 } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 import { IconCheck, IconX } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+
 import axios from "axios";
 
-function PasswordRequirement({ meets, label }) {
+interface PasswordRequirementProps {
+  meets: boolean; // Specify the type for the meets parameter
+  label: string;
+}
+
+function PasswordRequirement({ meets, label }: PasswordRequirementProps) {
   return (
-    <Text color={meets ? "teal" : "red"} mt={5} size="sm">
+    <Text c={meets ? "green" : "red"} mt={5} size="sm">
       <Center inline>
         {meets ? (
           <IconCheck size="0.9rem" stroke={1.5} />
@@ -41,7 +42,7 @@ const requirements = [
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: "Includes special symbol" },
 ];
 
-function getStrength(password) {
+function getStrength(password: string) {
   let multiplier = password.length > 5 ? 0 : 1;
 
   requirements.forEach((requirement) => {
@@ -91,7 +92,7 @@ const Reset_pwd = () => {
           }
         }
       } catch (error) {
-        console.error("Password reset failed:", error.message);
+        console.error("Password reset failed:", error);
         setPasswordError("Password reset failed. Please try again.");
       }
     }
@@ -101,7 +102,7 @@ const Reset_pwd = () => {
     <div>
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Paper p="lg">
-          <Text fz="lg" fw={800} align="center" mb="md">
+          <Text fz="lg" fw={800} ta="center" mb="md">
             LMAS : Password Reset
           </Text>
 
@@ -116,7 +117,6 @@ const Reset_pwd = () => {
           />
           <Group grow mt="xs" mb="md">
             <Progress
-              styles={{ bar: { transitionDuration: "0ms" } }}
               value={password.length > 0 ? 100 : 0}
               color={strength > 80 ? "teal" : strength > 50 ? "yellow" : "red"}
               size={4}

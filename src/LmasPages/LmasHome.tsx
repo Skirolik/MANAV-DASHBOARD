@@ -11,8 +11,8 @@ import HomeTable from "../components/Lmas_components/HomeTable";
 import Lmap from "../components/Lmas_components/Lmap";
 import Calender from "../components/Lmas_components/Calender";
 
-const LmasHome = ({ back }) => {
-  const [email, setEmail] = useState("admin");
+const LmasHome: React.FC<{ back: string }> = ({ back }) => {
+  const [email] = useState("admin");
   const { data, chartData } = useWebsocket(email);
   const username = localStorage.getItem("user");
 
@@ -31,7 +31,7 @@ const LmasHome = ({ back }) => {
     y: Number(row[24]),
   }));
 
-  const { totalBatteryCount } = useBatteryCal({ data: batteryData });
+  // const { totalBatteryCount } = useBatteryCal({ data: batteryData });
 
   const diaDataElectroStatic = chartData
     .map((row) => ({
@@ -54,10 +54,10 @@ const LmasHome = ({ back }) => {
     }))
     .reverse();
 
-  const transformerData = data.map((row) => ({
-    x: row[25],
-    y: Number(row[9]),
-  }));
+  // const transformerData = data.map((row) => ({
+  //   x: row[25],
+  //   y: Number(row[9]),
+  // }));
 
   const mapData = chartData.map((row) => ({
     x: Number(row[3]),
@@ -99,9 +99,9 @@ const LmasHome = ({ back }) => {
     y: Number(row[9]),
   }));
 
-  const { totalCount, progress } = useVariablecount({
-    data: staticData,
-  });
+  // const { totalCount, progress } = useVariablecount({
+  //   data: staticData,
+  // });
 
   const totalCounts = [
     {
@@ -152,9 +152,6 @@ const LmasHome = ({ back }) => {
               <Grid.Col span={{ base: 12, md: 11, lg: 5 }}>
                 <Progress_bar
                   data={transformedData}
-                  value={diaDataSpark}
-                  env={diaDataEnvironment}
-                  diac={diaDataElectroStatic}
                   temp={temp}
                   pressure={pressure}
                   humidity={humidity}
