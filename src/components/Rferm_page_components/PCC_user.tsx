@@ -25,6 +25,7 @@ export interface RfermHomeData {
   nineth_R_a: { date: string; status: string; area: string };
   tenth_R_a: { date: string; status: string; area: string };
   Grid_resistance: { Date: string; value: number }[];
+  activity: number;
 }
 
 interface Props {
@@ -73,6 +74,7 @@ const PCC_user: React.FC<Props> = ({ data }) => {
   } = data[0];
 
   localStorage.setItem("totalpits", total.toString());
+  console.log("total-", typeof total);
 
   const totalData = [
     {

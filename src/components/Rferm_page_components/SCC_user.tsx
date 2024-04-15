@@ -24,11 +24,18 @@ interface RfermSccHomeData {
   nineth_R_a: { date: string; status: string; area: string };
   tenth_R_a: { date: string; status: string; area: string };
   Grid_resistance: { Date: string; value: number }[];
+  activity: number;
 }
 
 interface SccProps {
   data: RfermSccHomeData[];
   back: string;
+}
+
+interface DataItem {
+  description: string;
+  title: string;
+  value: string | number;
 }
 
 const SCC_user: React.FC<SccProps> = ({ data }) => {
@@ -61,32 +68,59 @@ const SCC_user: React.FC<SccProps> = ({ data }) => {
     fetchMapData();
   }, []);
 
-  console.log("Data SCC_user", data);
-
   const { danger_count, unhealthy_count, healthy, total } = data[0];
 
-  const totalData = [
-    {
-      title: "Danger",
-      value: danger_count,
-      description: "PCC's",
-    },
-    {
-      title: "Un-Healthy",
-      value: unhealthy_count,
-      description: "PCC's ",
-    },
-    {
-      title: "Healthy",
-      value: healthy,
-      description: "PCC's",
-    },
-    {
-      title: "Total PCC's",
-      value: total,
-      description: "PCC ",
-    },
-  ];
+  let totalData: DataItem[];
+
+  console.log("Data SCC_user", typeof total);
+
+  if (total === 1) {
+    totalData = [
+      {
+        title: "Danger",
+        value: danger_count,
+        description: "Pits",
+      },
+      {
+        title: "Un-Healthy",
+        value: unhealthy_count,
+        description: "Pits ",
+      },
+      {
+        title: "Healthy",
+        value: healthy,
+        description: "Pits ",
+      },
+      {
+        title: "Total PCC's",
+        value: total,
+        description: "PCC ",
+      },
+    ];
+  } else {
+    totalData = [
+      {
+        title: "Danger",
+        value: danger_count,
+        description: "PCC's",
+      },
+      {
+        title: "Un-Healthy",
+        value: unhealthy_count,
+        description: "PCC's ",
+      },
+      {
+        title: "Healthy",
+        value: healthy,
+        description: "PCC's",
+      },
+      {
+        title: "Total PCC's",
+        value: total,
+        description: "PCC ",
+      },
+    ];
+  }
 
   return (
     <>

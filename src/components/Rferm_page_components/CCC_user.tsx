@@ -24,11 +24,18 @@ interface RfermCccHomeData {
   nineth_R_a: { date: string; status: string; area: string };
   tenth_R_a: { date: string; status: string; area: string };
   Grid_resistance: { Date: string; value: number }[];
+  activity: number;
 }
 
 interface CccProps {
   data: RfermCccHomeData[];
   back: string;
+}
+
+interface DataItem {
+  description: string;
+  title: string;
+  value: string | number;
 }
 
 const CCC_user: React.FC<CccProps> = ({ data }) => {
@@ -65,28 +72,57 @@ const CCC_user: React.FC<CccProps> = ({ data }) => {
 
   const { danger_count, unhealthy_count, healthy, total } = data[0];
 
-  const totalData = [
-    {
-      title: "Danger",
-      value: danger_count,
-      description: "SCC's",
-    },
-    {
-      title: "Un-Healthy",
-      value: unhealthy_count,
-      description: "SCC's ",
-    },
-    {
-      title: "Healthy",
-      value: healthy,
-      description: "SCC's",
-    },
-    {
-      title: "Total PCC's",
-      value: total,
-      description: "SCC ",
-    },
-  ];
+  let totalData: DataItem[];
+
+  console.log("Data SCC_user", data);
+
+  if (total === 1) {
+    totalData = [
+      {
+        title: "Danger",
+        value: danger_count,
+        description: "Pits",
+      },
+      {
+        title: "Un-Healthy",
+        value: unhealthy_count,
+        description: "Pits ",
+      },
+      {
+        title: "Healthy",
+        value: healthy,
+        description: "Pits ",
+      },
+      {
+        title: "Total SCC's",
+        value: total,
+        description: "SCC ",
+      },
+    ];
+  } else {
+    totalData = [
+      {
+        title: "Danger",
+        value: danger_count,
+        description: "SCC's",
+      },
+      {
+        title: "Un-Healthy",
+        value: unhealthy_count,
+        description: "SCC's ",
+      },
+      {
+        title: "Healthy",
+        value: healthy,
+        description: "SCC's",
+      },
+      {
+        title: "Total SCC's",
+        value: total,
+        description: "SCC ",
+      },
+    ];
+  }
 
   return (
     <>

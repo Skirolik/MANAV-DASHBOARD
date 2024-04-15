@@ -7,6 +7,7 @@ import {
   CheckIcon,
   rem,
 } from "@mantine/core";
+import axios from "axios";
 
 interface ColorSwatchProps {
   onSelect: (color: string) => void; // Define the type of onSelect
@@ -59,6 +60,21 @@ const Color_Swatch: React.FC<ColorSwatchProps> = ({ onSelect }) => {
     setIsOpen(false);
     // Save selected color to localStorage
     localStorage.setItem("selectedColor", color);
+    saveBackgroundColor(color);
+  };
+
+  const useremail = localStorage.getItem("userEmail");
+
+  const saveBackgroundColor = async (color: string) => {
+    try {
+      const response = await axios.post("/api/settings", {
+        email: useremail,
+        bgColor: color,
+      });
+      console.log("Background color saved successfully:", response.data);
+    } catch (error) {
+      console.error("Error saving background color:", error);
+    }
   };
 
   return (

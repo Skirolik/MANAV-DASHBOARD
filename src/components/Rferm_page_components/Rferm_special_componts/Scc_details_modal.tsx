@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Legned from "./Legned";
 import Fault_chart from "./Fault_chart";
@@ -29,6 +29,7 @@ const Scc_details_modal = ({ macid }: { macid: string | null }) => {
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [fault_value, setFaultValue] = useState(true);
   const [resistance_value, setResistanceValue] = useState(true);
@@ -57,39 +58,40 @@ const Scc_details_modal = ({ macid }: { macid: string | null }) => {
     fetchPitDetails();
   }, []);
 
-  const fetchPitDetailsFilter = async () => {
+  const fetchPitDetailsFilter = useCallback(async () => {
+    // Wrap in useCallback
     setIsLoading(true);
     try {
+      if (!fromDate || !toDate) {
+        // Check if either fromDate or toDate is missing
+        setError("Please select both 'Start Date' and 'End Date'");
+        setIsLoading(false);
+        return;
+      }
       console.log("Fetching data...");
       const response = await axios.post("/api/rferm/pit/data", {
         macId: macid,
-        fromDate: fromDate?.toISOString(),
-        toDate: toDate?.toISOString(),
+        fromDate: fromDate.toISOString(),
+        toDate: toDate.toISOString(),
       });
-      console.log("from-", fromDate);
-      console.log("to-", toDate);
 
       setPitDetails(response.data.data);
-
-      const faultValue = pitDetails[0].fault;
-      const resistanceValue = pitDetails[0].resistance;
-
-      console.log("state Value f-", faultValue[0].Date);
-
-      if (faultValue[0].Date === "") {
-        setFaultValue(false);
-      }
-      if (resistanceValue[0].Date === "") {
-        setResistanceValue(false);
-      }
-
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 10);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching map data:", error);
       setIsLoading(false);
     }
+  }, [fromDate, toDate, macid]); // Add dependencies
+
+  const handleFromDateChange = (date: Date | null) => {
+    setFromDate(date);
+    if (toDate && date && toDate < date) {
+      setToDate(date); // Set To date same as From date if it's earlier
+    }
+  };
+  const handleToggleClick = () => {
+    setError(null); // Reset error message
+    fetchPitDetailsFilter();
   };
 
   const resistanceData = pitDetails.length > 0 ? pitDetails[0].resistance : [];
@@ -105,12 +107,8 @@ const Scc_details_modal = ({ macid }: { macid: string | null }) => {
   const { current_status, latest_reading, pit_name } = pitDetails[0] || {};
 
   // const [value, setValue] = useState<Date | null>(null);
-  const handleToggleClick = () => {
-    fetchPitDetailsFilter();
-    setShowReadingUpdate((prev) => !prev);
-  };
 
-  const [_showReadingUpdate, setShowReadingUpdate] = useState(true);
+  // const [_showReadingUpdate, setShowReadingUpdate] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageFault, setCurrentPageFault] = useState(1);
 
@@ -169,23 +167,29 @@ const Scc_details_modal = ({ macid }: { macid: string | null }) => {
         <Group justify="center" ml="xl" mt="lg">
           <DateInput
             valueFormat="DD/MM/YYYY "
-            label="From:"
-            placeholder="From"
+            // label="From:"
+            placeholder="Start Date"
             value={fromDate}
-            onChange={setFromDate} // Update fromDate state
+            maxDate={new Date()}
+            onChange={handleFromDateChange}
           />
           <Text mt="lg">To</Text>
           <DateInput
             valueFormat="DD/MM/YYYY "
-            label="To:"
-            placeholder="Date"
+            // label="To:"
+            placeholder="End Date"
             value={toDate}
+            maxDate={new Date()} // Set maxDate to current date
+            minDate={fromDate ? fromDate : undefined}
             onChange={setToDate} // Update toDate state
           />
-          <Button mt="lg" onClick={handleToggleClick}>
-            Select
-          </Button>
+          <Button onClick={handleToggleClick}>Select</Button>
         </Group>
+        {error && (
+          <Text color="red" mt="xl" style={{ textAlign: "center" }}>
+            {error}
+          </Text>
+        )}{" "}
         <Card.Section mt="xl">
           <Title order={3} ta="center" td="underline" mb="xl">
             Normal Reading
@@ -200,7 +204,6 @@ const Scc_details_modal = ({ macid }: { macid: string | null }) => {
             <Legned />
           </Card.Section>
         </Card.Section>
-
         <Card.Section mt="xl">
           <Title order={3} ta="center" td="underline" mb="xl">
             Fault Reading

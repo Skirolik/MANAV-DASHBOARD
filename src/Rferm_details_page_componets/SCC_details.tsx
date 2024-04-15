@@ -1,4 +1,4 @@
-import { Card, Grid, Title } from "@mantine/core";
+import { Card, Grid, Title, Loader } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import DetailsMap from "../components/Rferm_page_components/Rferm_special_componts/DetailsMap";
 // import { Map_data } from "../components/testingData/Map_data";
@@ -10,6 +10,9 @@ import { getTextColor } from "../components/utils";
 
 const SCC_details: React.FC<{ back: string }> = ({ back }) => {
   const [selectedMacId, setSelectedMacId] = useState<string | null>(null);
+  const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [mapData, setMapData] = useState<any[]>([]);
   const [selectPinData, setPinData] = useState<any[]>([]);
   console.log("Details_page", back);
@@ -41,12 +44,16 @@ const SCC_details: React.FC<{ back: string }> = ({ back }) => {
   useEffect(() => {
     // Retrieve selectedMacId from local storage when the component mounts
     const storedMacId = localStorage.getItem("selectedMacId");
+    const storedUsername = localStorage.getItem("slectedUserName");
+
     console.log("abcd");
     if (storedMacId) {
       setSelectedMacId(storedMacId);
+      setSelectedUserName(storedUsername);
       // Optional: Clear the storedMacId from local storage after retrieving it
       // localStorage.removeItem("selectedMacId");
     }
+    setIsLoading(true);
     const fetchMapData = async () => {
       try {
         console.log("efghS");
@@ -56,15 +63,16 @@ const SCC_details: React.FC<{ back: string }> = ({ back }) => {
         });
         setPinData(response.data.data);
         console.log("selectedPinData-", response.data.data);
-        // setTimeout(() => {
-        //   setIsLoading(false);
-        // }, 1);
+
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching map data:", error);
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     };
     setSelectedMacId(storedMacId);
+    setSelectedUserName(storedUsername);
+
     fetchMapData();
   }, [selectedMacId]);
 
@@ -105,67 +113,94 @@ const SCC_details: React.FC<{ back: string }> = ({ back }) => {
     setSelectedMacId(macId);
     // Store selectedMacId in local storage
     localStorage.setItem("selectedMacId", macId);
+    setSelectedUserName(localStorage.getItem("slectedUserName"));
   };
 
   console.log("macid-", selectedMacId);
 
   return (
     <>
-      <Grid mt="xl">
-        <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-        <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Card withBorder radius="lg" shadow="lg">
-            <DetailsMap data={mapData} onPinClick={handlePinClick} />
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Title order={2} mb="xl" c={getTextColor(back)} ta="center">
-            Data for PCC: {selectedMacId || "Please click on a pin"}
-          </Title>
-          {selectedMacId && <Rferm_SCC_cards data={totalData} />}
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-      </Grid>
-      {selectedMacId && (
-        <>
-          <Grid mt="xl">
-            <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-            <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-              <Card withBorder radius="lg" shadow="lg">
-                <Title order={4} td="underline" mb="xl" mt="lg">
-                  Danger Pit Data:
-                </Title>
-                <Detials_table data={danger_data} />
-              </Card>
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-          </Grid>
-          <Grid>
-            <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-            <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-              <Card withBorder radius="lg" shadow="lg">
-                <Title order={4} td="underline" mb="xl" mt="lg">
-                  Unhealthy Pit Data:
-                </Title>
-                <Detials_table data={unhealthy_data} />
-              </Card>
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-          </Grid>
-          <Grid>
-            <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-            <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-              <Card withBorder radius="lg" shadow="lg">
-                <Title order={4} td="underline" mb="xl" mt="lg">
-                  Healthy Pit Data:
-                </Title>
-                <Detials_table data={healthy_data} />
-              </Card>
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-          </Grid>
-        </>
-      )}
+      <div style={{ position: "relative" }}>
+        {isLoading && (
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backdropFilter: "blur(2px)",
+              backgroundColor: "rgba(255, 255, 255, 0.01)",
+              zIndex: 9999,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Loader
+              style={{
+                position: "absolute",
+                top: "250px",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          </div>
+        )}
+        <Grid mt="xl">
+          <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+          <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
+            <Card withBorder radius="lg" shadow="lg">
+              <DetailsMap data={mapData} onPinClick={handlePinClick} />
+            </Card>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
+            <Title order={2} mb="xl" c={getTextColor(back)} ta="center">
+              Data for PCC: {selectedUserName || "Please click on a pin"}
+            </Title>
+            {selectedMacId && <Rferm_SCC_cards data={totalData} />}
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+        </Grid>
+        {selectedMacId && (
+          <>
+            <Grid mt="xl">
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                <Card withBorder radius="lg" shadow="lg">
+                  <Title order={4} td="underline" mb="xl" mt="lg">
+                    Danger Pit Data:
+                  </Title>
+                  <Detials_table data={danger_data} />
+                </Card>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+            </Grid>
+            <Grid>
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                <Card withBorder radius="lg" shadow="lg">
+                  <Title order={4} td="underline" mb="xl" mt="lg">
+                    Unhealthy Pit Data:
+                  </Title>
+                  <Detials_table data={unhealthy_data} />
+                </Card>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+            </Grid>
+            <Grid>
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                <Card withBorder radius="lg" shadow="lg">
+                  <Title order={4} td="underline" mb="xl" mt="lg">
+                    Healthy Pit Data:
+                  </Title>
+                  <Detials_table data={healthy_data} />
+                </Card>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+            </Grid>
+          </>
+        )}
+      </div>
     </>
   );
 };

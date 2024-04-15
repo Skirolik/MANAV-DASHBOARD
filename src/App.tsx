@@ -25,10 +25,10 @@ const App = () => {
   const [user, setUser] = useState("");
   const [navbarOpened] = useState(false);
 
-  const computedColorScheme = useComputedColorScheme("dark");
+  const computedColorScheme = useComputedColorScheme("light");
 
   const backGroundColorFromStorage = localStorage.getItem("selectedColor");
-  const defaultColor = "#172B4d";
+  const defaultColor = "#FFFFFF";
 
   const [backgroundColor, setBackgroundColor] = useState<string>(
     backGroundColorFromStorage ? backGroundColorFromStorage : defaultColor
@@ -66,10 +66,10 @@ const App = () => {
     }
   }, [navigate]);
 
-  const handleLogin = (user: string) => {
+  const handleLogin = (user: string, bgColorSelected: string) => {
     setLoggedIn(true);
     setUser(user);
-    localStorage.setItem("user", user);
+    setBackgroundColor(bgColorSelected);
     navigate("/");
   };
   const handleLogout = () => {

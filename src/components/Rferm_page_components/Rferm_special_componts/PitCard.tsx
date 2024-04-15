@@ -118,8 +118,17 @@ const PitCard: React.FC<RfermPitProps> = ({ pitData, onClick }) => {
                 customization={{
                   batteryBody: {
                     fill: computedColorScheme == "dark" ? "#2E2E2E" : "white",
-                    strokeColor: "black",
+                    strokeColor:
+                      computedColorScheme == "dark" ? "silver" : "black",
                     strokeWidth: 2,
+                  },
+                  batteryCap: {
+                    fill: "none",
+                    strokeWidth: 2,
+                    strokeColor:
+                      computedColorScheme == "dark" ? "silver" : "black",
+                    cornerRadius: 3,
+                    capToBodyRatio: 0.4,
                   },
                   batteryMeter: {
                     fill: gaugeColor(battery),
@@ -152,7 +161,7 @@ const PitCard: React.FC<RfermPitProps> = ({ pitData, onClick }) => {
                 direction="column"
                 wrap="wrap"
               >
-                <Text c="red">Ground(KV)</Text>
+                <Text c="red">Ground(kV)</Text>
                 <Flex
                   justify="space-between"
                   gap="md"
@@ -183,7 +192,7 @@ const PitCard: React.FC<RfermPitProps> = ({ pitData, onClick }) => {
                 direction="column"
                 wrap="wrap"
               >
-                <Text c="red">Lightning(KV)</Text>
+                <Text c="red">Lightning(kV)</Text>
                 <Flex
                   justify="space-between"
                   gap="md"

@@ -96,7 +96,9 @@ const IndividualCard: React.FC<IndividualCardProps> = ({ color, data }) => {
         {data.title === "Un-Healthy" && (
           <IconFirstAidKit stroke={2} width={40} height={40} color="#d14d14" />
         )}
-        {data.title === "Total Pits" && (
+        {(data.title === "Total Pits" ||
+          data.title === "Total PCC's" ||
+          data.title === "Total SCC's") && (
           <IconSum stroke={2} width={40} height={40} color="#1dbac5" />
         )}
       </Group>

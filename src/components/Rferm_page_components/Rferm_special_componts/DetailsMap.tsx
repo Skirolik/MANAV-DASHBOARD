@@ -1,6 +1,7 @@
 import { Button, Text } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazy-load";
+import { name } from "react-lorem-ipsum";
 import {
   Map,
   Marker,
@@ -15,7 +16,7 @@ interface DetailsMapData {
   lat: number;
   lon: number;
   status: string;
-  pit_name: string;
+  name: string;
   unique_id: string;
 }
 
@@ -47,8 +48,9 @@ const DetailsMap: React.FC<{
     }
   };
 
-  const handleDetailsClick = (macId: string) => {
+  const handleDetailsClick = (macId: string, selectedName: string) => {
     onPinClick(macId);
+    localStorage.setItem("slectedUserName", selectedName);
     localStorage.setItem("selectedMacId", macId);
   };
 
@@ -97,13 +99,18 @@ const DetailsMap: React.FC<{
                     right: "0px",
                   }}
                 ></Button>
-                <Text>{selectedMarker.pit_name}</Text>
+                <Text>{selectedMarker.name}</Text>
                 <Text>Latitude: {selectedMarker.lat}</Text>
                 <Text>Longitude: {selectedMarker.lon}</Text>
                 <Text>Resistance: {selectedMarker.status}</Text>
                 <Text hidden>{selectedMarker.unique_id}</Text>
                 <Button
-                  onClick={() => handleDetailsClick(selectedMarker.unique_id)}
+                  onClick={() =>
+                    handleDetailsClick(
+                      selectedMarker.unique_id,
+                      selectedMarker.name
+                    )
+                  }
                 >
                   Detials
                 </Button>

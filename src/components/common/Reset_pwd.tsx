@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import axios from "axios";
 import {
   Paper,
   PasswordInput,
@@ -9,11 +9,11 @@ import {
   Progress,
   Group,
   Center,
+  Loader,
 } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 import { IconCheck, IconX } from "@tabler/icons-react";
-
-import axios from "axios";
+import { notifications } from "@mantine/notifications";
 
 interface PasswordRequirementProps {
   meets: boolean; // Specify the type for the meets parameter
@@ -55,14 +55,14 @@ function getStrength(password: string) {
 }
 
 const Reset_pwd = () => {
+  // Set the default base URL for Axios
+  axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
+  const [isLoading, setIsLoading] = useState(false);
+  const userEmail = localStorage.getItem("userEmail");
+
   const [password, setPassword] = useInputState("");
   const [confirmPassword, setConfirmPassword] = useInputState("");
   const [passwordError, setPasswordError] = useState("");
-  const { resetToken } = useParams();
-
-  // Set the default base URL for Axios
-
-  //   axios.defaults.baseURL = "http://52.172.4.41:7070";
 
   const strength = getStrength(password);
   const checks = requirements.map((requirement, index) => (
@@ -74,36 +74,81 @@ const Reset_pwd = () => {
   ));
 
   const handlePasswordChange = async () => {
+    setIsLoading(true);
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    } else if (password === "") {
+      setPasswordError("Field is required");
+      setIsLoading(false);
       return;
     } else {
       try {
-        const response = await axios.post(`/reset-password/${resetToken}`, {
-          password,
+        console.log("Fetching data...");
+        const response = await axios.post("/change-password", {
+          email: userEmail,
+          password: password,
         });
-        // Check if the response contains an "error" property indicating a failed registration
-        if (response.data.error) {
-          setPasswordError(response.data.error); // Use the error message from the backend
+
+        if (response.data.message === "Password reset successful.") {
+          setIsLoading(false);
+          console.log("api-", response.data);
+          notifications.show({
+            title: "Password Change Successful",
+            message: "Password chnaged successfully. Thank you!",
+            color: "teal",
+          });
+          setPassword("");
+          setConfirmPassword("");
+          setPasswordError("");
         } else {
-          console.log(response.data.message);
-          if (response.data.message === "Password reset successful.") {
-            window.location.href = "/login";
-          }
+          setIsLoading(false);
+          setPasswordError("");
+          // You can show an error message here or handle unsuccessful login
+          console.log("Password Change Failed");
+          notifications.show({
+            title: "Password Change Failed",
+            message:
+              "Request failed, please try again or contact the support team. Thank you!",
+            color: "Red",
+          });
         }
       } catch (error) {
-        console.error("Password reset failed:", error);
-        setPasswordError("Password reset failed. Please try again.");
+        setIsLoading(false);
+        setPasswordError("");
+        console.error("Error sending client details", error);
+        // Handle any error messages or redirection logic here
+        notifications.show({
+          title: "Request Failed",
+          message:
+            "Request failed, please contact the support team. Thank you!",
+          color: "red",
+        });
       }
     }
   };
 
   return (
     <div>
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Paper p="lg">
-          <Text fz="lg" fw={800} ta="center" mb="md">
-            LMAS : Password Reset
+      <Card
+        shadow="xl"
+        padding="lg"
+        radius="lg"
+        withBorder
+        style={{ minHeight: "510px" }}
+      >
+        <Paper p="md" style={{ boxShadow: "none" }}>
+          <Text
+            fz="xl"
+            fw={800}
+            // td="underline"
+            ta="center"
+            mb="xl"
+            // mt="xl"
+            tt="uppercase"
+          >
+            MANAV DASHBOARD : PASSWORD RESET
           </Text>
 
           <PasswordInput
@@ -132,14 +177,28 @@ const Reset_pwd = () => {
             error={passwordError}
             required
           />
-          <Button
-            type="submit"
-            radius="xl"
-            ml="xl"
-            onClick={handlePasswordChange}
-          >
-            Reset Password
-          </Button>
+          <div style={{ textAlign: "center" }}>
+            <Button
+              type="submit"
+              radius="xl"
+              mt="md"
+              size="sm"
+              // ml="xl"
+              onClick={handlePasswordChange}
+            >
+              Reset Password
+            </Button>
+            {isLoading && (
+              <Loader
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+            )}
+          </div>
         </Paper>
       </Card>
     </div>

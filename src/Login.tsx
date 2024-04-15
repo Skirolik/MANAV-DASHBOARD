@@ -1,7 +1,7 @@
 import {
   TextInput,
   PasswordInput,
-  Checkbox,
+  // Checkbox,
   Anchor,
   Paper,
   Title,
@@ -10,20 +10,27 @@ import {
   Button,
   Image,
   Flex,
+  Modal,
+  // rem,
+  Loader,
 } from "@mantine/core";
 import React, { useState } from "react";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
-
+import { useDisclosure } from "@mantine/hooks";
+import ForgotPassword from "./ForgotPassword";
+// import { IconAt } from "@tabler/icons-react";
+import "./App.css";
 interface LoginProps {
-  onLogin: (domainVersion: string) => void;
+  onLogin: (domainVersion: string, bgColorSelected: string) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
   console.log("login");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   // Set the default base URL for Axios
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
@@ -32,8 +39,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     console.log("singin clicked");
     console.log(userName);
     console.log(password);
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const response = await axios.post(
         "/login",
         {
@@ -48,6 +55,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       console.log("response", response);
 
       if (response.data.message === "Login successful") {
+        setIsLoading(false);
         const {
           userEmail,
           userFirstname,
@@ -58,6 +66,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           persona,
           userStartDate,
           userEndDate,
+          userBgColor,
         } = response.data.user;
 
         localStorage.setItem("isLoggedIn", "true");
@@ -70,18 +79,19 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         localStorage.setItem("persona", persona);
         localStorage.setItem("userStartDate", userStartDate);
         localStorage.setItem("userEndDate", userEndDate);
+        localStorage.setItem("selectedColor", userBgColor);
 
-        const abc = localStorage.getItem("user");
-        console.log("user", abc);
+        const bgColorSelected = userBgColor;
 
-        console.log(userEmail, userFirstname);
+        console.log(userEmail, userFirstname, userStartDate, userEndDate);
 
         notifications.show({
           title: "Login Success",
           message: "Login Successful: Welcome back! ",
           color: "teal",
         });
-        onLogin(domainVersion);
+        onLogin(domainVersion, bgColorSelected);
+        // window.location.reload();
       } else {
         setIsLoading(false);
         // You can show an error message here or handle unsuccessful login
@@ -103,11 +113,37 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }
   };
 
+  // const icon = <IconAt style={{ width: rem(16), height: rem(16) }} />;
+
   return (
-    <div className="App" style={{ width: "100%" }}>
+    <div className="App" style={{ position: "relative" }}>
+      {isLoading && (
+        <div
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            backdropFilter: "blur(2px)",
+            backgroundColor: "rgba(255, 255, 255, 0.01)",
+            zIndex: 9999,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Loader
+            style={{
+              position: "absolute",
+              top: "250px",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        </div>
+      )}
       <Container size={420} my={40}>
         <Flex
-          mih={50}
+          mih={100}
           direction="column"
           justify="center"
           align="center"
@@ -133,8 +169,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             mt="md"
           />
           <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
+            {/* <Checkbox label="Remember me" /> */}
+            <Anchor component="button" size="sm" onClick={open}>
               Forgot password?
             </Anchor>
           </Group>
@@ -143,6 +179,17 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </Button>
         </Paper>
       </Container>
+      <Modal
+        opened={opened}
+        onClose={close}
+        centered
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <ForgotPassword />
+      </Modal>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Legned from "./Legned";
 // import { Normal_reading } from "../../testingData/Normal_reading";
@@ -47,9 +47,10 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [fault_value, setFaultValue] = useState(true);
-  const [resistance_value, setResistanceValue] = useState(true);
+  // const [fault_value, setFaultValue] = useState(true);
+  // const [resistance_value, setResistanceValue] = useState(true);
 
   useEffect(() => {
     const fetchPitDetails = async () => {
@@ -75,39 +76,40 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
     fetchPitDetails();
   }, []);
 
-  const fetchPitDetailsFilter = async () => {
+  const fetchPitDetailsFilter = useCallback(async () => {
+    // Wrap in useCallback
     setIsLoading(true);
     try {
+      if (!fromDate || !toDate) {
+        // Check if either fromDate or toDate is missing
+        setError("Please select both 'Start Date' and 'End Date'");
+        setIsLoading(false);
+        return;
+      }
       console.log("Fetching data...");
       const response = await axios.post("/api/rferm/pit/data", {
         macId: pitData.mac_id,
-        fromDate: fromDate?.toISOString(),
-        toDate: toDate?.toISOString(),
+        fromDate: fromDate.toISOString(),
+        toDate: toDate.toISOString(),
       });
-      console.log("from-", fromDate);
-      console.log("to-", toDate);
 
       setPitDetails(response.data.data);
-
-      const faultValue = pitDetails[0].fault;
-      const resistanceValue = pitDetails[0].resistance;
-
-      console.log("state Value f-", faultValue[0].Date);
-
-      if (faultValue[0].Date === "") {
-        setFaultValue(false);
-      }
-      if (resistanceValue[0].Date === "") {
-        setResistanceValue(false);
-      }
-
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 10);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching map data:", error);
       setIsLoading(false);
     }
+  }, [fromDate, toDate, pitData.mac_id]); // Add dependencies
+
+  const handleFromDateChange = (date: Date | null) => {
+    setFromDate(date);
+    if (toDate && date && toDate < date) {
+      setToDate(date); // Set To date same as From date if it's earlier
+    }
+  };
+  const handleToggleClick = () => {
+    setError(null); // Reset error message
+    fetchPitDetailsFilter();
   };
 
   const resistanceData = pitDetails.length > 0 ? pitDetails[0].resistance : [];
@@ -118,19 +120,14 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
 
   console.log("res-", resistanceData[0]);
   console.log("fau-", faultData[0]);
-  console.log("war-1", resistance_value);
-  console.log("war-2", fault_value);
+  // console.log("war-1", resistance_value);
+  // console.log("war-2", fault_value);
 
-  const [_showReadingUpdate, setShowReadingUpdate] = useState(true);
+  // const [_showReadingUpdate, setShowReadingUpdate] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageFault, setCurrentPageFault] = useState(1);
 
   // const { resistance } = showReadingUpdate ? resistanceData : faultData;
-
-  const handleToggleClick = () => {
-    fetchPitDetailsFilter();
-    setShowReadingUpdate((prev) => !prev);
-  };
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -188,23 +185,30 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
           <Group justify="center" ml="xl" mt="lg">
             <DateInput
               valueFormat="DD/MM/YYYY "
-              label="From:"
-              placeholder="From"
+              // label="From:"
+              placeholder="Start Date"
               value={fromDate}
-              onChange={setFromDate} // Update fromDate state
+              maxDate={new Date()}
+              onChange={handleFromDateChange}
             />
             <Text mt="lg">To</Text>
             <DateInput
               valueFormat="DD/MM/YYYY "
-              label="To:"
-              placeholder="Date"
+              // label="To:"
+              placeholder="End Date"
               value={toDate}
+              maxDate={new Date()} // Set maxDate to current date
+              minDate={fromDate ? fromDate : undefined}
               onChange={setToDate} // Update toDate state
             />
-            <Button mt="lg" onClick={handleToggleClick}>
-              Select
-            </Button>
+            <Button onClick={handleToggleClick}>Select</Button>
           </Group>
+          {error && (
+            <Text color="red" mt="xl" style={{ textAlign: "center" }}>
+              {error}
+            </Text>
+          )}{" "}
+          {/* Display error message */}
         </Card.Section>
 
         <Card.Section mt="xl">

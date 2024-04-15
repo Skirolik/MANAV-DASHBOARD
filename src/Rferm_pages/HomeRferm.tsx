@@ -31,7 +31,10 @@ const HomeRferm: React.FC<{ back: string }> = ({ back }) => {
           persona: persona,
           plantName: userplantname,
         });
-        console.log("Data fetched successfully:", response.data.data);
+        console.log(
+          "Data fetched successfully:",
+          response.data.data[0].activity
+        );
         setData(response.data.data);
         setTimeout(() => {
           setIsLoading(false);

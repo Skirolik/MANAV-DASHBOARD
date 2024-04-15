@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   Card,
   ColorSwatch,
-  Flex,
   Grid,
   Group,
   Modal,
@@ -10,11 +11,11 @@ import {
   Text,
   useComputedColorScheme,
   useMantineColorScheme,
+  Loader,
 } from "@mantine/core";
-import React, { useEffect, useState } from "react";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { getTextColor } from "./components/utils";
-import { CircleCheck } from "tabler-icons-react";
+// import { CircleCheck } from "tabler-icons-react";
 import { notifications } from "@mantine/notifications";
 import Reset_pwd from "./components/common/Reset_pwd";
 import GetInTouch from "./components/common/GetInTouch";
@@ -22,6 +23,32 @@ import { IconPalette } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 
 const Settings: React.FC<{ back: string }> = ({ back }) => {
+  // Set the default base URL for Axios
+  axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
+
+  const userEmail = localStorage.getItem("userEmail");
+  const userDomain = localStorage.getItem("user");
+  const userPersona = localStorage.getItem("persona");
+  const userFirstname = localStorage.getItem("userFirstname");
+  const userLastname = localStorage.getItem("userLastname");
+  const userCompany = localStorage.getItem("userCompany");
+  const userStartDate = localStorage.getItem("userStartDate");
+  const userEndDate = localStorage.getItem("userEndDate");
+
+  // Initialize subscription dates state with default values
+  const [subscriptionStartDate, _setSubscriptionStartDate] = useState(
+    userStartDate ? new Date(userStartDate) : new Date()
+  );
+  const [subscriptionEndDate, _setSubscriptionEndDate] = useState(
+    userEndDate ? new Date(userEndDate) : new Date()
+  );
+
+  // Initialize loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  console.log("start-", userEmail);
+  console.log("end-", userEndDate);
+
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
   const [opened, { open, close }] = useDisclosure(false);
@@ -37,8 +64,7 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
         : "linear-gradient(45deg, #e7f5ff, #4dabf7)", // Light mode gradient (blue to light blue)
     color: computedColorScheme === "dark" ? "#ffff" : "#000000",
   };
-  const [subscriptionStartDate] = useState(new Date("2023-07-15"));
-  const [subscriptionEndDate] = useState(new Date("2023-08-15"));
+
   const [daysRemaining, setDaysRemaining] = useState(0);
 
   const calculateDaysRemaining = () => {
@@ -52,14 +78,50 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
     calculateDaysRemaining();
   }, []);
 
-  const handleRenewSubscription = () => {
-    notifications.show({
-      title: "Request Sent ",
-      message: "Thank You for, your subsription will be renewed",
-      color: "teal",
-      icon: <CircleCheck size={24} color="white" />,
-    });
-    console.log("Renew clicked");
+  const handleRenewSubscription = async () => {
+    setIsLoading(true);
+
+    try {
+      console.log("Fetching data...");
+      const response = await axios.post("/renew-enquiry", {
+        email: userEmail,
+        firstname: userFirstname,
+        lastname: userLastname,
+        company: userCompany,
+        startDate: userStartDate,
+        endDate: userEndDate,
+      });
+
+      if (response.data.message === "Request sent successfully.") {
+        setIsLoading(false);
+        console.log("api-", response.data);
+        notifications.show({
+          title: "Renewal Request Sent",
+          message:
+            "One of our representatives will be in touch with you shortly. Thank you!",
+          color: "teal",
+        });
+      } else {
+        setIsLoading(false);
+        // You can show an error message here or handle unsuccessful login
+        console.log("Renewal Request Failed");
+        notifications.show({
+          title: "Renewal Request Failed",
+          message:
+            "Request failed, please contact the support team. Thank you!",
+          color: "Red",
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error sending client details", error);
+      // Handle any error messages or redirection logic here
+      notifications.show({
+        title: "Renewal Request Failed",
+        message: "Request failed, please contact the support team. Thank you!",
+        color: "red",
+      });
+    }
   };
 
   const handleSelectColor = (color: string) => {
@@ -143,52 +205,112 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
           <Card
             shadow="xl"
             padding="lg"
-            radius="md"
+            radius="lg"
             withBorder
-            style={contactDetailsStyle}
+            style={{ ...contactDetailsStyle, minHeight: "510px" }}
           >
-            <Flex
-              justify="center"
-              align="center"
-              direction="column"
-              wrap="wrap"
-              mt="xl"
+            <Text
+              fz="xl"
+              fw={800}
+              // td="underline"
+              ta="center"
+              mb="xl"
+              mt="md"
+              tt="uppercase"
             >
-              <Text
-                fz="xl"
-                fw={800}
-                td="underline"
-                ta="center"
-                mb="md"
-                mt="xl"
-                tt="uppercase"
-              >
-                Subscription Detials
-              </Text>
-              <Text ta="center" mt="xl" mb="xl">
-                Subscription Start Date:{subscriptionStartDate.toDateString()}
-              </Text>
-              <Text ta="center" mt="xl" mb="xl">
-                Subscription End Date:{subscriptionEndDate.toDateString()}
-              </Text>
-              <Text
-                ta="center"
-                style={{
-                  color: daysRemaining < 30 ? "red" : "inherit",
-                }}
-              >
-                Days Remaining for Subscription: {daysRemaining}
-              </Text>
+              Subscription Details
+            </Text>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginLeft: "15px",
+                marginRight: "15px",
+                // gap: "10px",
+              }}
+            >
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Plant Name
+                </Text>
+                <Text style={{ textAlign: "left" }}>: {userCompany}</Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Product
+                </Text>
+                <Text tt="uppercase" style={{ textAlign: "left" }}>
+                  : {userDomain}
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Full Name
+                </Text>
+                <Text style={{ textAlign: "left" }}>
+                  : {userFirstname} {userLastname}
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Persona
+                </Text>
+                <Text tt="uppercase" style={{ textAlign: "left" }}>
+                  : {userPersona}
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Start Date
+                </Text>
+                <Text style={{ textAlign: "left" }}>
+                  : {subscriptionStartDate.toDateString()}
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  End Date
+                </Text>
+                <Text style={{ textAlign: "left" }}>
+                  : {subscriptionEndDate.toDateString()}
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Remaining
+                </Text>
+                <Text
+                  style={{
+                    textAlign: "left",
+                    color: daysRemaining < 30 ? "red" : "inherit",
+                  }}
+                >
+                  : {daysRemaining}
+                </Text>
+              </div>
+            </div>
+
+            <div style={{ textAlign: "center" }}>
               <Button
                 radius="xl"
-                ml="xl"
-                mt="xl"
-                onClick={handleRenewSubscription}
+                mt="md"
                 size="sm"
+                // mt="xl"
+                onClick={handleRenewSubscription}
               >
                 Renew
               </Button>
-            </Flex>
+              {isLoading && (
+                <Loader
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
+              )}
+            </div>
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
