@@ -120,77 +120,6 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
       <Grid mt="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
         {/* Contact details side */}
-        <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Card
-            shadow="xl"
-            padding="lg"
-            radius="lg"
-            style={{ ...contactDetailsStyle, minHeight: "520px" }}
-          >
-            <Text
-              fz="xl"
-              fw={800}
-              // td="underline"
-              ta="center"
-              mb="xl"
-              mt="md"
-              tt="uppercase"
-            >
-              CONTACT DETAILS
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginLeft: "15px",
-                marginRight: "15px",
-              }}
-            >
-              {/* <h2 style={{ textAlign: "center" }}>CONTACT DETAILS</h2> */}
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Address
-                </Text>
-                <Text style={{ textAlign: "left" }}>
-                  : #28, PUNARVASU, 2nd & 3rd Floor, East End Main Road, 4th T
-                  Block Jayanagar
-                </Text>
-              </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  City
-                </Text>
-                <Text style={{ textAlign: "left" }}>: Bangalore</Text>
-              </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Country
-                </Text>
-                <Text style={{ textAlign: "left" }}>: India</Text>
-              </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Phone
-                </Text>
-                <Text style={{ textAlign: "left" }}>: +91 123-456-7890</Text>
-              </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Email
-                </Text>
-                <Text style={{ textAlign: "left" }}>
-                  : info@manavenergy.com
-                </Text>
-              </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Working Hours
-                </Text>
-                <Text style={{ textAlign: "left" }}>: 09:30 AM - 06:30 PM</Text>
-              </div>
-            </div>
-          </Card>
-        </Grid.Col>
 
         {/* Form side */}
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
@@ -291,6 +220,77 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
                 )}
               </div>
             </Paper>
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
+          <Card
+            shadow="xl"
+            padding="lg"
+            radius="lg"
+            style={{ ...contactDetailsStyle, minHeight: "520px" }}
+          >
+            <Text
+              fz="xl"
+              fw={800}
+              // td="underline"
+              ta="center"
+              mb="xl"
+              mt="md"
+              tt="uppercase"
+            >
+              CONTACT DETAILS
+            </Text>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginLeft: "15px",
+                marginRight: "15px",
+              }}
+            >
+              {/* <h2 style={{ textAlign: "center" }}>CONTACT DETAILS</h2> */}
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Address
+                </Text>
+                <Text style={{ textAlign: "left" }}>
+                  : #28, PUNARVASU, 2nd & 3rd Floor, East End Main Road, 4th T
+                  Block Jayanagar
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  City
+                </Text>
+                <Text style={{ textAlign: "left" }}>: Bangalore</Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Country
+                </Text>
+                <Text style={{ textAlign: "left" }}>: India</Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Phone
+                </Text>
+                <Text style={{ textAlign: "left" }}>: +91 123-456-7890</Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Email
+                </Text>
+                <Text style={{ textAlign: "left" }}>
+                  : info@manavenergy.com
+                </Text>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
+                  Working Hours
+                </Text>
+                <Text style={{ textAlign: "left" }}>: 09:30 AM - 06:30 PM</Text>
+              </div>
+            </div>
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
