@@ -251,14 +251,19 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
                   : {userFirstname} {userLastname}
                 </Text>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Persona
-                </Text>
-                <Text tt="uppercase" style={{ textAlign: "left" }}>
-                  : {userPersona}
-                </Text>
-              </div>
+              {userDomain !== "Lmas" && (
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <Text
+                    style={{ minWidth: "125px", textAlign: "left" }}
+                    mb="md"
+                  >
+                    Persona
+                  </Text>
+                  <Text tt="uppercase" style={{ textAlign: "left" }}>
+                    : {userPersona}
+                  </Text>
+                </div>
+              )}
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
                   Start Date
