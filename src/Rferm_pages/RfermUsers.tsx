@@ -5,7 +5,7 @@ import { getTextColor } from "../components/utils";
 import UserTable from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
 import { UserTableProp } from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
 import Grid_resistance_table from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_table";
-import { GridData } from "../components/testingData/GridData";
+// import { GridData } from "../components/testingData/GridData";
 import { GripTable } from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_table";
 
 const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
@@ -79,7 +79,7 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
         Check out the Details, {username || "Guest"}
       </Text>
 
-      {persona == "pcc" && <Grid_resistance_table data={GridData} />}
+      {persona == "pcc" && <Grid_resistance_table data={dataGridTable} />}
       {persona == "scc" && <UserTable data={dataUserTable} />}
       {persona == "ccc" && <UserTable data={dataUserTable} />}
     </div>

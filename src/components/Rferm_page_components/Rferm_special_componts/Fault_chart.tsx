@@ -106,7 +106,7 @@ const Fault_chart: React.FC<GraphProp> = ({ data, color }) => {
         },
       },
       title: {
-        text: "Date",
+        text: "Timestamp (YYYY-MM-DD HH:MM:SS)",
         style: {
           color: computedColorScheme === "dark" ? "#fff" : "000",
         },
@@ -120,7 +120,7 @@ const Fault_chart: React.FC<GraphProp> = ({ data, color }) => {
         },
       },
       title: {
-        text: "Resistance",
+        text: "Resistance (Ω)",
         style: {
           color: computedColorScheme === "dark" ? "#fff" : "000",
         },
@@ -130,7 +130,7 @@ const Fault_chart: React.FC<GraphProp> = ({ data, color }) => {
 
   const series = [
     {
-      name: "Resistance",
+      name: "Resistance (Ω)",
       data: data.map(({ Date, value }) => ({ x: Date, y: value })),
     },
   ];

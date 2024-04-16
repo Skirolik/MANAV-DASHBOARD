@@ -115,7 +115,7 @@ const Grid_resistance_chart: React.FC<GraphProp> = ({
         },
       },
       title: {
-        text: "Date",
+        text: "Timestamp (YYYY-MM-DD HH:MM:SS)",
         style: {
           color: computedColorScheme === "dark" ? "#fff" : "000",
         },
@@ -129,7 +129,7 @@ const Grid_resistance_chart: React.FC<GraphProp> = ({
         },
       },
       title: {
-        text: "Resistance",
+        text: "Resistance (Ω)",
         style: {
           color: computedColorScheme === "dark" ? "#fff" : "000",
         },
@@ -168,7 +168,7 @@ const Grid_resistance_chart: React.FC<GraphProp> = ({
 
   const series = [
     {
-      name: "Resistance",
+      name: "Resistance (Ω)",
       data: data.map(({ Date, value }) => ({ x: Date, y: value })),
     },
   ];

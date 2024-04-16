@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Legned from "./Legned";
+import { notifications } from "@mantine/notifications";
 // import { Normal_reading } from "../../testingData/Normal_reading";
 // import { reading_update } from "../../testingData/reading_update";
 import Grid_resistance_chart from "./Grid_resistance_chart";
@@ -47,7 +48,7 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   // const [fault_value, setFaultValue] = useState(true);
   // const [resistance_value, setResistanceValue] = useState(true);
@@ -81,8 +82,11 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
     setIsLoading(true);
     try {
       if (!fromDate || !toDate) {
-        // Check if either fromDate or toDate is missing
-        setError("Please select both 'Start Date' and 'End Date'");
+        notifications.show({
+          title: "Request Failed",
+          message: "Please select both 'Start Date' and 'End Date'",
+          color: "Red",
+        });
         setIsLoading(false);
         return;
       }
@@ -108,7 +112,7 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
     }
   };
   const handleToggleClick = () => {
-    setError(null); // Reset error message
+    // setError(null); // Reset error message
     fetchPitDetailsFilter();
   };
 
@@ -116,7 +120,8 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
   const faultData = pitDetails.length > 0 ? pitDetails[0].fault : [];
   const warning_one = pitDetails.length > 0 ? pitDetails[0].warning_one : [];
   const warning_two = pitDetails.length > 0 ? pitDetails[0].warning_two : [];
-  const { current_status, latest_reading, pit_name } = pitDetails[0] || {};
+  const { current_status, latest_reading, pit_name, updated_at } =
+    pitDetails[0] || {};
 
   console.log("res-", resistanceData[0]);
   console.log("fau-", faultData[0]);
@@ -176,9 +181,10 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
       <Card p="xl" mt="xl">
         <Card.Section>
           <Group justify="space-between">
-            <Title order={3}>Pit Name : {pit_name}</Title>
-            <Title order={3}>Current Status: {current_status}</Title>
-            <Title order={3}>Latest Reading: {latest_reading} Ω</Title>
+            <Title order={4}>Pit Name: {pit_name}</Title>
+            <Title order={4}>Current Status: {current_status}</Title>
+            <Title order={4}>Last Update: {updated_at}</Title>
+            <Title order={4}>Latest Reading: {latest_reading} Ω</Title>
           </Group>
         </Card.Section>
         <Card.Section>
@@ -203,124 +209,136 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
             />
             <Button onClick={handleToggleClick}>Select</Button>
           </Group>
-          {error && (
-            <Text color="red" mt="xl" style={{ textAlign: "center" }}>
-              {error}
-            </Text>
-          )}{" "}
-          {/* Display error message */}
         </Card.Section>
-
-        <Card.Section mt="xl">
-          <Title order={3} ta="center" td="underline" mb="xl">
-            Normal Reading
-          </Title>
-          <Grid_resistance_chart
-            data={resistanceData}
-            color="#2E93fA"
-            warning_one={warning_one}
-            warning_two={warning_two}
-          />
-          <Card.Section>
-            <Legned />
+        {!paginatedData.some((item: any) => item.Date !== "") &&
+          !paginatedDataFault.some((item: any) => item.Date !== "") && (
+            <Card.Section mt="xl">
+              <Text ta="center" mt="xl">
+                No readings available for the selected date range.
+              </Text>
+            </Card.Section>
+          )}
+        {paginatedData.some((item: any) => item.Date !== "") && (
+          <Card.Section mt="xl">
+            <Title order={3} ta="center" td="underline" mb="xl">
+              Normal Reading
+            </Title>
+            <Grid_resistance_chart
+              data={resistanceData}
+              color="#2E93fA"
+              warning_one={warning_one}
+              warning_two={warning_two}
+            />
+            <Card.Section mt="sm">
+              <Legned />
+            </Card.Section>
           </Card.Section>
-        </Card.Section>
+        )}
+        {paginatedDataFault.some((item: any) => item.Date !== "") && (
+          <Card.Section mt="xl">
+            <Title order={3} ta="center" td="underline" mb="xl">
+              Fault Reading
+            </Title>
+            <Fault_chart data={faultData} color="#E91E63" />
+          </Card.Section>
+        )}
+        {paginatedData.some((item: any) => item.Date !== "") && (
+          <Card.Section mt="xl">
+            <Title order={3} ta="center" td="underline" mb="xl">
+              Normal Reading
+            </Title>
+            <Flex
+              mih={50}
+              gap="xl"
+              justify="flex-start"
+              align="flex-start"
+              direction="row-reverse"
+              wrap="nowrap"
+            >
+              <CSVLink data={resistanceData} filename={`${pit_name}_data.csv`}>
+                <IconCloudDownload stroke={2} style={{ cursor: "pointer" }} />
+              </CSVLink>
+            </Flex>
 
-        <Card.Section mt="xl">
-          <Title order={3} ta="center" td="underline" mb="xl">
-            Fault Reading
-          </Title>
-          <Fault_chart data={faultData} color="#E91E63" />
-        </Card.Section>
-        <Card.Section mt="xl">
-          <Title order={3} ta="center" td="underline" mb="xl">
-            Normal Reading
-          </Title>
-          <Flex
-            mih={50}
-            gap="xl"
-            justify="flex-start"
-            align="flex-start"
-            direction="row-reverse"
-            wrap="nowrap"
-          >
-            <CSVLink data={resistanceData} filename={`${pit_name}_data.csv`}>
-              <IconCloudDownload stroke={2} style={{ cursor: "pointer" }} />
-            </CSVLink>
-          </Flex>
-
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead>
-              <Table.Tr>
+            <Table striped highlightOnHover withTableBorder withColumnBorders>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Sr</Table.Th>
+                  <Table.Th>Date</Table.Th>
+                  <Table.Th>Resistance (Ω)</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {paginatedData.map((item: any, index: number) => (
+                  <Table.Tr key={index}>
+                    <Table.Td>{startIndex + index}</Table.Td>
+                    <Table.Td>{item.Date}</Table.Td>
+                    <Table.Td>{item.value}</Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Card.Section>
+        )}
+        {paginatedData.some((item: any) => item.Date !== "") && (
+          <Pagination
+            mt="lg"
+            value={currentPage}
+            onChange={handlePageChange}
+            total={Math.ceil(resistanceData.length / itemsPerPage)}
+          />
+        )}
+        {paginatedDataFault.some((item: any) => item.Date !== "") && (
+          <Card.Section mt="xl">
+            <Title order={3} ta="center" td="underline" mb="xl">
+              Fault Reading
+            </Title>
+            <Flex
+              mih={50}
+              gap="xl"
+              justify="flex-start"
+              align="flex-start"
+              direction="row-reverse"
+              wrap="nowrap"
+            >
+              <CSVLink data={faultData} filename={`${pit_name}_data.csv`}>
+                <IconCloudDownload stroke={2} style={{ cursor: "pointer" }} />
+              </CSVLink>
+            </Flex>
+            <Table striped highlightOnHover withTableBorder withColumnBorders>
+              <Table.Thead>
                 <Table.Th>Sr</Table.Th>
-                <Table.Th>Date</Table.Th>
+                <Table.Th>Date & Time</Table.Th>
                 <Table.Th>Resistance (Ω)</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {paginatedData.map((item: any, index: number) => (
-                <Table.Tr key={index}>
-                  <Table.Td>{startIndex + index}</Table.Td>
-                  <Table.Td>{item.Date}</Table.Td>
-                  <Table.Td>{item.value}</Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </Card.Section>
-        <Pagination
-          mt="lg"
-          value={currentPage}
-          onChange={handlePageChange}
-          total={Math.ceil(resistanceData.length / itemsPerPage)}
-        />
-        <Card.Section mt="xl">
-          <Title order={3} ta="center" td="underline" mb="xl">
-            Fault Reading
-          </Title>
-          <Flex
-            mih={50}
-            gap="xl"
-            justify="flex-start"
-            align="flex-start"
-            direction="row-reverse"
-            wrap="nowrap"
-          >
-            <CSVLink data={faultData} filename={`${pit_name}_data.csv`}>
-              <IconCloudDownload stroke={2} style={{ cursor: "pointer" }} />
-            </CSVLink>
-          </Flex>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead>
-              <Table.Th>Sr</Table.Th>
-              <Table.Th>Date & Time</Table.Th>
-              <Table.Th>Resistance (Ω)</Table.Th>
-              <Table.Th>Ground Step (V)</Table.Th>
-              <Table.Th>Ground Touch (V)</Table.Th>
-              <Table.Th>Lightning Step (V)</Table.Th>
-              <Table.Th>Lightning Touch (V)</Table.Th>
-            </Table.Thead>
-            <Table.Tbody>
-              {paginatedDataFault.map((item: any, index: number) => (
-                <Table.Tr key={index}>
-                  <Table.Td>{startIndex + index}</Table.Td>
-                  <Table.Td>{item.Date}</Table.Td>
-                  <Table.Td>{item.value} </Table.Td>
-                  <Table.Td>{item.ground_step}</Table.Td>
-                  <Table.Td>{item.ground_touch} </Table.Td>
-                  <Table.Td>{item.lightning_step}</Table.Td>
-                  <Table.Td>{item.lightning_touch} </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </Card.Section>
-        <Pagination
-          mt="lg"
-          value={currentPageFault}
-          onChange={handleFaultPageChange}
-          total={Math.ceil(faultData.length / itemsPerPage)}
-        />
+                <Table.Th>Ground Step (V)</Table.Th>
+                <Table.Th>Ground Touch (V)</Table.Th>
+                <Table.Th>Lightning Step (V)</Table.Th>
+                <Table.Th>Lightning Touch (V)</Table.Th>
+              </Table.Thead>
+              <Table.Tbody>
+                {paginatedDataFault.map((item: any, index: number) => (
+                  <Table.Tr key={index}>
+                    <Table.Td>{startIndex + index}</Table.Td>
+                    <Table.Td>{item.Date}</Table.Td>
+                    <Table.Td>{item.value} </Table.Td>
+                    <Table.Td>{item.ground_step}</Table.Td>
+                    <Table.Td>{item.ground_touch} </Table.Td>
+                    <Table.Td>{item.lightning_step}</Table.Td>
+                    <Table.Td>{item.lightning_touch} </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Card.Section>
+        )}
+        {paginatedDataFault.some((item: any) => item.Date !== "") && (
+          <Pagination
+            mt="lg"
+            value={currentPageFault}
+            onChange={handleFaultPageChange}
+            total={Math.ceil(faultData.length / itemsPerPage)}
+          />
+        )}
       </Card>
     </>
   );

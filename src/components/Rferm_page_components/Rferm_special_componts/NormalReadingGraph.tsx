@@ -58,7 +58,11 @@ const NormalReadingGraph = ({ macid }: { macid: string | null }) => {
     resistance,
     warning_one,
     warning_two,
+    updated_at,
   } = pitData[0];
+
+  const resistanceData = pitData.length > 0 ? pitData[0].resistance : [];
+  console.log("value-", resistanceData[0].Date);
 
   return (
     <>
@@ -68,22 +72,27 @@ const NormalReadingGraph = ({ macid }: { macid: string | null }) => {
       <Card p="xl" mt="xl">
         <Card.Section>
           <Group justify="space-between">
-            <Title order={3}>Pit Name : {pit_name}</Title>
-            <Title order={3}>Current Status: {current_status}</Title>
-            <Title order={3}>Latest Reading: {latest_reading} Ω</Title>
+            <Title order={4}>Pit Name : {pit_name}</Title>
+            <Title order={4}>Current Status: {current_status}</Title>
+            <Title order={4}>Last Update: {updated_at}</Title>
+            <Title order={4}>Latest Reading: {latest_reading} Ω</Title>
           </Group>
         </Card.Section>
-        <Card.Section mt="xl">
-          <Grid_resistance_chart
-            data={resistance}
-            color="#2E93fA"
-            warning_one={warning_one}
-            warning_two={warning_two}
-          />
-        </Card.Section>
-        <Card.Section>
-          <Legned />
-        </Card.Section>
+        {resistanceData.length > 0 && resistanceData[0].Date !== "" && (
+          <Card.Section mt="xl">
+            <Grid_resistance_chart
+              data={resistance}
+              color="#2E93fA"
+              warning_one={warning_one}
+              warning_two={warning_two}
+            />
+          </Card.Section>
+        )}
+        {resistanceData.length > 0 && resistanceData[0].Date !== "" && (
+          <Card.Section mt="sm">
+            <Legned />
+          </Card.Section>
+        )}
       </Card>
     </>
   );
