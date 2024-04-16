@@ -44,8 +44,14 @@ export const NavbarBoth: React.FC<{ Onlogout: () => void }> = ({
             <AppShell.Section mt="xl">
               {" "}
               <Image
-                // height="100%"
-                width="5%"
+                h="100%"
+                w="75%"
+                style={{
+                  position: "relative",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
                 src="./src/assets/ManavLogo2021.png"
               />{" "}
             </AppShell.Section>
