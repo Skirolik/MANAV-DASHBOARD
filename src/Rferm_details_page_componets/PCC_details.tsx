@@ -10,6 +10,7 @@ import {
   Button,
   Group,
   Loader,
+  Text,
 } from "@mantine/core";
 // import { Details } from "../components/testingData/Details";
 import PitCard from "../components/Rferm_page_components/Rferm_special_componts/PitCard";
@@ -64,6 +65,7 @@ const PCC_details = () => {
           persona: persona,
         });
         setPersonaData(response.data.data);
+        console.log("data-", personaData);
         setTimeout(() => {
           setIsLoading(false);
         }, 10);
@@ -141,6 +143,31 @@ const PCC_details = () => {
     }
   });
 
+  let backgroundColor = localStorage.getItem("selectedColor") || "#FFFFFF";
+
+  const backGroundColorFromStorage = (bgColor: string): string => {
+    // Convert the background color to RGB
+    const rgb = hexToRgb(bgColor);
+    // Calculate brightness using a standard formula
+    const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+    // Choose text color based on brightness
+    return brightness > 128 ? "#000000" : "#FFFFFF";
+  };
+
+  const hexToRgb = (hex: string) => {
+    // Remove the hash if it's present
+    hex = hex.replace(/^#/, "");
+    // Parse the hex values into RGB components
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { r, g, b };
+  };
+
+  // Call the function to get the text color based on the background color
+  let textColor = backGroundColorFromStorage(backgroundColor);
+
   if (isLoading) {
     return (
       <div>
@@ -159,70 +186,86 @@ const PCC_details = () => {
 
   return (
     <>
-      <Grid mt="xl">
-        <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-        <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-          <Group mb="xl" justify="space-between">
-            <Select
-              data={[
-                { label: "All", value: "" },
-                { label: "Danger", value: "Danger" },
-                { label: "Unhealthy", value: "Unhealthy" },
-                { label: "Healthy", value: "Healthy" },
-                { label: "Battery < 10", value: "lt10" },
-                { label: "Battery 10 - 50", value: "10to50" },
-                { label: "Battery > 50", value: "gt50" },
-                { label: "Fault < 10", value: "lt10fault" },
-                { label: "Fault 10 - 20", value: "10to20fault" },
-                { label: "Fault > 20", value: "gt20fault" },
-              ]}
-              placeholder="Select status"
-              value={selectedFilter}
-              onChange={(value) => handleSelectChange(value || "")}
-              radius="md"
-              mt="xl"
-            />
-            <Group>
-              <TextInput
-                leftSection={icon}
-                value={searchValue}
-                onChange={(event) => setSearchValue(event.currentTarget.value)}
-                placeholder="Search by pit name"
+      {personaData[0].mac_id !== "" && (
+        <Grid mt="xl">
+          <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+          <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+            <Group mb="xl" justify="space-between">
+              <Select
+                data={[
+                  { label: "All", value: "" },
+                  { label: "Danger", value: "Danger" },
+                  { label: "Unhealthy", value: "Unhealthy" },
+                  { label: "Healthy", value: "Healthy" },
+                  { label: "Battery < 10", value: "lt10" },
+                  { label: "Battery 10 - 50", value: "10to50" },
+                  { label: "Battery > 50", value: "gt50" },
+                  { label: "Fault < 10", value: "lt10fault" },
+                  { label: "Fault 10 - 20", value: "10to20fault" },
+                  { label: "Fault > 20", value: "gt20fault" },
+                ]}
+                placeholder="Select status"
+                value={selectedFilter}
+                onChange={(value) => handleSelectChange(value || "")}
                 radius="md"
                 mt="xl"
               />
-              <Button mt="xl" onClick={handleSearchByPitName}>
-                Search
-              </Button>
-              <Button mt="xl" onClick={handleClearSearch}>
-                Clear
-              </Button>
-            </Group>
-          </Group>
-
-          <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} spacing="lg">
-            {(searchResult.length > 0 ? searchResult : filteredPitData)
-              .slice(startIndex, endIndex)
-              .map((personaData, index) => (
-                <PitCard
-                  key={index}
-                  pitData={personaData}
-                  onClick={() => handleCardClick(personaData)}
+              <Group>
+                <TextInput
+                  leftSection={icon}
+                  value={searchValue}
+                  onChange={(event) =>
+                    setSearchValue(event.currentTarget.value)
+                  }
+                  placeholder="Search by pit name"
+                  radius="md"
+                  mt="xl"
                 />
-              ))}
-          </SimpleGrid>
-          <Pagination
-            mt="xl"
-            value={currentPage}
-            onChange={handlePageChange}
-            total={Math.ceil(
-              (searchResult.length > 0 ? searchResult : filteredPitData)
-                .length / itemsPerPage
-            )}
-          />
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-      </Grid>
+                <Button mt="xl" onClick={handleSearchByPitName}>
+                  Search
+                </Button>
+                <Button mt="xl" onClick={handleClearSearch}>
+                  Clear
+                </Button>
+              </Group>
+            </Group>
+
+            <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} spacing="lg">
+              {(searchResult.length > 0 ? searchResult : filteredPitData)
+                .slice(startIndex, endIndex)
+                .map((personaData, index) => (
+                  <PitCard
+                    key={index}
+                    pitData={personaData}
+                    onClick={() => handleCardClick(personaData)}
+                  />
+                ))}
+            </SimpleGrid>
+            <Pagination
+              mt="xl"
+              value={currentPage}
+              onChange={handlePageChange}
+              total={Math.ceil(
+                (searchResult.length > 0 ? searchResult : filteredPitData)
+                  .length / itemsPerPage
+              )}
+            />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+        </Grid>
+      )}
+      {personaData[0].mac_id === "" && (
+        <Text
+          ta="center"
+          pt="10%"
+          mt="xl"
+          style={{
+            color: textColor,
+          }}
+        >
+          No data available
+        </Text>
+      )}
       <Modal opened={opened} onClose={close} size="calc(100vw - 3rem)">
         {selectedPitData && <CardModal pitData={selectedPitData} />}
       </Modal>

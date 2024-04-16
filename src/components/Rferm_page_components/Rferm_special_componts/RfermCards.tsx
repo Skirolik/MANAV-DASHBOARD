@@ -38,6 +38,10 @@ const IndividualCard: React.FC<IndividualCardProps> = ({ color, data }) => {
   const handleMouseClick = () => {
     if (data.title === "Total Pits") {
       navigate(`/details`);
+    } else if (data.title === "Un-Healthy") {
+      data.title = "Unhealthy";
+      localStorage.setItem("cardname", data.title);
+      navigate(`/details`);
     } else {
       localStorage.setItem("cardname", data.title);
       navigate(`/details`);

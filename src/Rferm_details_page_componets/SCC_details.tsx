@@ -86,6 +86,10 @@ const SCC_details: React.FC<{ back: string }> = ({ back }) => {
     unhealthy_data = [],
   } = selectPinData[0] || {};
 
+  if (danger_data.length === 0) {
+    console.log("pin-data-", danger_data);
+  }
+
   const totalData = [
     {
       title: "Danger",
@@ -162,42 +166,48 @@ const SCC_details: React.FC<{ back: string }> = ({ back }) => {
         </Grid>
         {selectedMacId && (
           <>
-            <Grid mt="xl">
-              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-                <Card withBorder radius="lg" shadow="lg">
-                  <Title order={4} td="underline" mb="xl" mt="lg">
-                    Danger Pit Data:
-                  </Title>
-                  <Detials_table data={danger_data} />
-                </Card>
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-            </Grid>
-            <Grid>
-              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-                <Card withBorder radius="lg" shadow="lg">
-                  <Title order={4} td="underline" mb="xl" mt="lg">
-                    Unhealthy Pit Data:
-                  </Title>
-                  <Detials_table data={unhealthy_data} />
-                </Card>
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-            </Grid>
-            <Grid>
-              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-                <Card withBorder radius="lg" shadow="lg">
-                  <Title order={4} td="underline" mb="xl" mt="lg">
-                    Healthy Pit Data:
-                  </Title>
-                  <Detials_table data={healthy_data} />
-                </Card>
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-            </Grid>
+            {danger_data.length !== 0 && (
+              <Grid mt="xl">
+                <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+                <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                  <Card withBorder radius="lg" shadow="lg">
+                    <Title order={4} td="underline" mb="xl" mt="lg">
+                      Danger Pit Data:
+                    </Title>
+                    <Detials_table data={danger_data} />
+                  </Card>
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              </Grid>
+            )}
+            {unhealthy_data.length !== 0 && (
+              <Grid>
+                <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+                <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                  <Card withBorder radius="lg" shadow="lg">
+                    <Title order={4} td="underline" mb="xl" mt="lg">
+                      Unhealthy Pit Data:
+                    </Title>
+                    <Detials_table data={unhealthy_data} />
+                  </Card>
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              </Grid>
+            )}
+            {healthy_data.length !== 0 && (
+              <Grid>
+                <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+                <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                  <Card withBorder radius="lg" shadow="lg">
+                    <Title order={4} td="underline" mb="xl" mt="lg">
+                      Healthy Pit Data:
+                    </Title>
+                    <Detials_table data={healthy_data} />
+                  </Card>
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              </Grid>
+            )}
           </>
         )}
       </div>

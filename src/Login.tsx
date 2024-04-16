@@ -149,7 +149,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           align="center"
           flex={1}
         >
-          <Image w={60} src="../src/assets/ManavLogo2021.png" />
+          <Image w={60} src="./src/assets/ManavLogo2021.png" />
         </Flex>
 
         <Title ta="center">Welcome to R-FERM</Title>

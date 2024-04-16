@@ -49,7 +49,7 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
               <Image
                 height="100%"
                 // width="0"
-                src="../../src/assets/ManavLogo2021.png"
+                src="./src/assets/ManavLogo2021.png"
               />{" "}
             </AppShell.Section>
             <AppShell.Section

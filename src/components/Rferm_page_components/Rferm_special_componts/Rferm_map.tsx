@@ -68,6 +68,8 @@ export const Rferm_map: React.FC<{ data: RfermMapData[] }> = ({ data }) => {
     console.log("selectedmacid", selectedMacId);
   }, [selectedMacId]);
 
+  console.log("map-data-", data[0]);
+
   return (
     <div>
       <LazyLoad>
@@ -81,15 +83,18 @@ export const Rferm_map: React.FC<{ data: RfermMapData[] }> = ({ data }) => {
           mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
           mapboxAccessToken={MAPBOX_TOKEN}
         >
-          {data.map((entry) => (
-            <Marker
-              key={entry.unique_id}
-              longitude={entry.lon}
-              latitude={entry.lat}
-              color={markercolor(entry.status)}
-              onClick={() => setSelectedMarker(entry)}
-            ></Marker>
-          ))}
+          {data.map(
+            (entry) =>
+              entry.unique_id !== "" && (
+                <Marker
+                  key={entry.unique_id}
+                  longitude={entry.lon}
+                  latitude={entry.lat}
+                  color={markercolor(entry.status)}
+                  onClick={() => setSelectedMarker(entry)}
+                ></Marker>
+              )
+          )}
           <GeolocateControl position="top-left" />
           <NavigationControl position="top-left" />
           {selectedMarker && (

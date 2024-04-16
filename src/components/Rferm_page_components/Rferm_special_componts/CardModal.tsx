@@ -210,9 +210,12 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
             <Button onClick={handleToggleClick}>Select</Button>
           </Group>
         </Card.Section>
-        {!paginatedData.some((item: any) => item.Date !== "") &&
-          !paginatedDataFault.some((item: any) => item.Date !== "") && (
-            <Card.Section mt="xl">
+        {paginatedData.some((item: any) => item.Date === "") &&
+          paginatedDataFault.some((item: any) => item.Date === "") && (
+            <Card.Section
+              mt="xl"
+              style={{ width: "100%", height: "275px", position: "relative" }}
+            >
               <Text ta="center" mt="xl">
                 No readings available for the selected date range.
               </Text>
