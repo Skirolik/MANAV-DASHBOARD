@@ -1,7 +1,7 @@
 import { Button, Text } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazy-load";
-import { name } from "react-lorem-ipsum";
+// import { name } from "react-lorem-ipsum";
 import {
   Map,
   Marker,
