@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Pagination, Text, Card, Grid, Modal } from "@mantine/core";
+import {
+  Table,
+  Pagination,
+  Text,
+  Card,
+  Grid,
+  Modal,
+  Group,
+} from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { EditOff, Lock } from "tabler-icons-react";
+import { CircleCheck, EditOff, Lock } from "tabler-icons-react";
 
 import LazyLoad from "react-lazy-load";
 import { notifications } from "@mantine/notifications";
 import { AlertCircle } from "tabler-icons-react";
+import { IconTrash } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
 
 import {
   Map,
@@ -33,7 +44,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
     longitude: string;
     resistance: string;
     date_collected: string;
-    next_collection: string;
+    next_Collection: string;
     description: string;
   }
   // const computedColorScheme = useComputedColorScheme("light");
@@ -46,18 +57,39 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
   const [selectedMarker, setSelectedMarker] = useState<DataEntry | null>(null);
   const [editedDateCollected, setEditedDateCollected] = useState<string>("");
   const [editedNextCollection, setEditedNextCollection] = useState<string>("");
+  const [editedResistance, setEditedResistance] = useState<string>("");
   const [editedRowId, setEditedRowId] = useState<number | null>(null);
+  const plantName = localStorage.getItem("plantName");
+  axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
+  const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<number>(-1);
+
+  // useEffect(() => {
+  //   // Fetch data from the API endpoint
+  //   axios
+  //     .post("/api/pit_data", plantName)
+  //     .then((response) => {
+  //       setData(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     });
+  // }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("api/pit_data", {
+        plant_name: plantName,
+      });
+      console.log("response", response.data.data);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error occured", error);
+    }
+  };
 
   useEffect(() => {
-    // Fetch data from the API endpoint
-    axios
-      .get("http://192.168.10.251:3000/api/data")
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    fetchData();
   }, []);
 
   const handlePageChange = (newPage: number) => {
@@ -96,7 +128,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
     longitude: string;
     resistance: string;
     date_collected: string;
-    next_collection: string;
+    next_Collection: string;
     description: string;
   }
 
@@ -104,7 +136,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
     if (editedRowId !== row.id) {
       setSelectedEntry(row);
       // Check if next_collection date has passed the current date
-      const nextCollectionDate = new Date(row.next_collection);
+      const nextCollectionDate = new Date(row.next_Collection);
       const currentDate = new Date();
 
       if (nextCollectionDate < currentDate) {
@@ -121,7 +153,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
 
   useEffect(() => {
     data.forEach((entry) => {
-      const nextCollectionDate = new Date(entry.next_collection);
+      const nextCollectionDate = new Date(entry.next_Collection);
       const currentDate = new Date();
       if (nextCollectionDate < currentDate) {
         notifications.show({
@@ -145,7 +177,8 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
   const handleEditClick = (row: Row) => {
     // Set the edited dates to the current row's dates
     setEditedDateCollected(row.date_collected);
-    setEditedNextCollection(row.next_collection);
+    setEditedNextCollection(row.next_Collection);
+    setEditedResistance(row.resistance);
     // Set the edited row ID
     setEditedRowId(row.id);
   };
@@ -159,10 +192,11 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
 
     // Send the updated date values to the server to update the entry in the database
     axios
-      .post("http://192.168.10.251:3000/api/update-entry", {
+      .post("/api/update_entry", {
         id: editedRowId,
         dateCollected: formattedDateCollected,
         nextCollection: formattedNextCollection,
+        resistance: editedResistance,
       })
       .then((response) => {
         console.log(response.data.message); // Success message from the backend
@@ -197,6 +231,44 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
       });
   };
 
+  const openDeleteConfirmation = (id: number) => {
+    setDeleteConfirmation(true);
+    setDeleteId(id);
+  };
+
+  // Function to close the delete confirmation modal
+  const closeDeleteConfirmation = () => {
+    setDeleteConfirmation(false);
+  };
+
+  const handleDeleteClick = (id: number) => {
+    console.log("id at delete", id);
+    axios
+      .delete(`/api/delete_entry/${id}`)
+      .then(() => {
+        console.log("Task deleted from the database!");
+        // Update the local state to remove the deleted task
+        const updatedTasks = data.filter((data) => data.id !== id);
+        setData(updatedTasks);
+      })
+      .catch((error) => {
+        console.error("Error deleting task: ", error);
+        notifications.show({
+          title: "Request Failed",
+          message:
+            "An Error has occured , try again if not please contact us by clicking on contact us page",
+          color: "red",
+          icon: <AlertCircle size={24} color="black" />,
+        });
+      });
+    notifications.show({
+      title: "Success !!",
+      message: "Task deleted sucessfully",
+      color: "teal",
+      icon: <CircleCheck size={24} color="white" />,
+    });
+  };
+
   return (
     <div>
       <h1 style={{ color: getTextColor(back) }}>Saved Data</h1>
@@ -219,13 +291,26 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
                   <Table.Th>Collected</Table.Th>
                   <Table.Th>Next Date</Table.Th>
                   <Table.Th>Edit</Table.Th>
+                  <Table.Th>Delete</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {getPaginatedData().map((row) => (
                   <Table.Tr key={row.id} onClick={() => handleRowClick(row)}>
                     <Table.Td>{row.id}</Table.Td>
-                    <Table.Td>{row.resistance}</Table.Td>
+                    <Table.Td>
+                      {editedRowId === row.id ? (
+                        // Render input field for editing resistance value
+                        <input
+                          type="text"
+                          value={editedResistance}
+                          onChange={(e) => setEditedResistance(e.target.value)}
+                        />
+                      ) : (
+                        // Render resistance value if not editing
+                        row.resistance
+                      )}
+                    </Table.Td>
                     <Table.Td>
                       {editedRowId === row.id ? (
                         <DateInput
@@ -280,6 +365,14 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
                         />
                       )}
                     </Table.Td>
+                    <Table.Td>
+                      <IconTrash
+                        onClick={() => openDeleteConfirmation(row.id)}
+                        size={23}
+                        color="#F34141"
+                        style={{ cursor: "pointer" }}
+                      />
+                    </Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>
@@ -316,7 +409,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
                     key={entry.id}
                     longitude={parseFloat(entry.longitude)} // Parse string to number
                     latitude={parseFloat(entry.latitude)} // Parse string to number
-                    color="red"
+                    color="#F34141"
                     onClick={() => setSelectedMarker(entry)}
                   >
                     {/* You can customize the marker by using a custom SVG icon */}
@@ -376,13 +469,42 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
               Date Collected: {formatDate(selectedEntry.date_collected)}
             </Text>
             <Text mt="xl">
-              Next Collection: {formatDate(selectedEntry.next_collection)}
+              Next Collection: {formatDate(selectedEntry.next_Collection)}
             </Text>
             <Text mt="xl">Description: {selectedEntry.description}</Text>
             {/* Add more fields here as needed */}
           </div>
         </Modal>
       )}
+      <Modal opened={deleteConfirmation} onClose={closeDeleteConfirmation}>
+        <Text>Are you sure you want to delete this entry?</Text>
+        {/* <Button
+          ml="xl"
+          mt="lg"
+          bg="#F34141"
+          onClick={() => handleDeleteClick(deleteId)}
+        >
+          Yes
+        </Button> */}
+        <Group gap="xl" mt="lg">
+          <IconCheck
+            onClick={() => handleDeleteClick(deleteId)}
+            size={24}
+            color="#F34141"
+            style={{ cursor: "pointer" }}
+          />
+
+          {/* <Button ml="xl" mt="lg" onClick={closeDeleteConfirmation}>
+          No
+        </Button> */}
+          <IconX
+            size={24}
+            color="#6BD731"
+            onClick={closeDeleteConfirmation}
+            style={{ cursor: "pointer" }}
+          />
+        </Group>
+      </Modal>
     </div>
   );
 };

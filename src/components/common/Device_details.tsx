@@ -26,14 +26,16 @@ const Device_details = () => {
   const [title, setTitle] = useState("");
   const [dateCollected, setDateCollected] = useState<Date | null>(null);
   const [nextCollection, setNextCollection] = useState<Date | null>(null);
+  const plantName = localStorage.getItem("plantName");
 
   const [description, setDescription] = useState("");
   const [newPlace, setNewPlace] = useState<{ lat: number; lng: number } | null>(
     null
   );
   const [isLoading] = useState(false);
+  axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formattedDateCollected =
       dateCollected && dateCollected.toISOString().substr(0, 10);
@@ -50,40 +52,69 @@ const Device_details = () => {
       dateCollected: formattedDateCollected,
       nextCollection: formattedNextCollection,
       description,
+      plant_name: plantName,
     };
 
     // Send the form data to the backend server
-    axios
-      .post("http://192.168.10.251:3000/api/submit-form", formData)
-      .then(() => {
-        // console.log(response.data.message); // Success message from the backend
-        // Reset form fields after successful submission
-        setLatitude(0);
-        setLongitude(0);
-        setResistance(0);
-        setName("");
-        setTitle("");
-        setDateCollected(null);
-        setNextCollection(null);
-        setDescription("");
-        notifications.show({
-          title: "Form Submited",
-          message: "Check Data tab ",
-          color: "teal",
-          icon: <CircleCheck size={24} color="white" />,
-        });
-      })
 
-      .catch((error) => {
-        console.error("Error submitting form:", error);
-        // Handle error here, show error message to the user, etc.
-        notifications.show({
-          title: "Network Error",
-          message: "Check Network or Contact us",
-          color: "red",
-          icon: <AlertCircle size={24} color="black" />,
-        });
+    try {
+      const response = await axios.post("api/submit-form", formData);
+      console.log("response", response);
+      setLatitude(0);
+      setLongitude(0);
+      setResistance(0);
+      setName("");
+      setTitle("");
+      setDateCollected(null);
+      setNextCollection(null);
+      setDescription("");
+      notifications.show({
+        title: "Form Submited",
+        message: "Check Data tab ",
+        color: "teal",
+        icon: <CircleCheck size={24} color="white" />,
       });
+    } catch (error) {
+      console.error("Error Sending dorm data", error);
+      notifications.show({
+        title: "Network Error",
+        message: "Check Network or Contact us",
+        color: "red",
+        icon: <AlertCircle size={24} color="black" />,
+      });
+    }
+
+    // axios
+    //   .post("http://192.168.10.251:3000/api/submit-form", formData)
+    //   .then(() => {
+    //     // console.log(response.data.message); // Success message from the backend
+    //     // Reset form fields after successful submission
+    //     setLatitude(0);
+    //     setLongitude(0);
+    //     setResistance(0);
+    //     setName("");
+    //     setTitle("");
+    //     setDateCollected(null);
+    //     setNextCollection(null);
+    //     setDescription("");
+    //     notifications.show({
+    //       title: "Form Submited",
+    //       message: "Check Data tab ",
+    //       color: "teal",
+    //       icon: <CircleCheck size={24} color="white" />,
+    //     });
+    //   })
+
+    //   .catch((error) => {
+    //     console.error("Error submitting form:", error);
+    //     // Handle error here, show error message to the user, etc.
+    //     notifications.show({
+    //       title: "Network Error",
+    //       message: "Check Network or Contact us",
+    //       color: "red",
+    //       icon: <AlertCircle size={24} color="black" />,
+    //     });
+    //   });
   };
 
   const handleAddClick = (e: MapMouseEvent) => {
