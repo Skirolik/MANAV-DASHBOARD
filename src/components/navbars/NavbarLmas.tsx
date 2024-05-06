@@ -5,31 +5,34 @@ import {
   ScrollArea,
   Button,
   Center,
-  Text,
   Avatar,
   Image,
   Drawer,
+  Tooltip,
+  Burger,
 } from "@mantine/core";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
 import {
-  IconDetails,
   IconHome,
   IconPower,
   IconLayoutKanban,
   IconMapPin,
-  IconArrowBarRight,
 } from "@tabler/icons-react";
-import { getTextColor } from "../utils";
 
 export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
   Onlogout,
-  back,
 }) => {
   const { pathname } = useLocation();
   console.log("pathname", pathname);
   const navigate = useNavigate();
   const isLargeScreen = useMediaQuery("(min-width:800px");
+  const name = localStorage.getItem("userFirstname") || "";
+  const lastName = localStorage.getItem("userLastname") || "";
+
+  const firstNameInitial = name.charAt(0).toUpperCase();
+  const lastNameInitial = lastName.charAt(0).toUpperCase();
+  const initials = `${firstNameInitial}${lastNameInitial}`;
 
   const [opened, setOpened] = useState(false);
   const handleLogoutClick = () => {
@@ -41,299 +44,313 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
 
   return (
     <>
-      {isLargeScreen ? (
-        <>
-          <AppShell.Navbar>
-            <AppShell.Section mt="lg">
-              {" "}
-              <Image
-                h="100%"
-                w="75%"
-                style={{
-                  position: "relative",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-                src="./src/assets/ManavLogo2021.png"
-              />{" "}
-            </AppShell.Section>
-            <AppShell.Section
-              component={ScrollArea}
-              my="md"
-              scrollbars="y"
-              mt="xl"
-            >
-              <NavLink
-                key="Home"
-                style={{
-                  color: pathname === "/" ? "#087f5b" : "inherit",
-                  backgroundColor:
-                    pathname === "/" ? "rgba(8, 127, 91, 0.1)" : "inherit",
-                }}
-                label={
-                  <div style={{ textAlign: "center" }}>
+      {!isLargeScreen && ( // Render only when the screen size is small
+        <AppShell.Header style={{ display: isLargeScreen ? "none" : "flex" }}>
+          <Burger
+            mt="md"
+            opened={opened}
+            onClick={toggleDrawer}
+            aria-label="Toggle navigation"
+            aria-controls="navigation"
+          />
+        </AppShell.Header>
+      )}
+      <AppShell.Navbar>
+        <Drawer
+          opened={opened}
+          onClose={toggleDrawer}
+          id="navigation"
+          size="xs"
+          overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
+        >
+          <AppShell.Section mt="lg"> </AppShell.Section>
+          <AppShell.Section
+            component={ScrollArea}
+            my="md"
+            scrollbars="y"
+            mt="xl"
+          >
+            <NavLink
+              key="Home"
+              style={{
+                color: pathname === "/" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/" ? "rgba(8, 127, 91, 0.1)" : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Home"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
                     <IconHome
-                      width={20}
-                      height={20}
-                      style={{ marginBottom: "5px" }}
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
                     />
-                    <Text
+                  </Tooltip>
+
+                  {/* <Text
                       size="sm"
                       style={{ lineHeight: "1", fontSize: "0.8em" }}
                     >
                       Home
-                    </Text>
-                  </div>
-                }
-                onClick={() => navigate("../")}
-              />
-              <NavLink
-                key="Maintenance"
-                style={{
-                  color: pathname === "/maintenance" ? "#087f5b" : "inherit",
-                  backgroundColor:
-                    pathname === "/maintenance"
-                      ? "rgba(8, 127, 91, 0.1)"
-                      : "inherit",
-                }}
-                label={
-                  <div style={{ textAlign: "center" }}>
+                    </Text> */}
+                </div>
+              }
+              onClick={() => navigate("../")}
+            />
+
+            <NavLink
+              key="Maintenance"
+              style={{
+                color: pathname === "/maintenance" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/maintenance"
+                    ? "rgba(8, 127, 91, 0.1)"
+                    : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Board"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
                     <IconLayoutKanban
-                      width={20}
-                      height={20}
-                      style={{ marginBottom: "5px" }}
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
                     />
-                    <Text
-                      size="sm"
-                      style={{ lineHeight: "1", fontSize: "0.8em" }}
-                    >
-                      Board
-                    </Text>
-                  </div>
-                }
-                onClick={() => navigate("../maintenance")}
-              />
-              <NavLink
-                key="Layout"
-                style={{
-                  color: pathname === "/earthpit" ? "#087f5b" : "inherit",
-                  backgroundColor:
-                    pathname === "/earthpit"
-                      ? "rgba(8, 127, 91, 0.1)"
-                      : "inherit",
-                }}
-                label={
-                  <div style={{ textAlign: "center" }}>
+                  </Tooltip>
+                </div>
+              }
+              onClick={() => navigate("../maintenance")}
+            />
+            <NavLink
+              key="Layout"
+              style={{
+                color: pathname === "/earthpit" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/earthpit"
+                    ? "rgba(8, 127, 91, 0.1)"
+                    : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Pit layout"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
                     <IconMapPin
-                      width={20}
-                      height={20}
-                      style={{ marginBottom: "5px" }}
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
                     />
-                    <Text
-                      size="md"
-                      style={{ lineHeight: "1", fontSize: "0.8em" }}
-                    >
-                      Layout
-                    </Text>
-                  </div>
-                }
-                onClick={() => navigate("../earthpit")}
-              />
-            </AppShell.Section>
-            <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
-              <AppShell.Section mt="xl">
-                <Center>
+                  </Tooltip>
+                </div>
+              }
+              onClick={() => navigate("../earthpit")}
+            />
+          </AppShell.Section>
+          <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
+            <AppShell.Section mt="xl">
+              <Center>
+                <Tooltip
+                  label={name}
+                  position="right-end"
+                  offset={5}
+                  withArrow
+                  arrowOffset={12}
+                >
                   <Avatar
-                    style={{ cursor: "pointer" }}
                     color="teal"
                     radius="xl"
                     mt="xl"
                     onClick={() => navigate("../settings")}
+                    style={{ cursor: "pointer" }}
                   >
-                    Name
+                    {initials}
                   </Avatar>
-                </Center>
-                <Center mt="xl">
+                </Tooltip>
+              </Center>
+              <Center mt="xl">
+                <Tooltip
+                  label="Logout"
+                  position="right-end"
+                  offset={5}
+                  withArrow
+                  arrowOffset={12}
+                >
                   <Button
                     variant="light"
                     color="red"
                     size="compact-md"
                     onClick={handleLogoutClick}
-                    style={{ cursor: "pointer" }}
                   >
                     <IconPower stroke={2} />
                   </Button>
-                </Center>
-              </AppShell.Section>
-            </div>
-          </AppShell.Navbar>
-        </>
-      ) : (
-        <>
-          <AppShell.Navbar>
-            <IconArrowBarRight
-              onClick={toggleDrawer}
-              style={{ color: getTextColor(back) }}
-            />
-            <Drawer
-              opened={opened}
-              onClose={toggleDrawer}
-              position="right"
-              padding="md"
-              style={{ marginTop: 64 }}
-            >
-              <AppShell.Section
-                component={ScrollArea}
-                my="md"
-                scrollbars="y"
-                mt="xl"
-              >
-                <NavLink
-                  key="Home"
-                  style={{
-                    color: pathname === "/" ? "#087f5b" : "inherit",
-                    backgroundColor:
-                      pathname === "/" ? "rgba(8, 127, 91, 0.1)" : "inherit",
-                  }}
-                  label={
-                    <div style={{ textAlign: "center" }}>
-                      <IconHome
-                        width={20}
-                        height={20}
-                        style={{ marginBottom: "5px" }}
-                      />
-                      <Text
-                        size="sm"
-                        style={{ lineHeight: "1", fontSize: "0.8em" }}
-                      >
-                        Home
-                      </Text>
-                    </div>
-                  }
-                  onClick={() => {
-                    navigate("../"), toggleDrawer();
-                  }}
-                />
-                <NavLink
-                  key="Detials"
-                  style={{
-                    color: pathname === "/calendar" ? "#087f5b" : "inherit",
-                    backgroundColor:
-                      pathname === "/calendar"
-                        ? "rgba(8, 127, 91, 0.1)"
-                        : "inherit",
-                  }}
-                  label={
-                    <div style={{ textAlign: "center" }}>
-                      <IconDetails
-                        width={20}
-                        height={20}
-                        style={{ marginBottom: "5px" }}
-                      />
-                      <Text
-                        size="sm"
-                        style={{ lineHeight: "1", fontSize: "0.8em" }}
-                      >
-                        Details
-                      </Text>
-                    </div>
-                  }
-                  onClick={() => {
-                    navigate("../calendar"), toggleDrawer();
-                  }}
-                />
-                <NavLink
-                  key="Maintenance"
-                  style={{
-                    color: pathname === "/maintenance" ? "#087f5b" : "inherit",
-                    backgroundColor:
-                      pathname === "/maintenance"
-                        ? "rgba(8, 127, 91, 0.1)"
-                        : "inherit",
-                  }}
-                  label={
-                    <div style={{ textAlign: "center" }}>
-                      <IconLayoutKanban
-                        width={20}
-                        height={20}
-                        style={{ marginBottom: "5px" }}
-                      />
-                      <Text
-                        size="md"
-                        style={{ lineHeight: "1", fontSize: "0.8em" }}
-                      >
-                        Board
-                      </Text>
-                    </div>
-                  }
-                  onClick={() => {
-                    navigate("../maintenance");
-                    toggleDrawer();
-                  }}
-                />
-                <NavLink
-                  key="Layout"
-                  style={{
-                    color: pathname === "/earthpit" ? "#087f5b" : "inherit",
-                    backgroundColor:
-                      pathname === "/earthpit"
-                        ? "rgba(8, 127, 91, 0.1)"
-                        : "inherit",
-                  }}
-                  label={
-                    <div style={{ textAlign: "center" }}>
-                      <IconMapPin
-                        width={20}
-                        height={20}
-                        style={{ marginBottom: "5px" }}
-                      />
-                      <Text
-                        size="md"
-                        style={{ lineHeight: "1", fontSize: "0.8em" }}
-                      >
-                        Layout
-                      </Text>
-                    </div>
-                  }
-                  onClick={() => {
-                    navigate("../earthpit");
-                    toggleDrawer();
-                  }}
-                />
-              </AppShell.Section>
+                </Tooltip>
+              </Center>
+            </AppShell.Section>
+          </div>
+        </Drawer>
+      </AppShell.Navbar>
+      <AppShell.Navbar>
+        <AppShell.Section mt="lg">
+          {" "}
+          <Image
+            h="100%"
+            w="75%"
+            style={{
+              position: "relative",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+            src="./src/assets/ManavLogo2021.png"
+          />{" "}
+        </AppShell.Section>
+        <AppShell.Section component={ScrollArea} my="md" scrollbars="y" mt="xl">
+          <NavLink
+            key="Home"
+            style={{
+              color: pathname === "/" ? "#087f5b" : "inherit",
+              backgroundColor:
+                pathname === "/" ? "rgba(8, 127, 91, 0.1)" : "inherit",
+            }}
+            label={
+              <div style={{ textAlign: "center" }}>
+                <Tooltip
+                  label="Home"
+                  position="right-end"
+                  offset={10}
+                  withArrow
+                  arrowOffset={12}
+                >
+                  <IconHome
+                    width={25}
+                    height={25}
+                    style={{ marginBottom: "5px", marginTop: "10px" }}
+                  />
+                </Tooltip>
 
-              <AppShell.Section mt="xl">
-                <Center>
-                  <Avatar
-                    color="teal"
-                    radius="xl"
-                    mt="xl"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      navigate("../settings");
-                      toggleDrawer();
-                    }}
-                  >
-                    Name
-                  </Avatar>
-                </Center>
-                <Center mt="xl">
-                  <Button
-                    variant="light"
-                    color="red"
-                    size="compact-md"
-                    onClick={handleLogoutClick}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <IconPower stroke={2} />
-                  </Button>
-                </Center>
-              </AppShell.Section>
-            </Drawer>
-          </AppShell.Navbar>
-        </>
-      )}
+                {/* <Text
+                      size="sm"
+                      style={{ lineHeight: "1", fontSize: "0.8em" }}
+                    >
+                      Home
+                    </Text> */}
+              </div>
+            }
+            onClick={() => navigate("../")}
+          />
+
+          <NavLink
+            key="Maintenance"
+            style={{
+              color: pathname === "/maintenance" ? "#087f5b" : "inherit",
+              backgroundColor:
+                pathname === "/maintenance"
+                  ? "rgba(8, 127, 91, 0.1)"
+                  : "inherit",
+            }}
+            label={
+              <div style={{ textAlign: "center" }}>
+                <Tooltip
+                  label="Board"
+                  position="right-end"
+                  offset={10}
+                  withArrow
+                  arrowOffset={12}
+                >
+                  <IconLayoutKanban
+                    width={25}
+                    height={25}
+                    style={{ marginBottom: "5px", marginTop: "10px" }}
+                  />
+                </Tooltip>
+              </div>
+            }
+            onClick={() => navigate("../maintenance")}
+          />
+          <NavLink
+            key="Layout"
+            style={{
+              color: pathname === "/earthpit" ? "#087f5b" : "inherit",
+              backgroundColor:
+                pathname === "/earthpit" ? "rgba(8, 127, 91, 0.1)" : "inherit",
+            }}
+            label={
+              <div style={{ textAlign: "center" }}>
+                <Tooltip
+                  label="Pit layout"
+                  position="right-end"
+                  offset={10}
+                  withArrow
+                  arrowOffset={12}
+                >
+                  <IconMapPin
+                    width={25}
+                    height={25}
+                    style={{ marginBottom: "5px", marginTop: "10px" }}
+                  />
+                </Tooltip>
+              </div>
+            }
+            onClick={() => navigate("../earthpit")}
+          />
+        </AppShell.Section>
+        <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
+          <AppShell.Section mt="xl">
+            <Center>
+              <Tooltip
+                label={name}
+                position="right-end"
+                offset={5}
+                withArrow
+                arrowOffset={12}
+              >
+                <Avatar
+                  color="teal"
+                  radius="xl"
+                  mt="xl"
+                  onClick={() => navigate("../settings")}
+                  style={{ cursor: "pointer" }}
+                >
+                  {initials}
+                </Avatar>
+              </Tooltip>
+            </Center>
+            <Center mt="xl">
+              <Tooltip
+                label="Logout"
+                position="right-end"
+                offset={5}
+                withArrow
+                arrowOffset={12}
+              >
+                <Button
+                  variant="light"
+                  color="red"
+                  size="compact-md"
+                  onClick={handleLogoutClick}
+                >
+                  <IconPower stroke={2} />
+                </Button>
+              </Tooltip>
+            </Center>
+          </AppShell.Section>
+        </div>
+      </AppShell.Navbar>
     </>
   );
 };
