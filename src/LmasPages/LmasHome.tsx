@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { getTextColor } from "../components/utils";
 import useWebsocket from "../components/customhooks/useWebsocket";
 import { Card, Grid, Text } from "@mantine/core";
@@ -12,9 +12,11 @@ import Lmap from "../components/Lmas_components/Lmap";
 import Calender from "../components/Lmas_components/Calender";
 
 const LmasHome: React.FC<{ back: string }> = ({ back }) => {
-  const [email] = useState("admin");
-  const { data, chartData } = useWebsocket(email);
-  const username = localStorage.getItem("user");
+  const useremail = localStorage.getItem("userEmail") || "";
+
+  console.log("email i get", useremail);
+  const { data, chartData } = useWebsocket(useremail);
+  const username = localStorage.getItem("userFirstname");
 
   // console.log("data in home page", data);
   // console.log("CD in home page", chartData);
@@ -105,15 +107,16 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
 
   const totalCounts = [
     {
+      title: "Count",
+      value: useVariablecount({ data: hoot }).totalCount,
+      description: "Warning",
+    },
+    {
       title: "Static Count",
       value: useVariablecount({ data: staticData }).totalCount,
       description: "Static",
     },
-    {
-      title: "Count",
-      value: useVariablecount({ data: hoot }).totalCount,
-      description: "Hoot",
-    },
+
     {
       title: "Spark Count",
       value: useVariablecount({ data: sparkData }).totalCount,
@@ -191,12 +194,12 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Card>
+          <Card withBorder radius="lg" shadow="lg">
             <HomeTable data={data} />
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Card p="xl">
+          <Card p="xl" withBorder radius="lg" shadow="lg">
             <Lmap data={mapData} />
           </Card>
         </Grid.Col>
@@ -207,7 +210,7 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-          <Card>
+          <Card p="xl" withBorder radius="lg" shadow="lg">
             <Calender data={calenderData} />
           </Card>
         </Grid.Col>

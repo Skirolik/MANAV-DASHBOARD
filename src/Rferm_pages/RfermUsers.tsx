@@ -4,8 +4,9 @@ import { Text, Loader } from "@mantine/core";
 import { getTextColor } from "../components/utils";
 import UserTable from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
 import { UserTableProp } from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
-import Grid_resistance_table from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_table";
+
 // import { GridData } from "../components/testingData/GridData";
+import Grid_resistance_select from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_select";
 import { GripTable } from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_table";
 
 const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
@@ -52,9 +53,13 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
       console.warn("User data not available. Skipping API call.");
     }
 
-    console.log("grid-", dataGridTable);
-    console.log("user-", dataUserTable);
+    // console.log("grid-", dataGridTable);
+    // console.log("user-", dataUserTable);
+    localStorage.removeItem("selectedMacId");
+    localStorage.removeItem("slectedUserName");
   }, []);
+
+  console.log("bred", dataUserTable);
 
   if (isLoading) {
     return (
@@ -76,10 +81,10 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
     <div>
       <Text ta="center" fw={800} fz="xl" td="underline" c={getTextColor(back)}>
         {" "}
-        Check out the Details, {username || "Guest"}
+        Parallel pit data, {username || "Guest"}
       </Text>
 
-      {persona == "pcc" && <Grid_resistance_table data={dataGridTable} />}
+      {persona == "pcc" && <Grid_resistance_select data={dataGridTable} />}
       {persona == "scc" && <UserTable data={dataUserTable} />}
       {persona == "ccc" && <UserTable data={dataUserTable} />}
     </div>

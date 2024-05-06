@@ -1,12 +1,16 @@
 import React from "react";
 import Models from "./components/kanban_board/Models";
-import { Text } from "@mantine/core";
+import { Title } from "@mantine/core";
 import { getTextColor } from "./components/utils";
 
 const Maintenace: React.FC<{ back: string }> = ({ back }) => {
+  localStorage.removeItem("selectedMacId");
+  localStorage.removeItem("slectedUserName");
   return (
     <div>
-      <Text c={getTextColor(back)}>Hi</Text>
+      <Title order={2} td="underline" c={getTextColor(back)} ta="center">
+        Maintenance Board
+      </Title>
       <Models />
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   Flex,
@@ -49,6 +49,7 @@ const PitCard: React.FC<RfermPitProps> = ({ pitData, onClick }) => {
   } = pitData;
 
   const computedColorScheme = useComputedColorScheme("light");
+  const [isHovered, setIsHovered] = useState(false);
 
   const resistanceColor = (state: string) => {
     if (state == "Danger") {
@@ -58,6 +59,14 @@ const PitCard: React.FC<RfermPitProps> = ({ pitData, onClick }) => {
     } else {
       return "#6BD731";
     }
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
 
   const faultColor = (fault: number) => {
@@ -88,7 +97,18 @@ const PitCard: React.FC<RfermPitProps> = ({ pitData, onClick }) => {
           mt="xl"
           shadow="xl"
           onClick={onClick}
-          style={{ cursor: "pointer" }}
+          style={{
+            transform: isHovered ? "scale(1.05)" : "scale(1)",
+            transition: "transform 0.8s ease",
+            boxShadow: isHovered
+              ? `0px 0px 40px ${
+                  resistanceColor(status) && `${resistanceColor(status)}4D`
+                }`
+              : "none",
+            cursor: "pointer",
+          }}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           <Card.Section>
             <Group justify="space-between" mt="sm" mb="lg">

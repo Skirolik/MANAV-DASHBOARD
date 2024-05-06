@@ -1,4 +1,4 @@
-import { Card, Grid, Pagination, Table } from "@mantine/core";
+import { Card, Grid, Pagination, Paper, Table, Text } from "@mantine/core";
 import React, { useState } from "react";
 
 export interface UserTableProp {
@@ -10,15 +10,39 @@ export interface UserTableProp {
 const UserTable: React.FC<{ data: UserTableProp[] }> = ({ data }) => {
   console.log(data);
 
+  // Return early if data is empty
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  if (data.length === 0) {
+    return (
+      <div
+        style={{
+          minHeight: "400px",
+          maxHeight: "400px",
+          overflowY: "auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Paper p="md" radius="md" bg="transparent">
+          <Text size="xl">No recent activities</Text>
+        </Paper>
+      </div>
+    );
+  }
+
+  console.log("Even after return");
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(currentPage * itemsPerPage, data.length);
-  const paginatedData = data.slice(startIndex - 1, endIndex);
+  const paginatedData = data.slice(startIndex, endIndex);
+
   return (
     <>
       <Grid mt="xl">

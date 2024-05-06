@@ -1,5 +1,5 @@
 import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 
 interface CardItem {
   title: string;
@@ -13,16 +13,32 @@ interface LmasCardProps {
 }
 
 const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
+  const [isHovered, setIsHovered] = useState(false);
   //   console.log("data for individual cards", data);
   if (!data) {
     return <Paper p="md">Loading...</Paper>; // Or a custom message
   }
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
   return (
     <Paper
       withBorder
       p="md"
       radius="md"
-      style={{ borderLeft: `6px solid ${color}` }}
+      style={{
+        borderLeft: `6px solid ${color}`,
+        transform: isHovered ? "scale(1.05)" : "scale(1)",
+        transition: "transform 0.8s ease",
+        boxShadow: isHovered ? `0px 0px 40px ${color && `${color}4D`}` : "none",
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Text c="dimmed" fw={700} size="md">
         {data.description}
@@ -33,7 +49,17 @@ const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
             {data.value} %
           </Text>
         ) : (
-          <Text c={color} fw={700} size="xl" style={{ fontSize: "2.5rem" }}>
+          <Text
+            c={color}
+            fw={700}
+            size="xl"
+            style={{
+              fontSize: "2.5rem",
+              textShadow: isHovered
+                ? `2px 2px 4px ${color && `${color}4D`}`
+                : "none",
+            }}
+          >
             {data.value}
           </Text>
         )}

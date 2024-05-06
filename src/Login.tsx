@@ -152,7 +152,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <Image w={60} src="./src/assets/ManavLogo2021.png" />
         </Flex>
 
-        <Title ta="center">Welcome to R-FERM</Title>
+        <Title ta="center">Welcome to Manav</Title>
 
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <TextInput

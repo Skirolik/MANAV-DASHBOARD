@@ -52,6 +52,25 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ data }) => {
     );
   }
 
+  if (data.length === 0) {
+    return (
+      <div
+        style={{
+          minHeight: "400px",
+          maxHeight: "400px",
+          overflowY: "auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Paper p="md" radius="md" bg="transparent">
+          <Text size="xl">No recent activities</Text>
+        </Paper>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: "400px", maxHeight: "400px", overflowY: "auto" }}>
       {Object.entries(data[0]).map(([key, value]) => {

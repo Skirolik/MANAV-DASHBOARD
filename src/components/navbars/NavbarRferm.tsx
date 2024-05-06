@@ -32,6 +32,7 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
 
   const name = localStorage.getItem("userFirstname") || "";
   const lastName = localStorage.getItem("userLastname") || "";
+  const persona = localStorage.getItem("persona") || "";
 
   console.log("name", lastName);
 
@@ -136,32 +137,34 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
               }
               onClick={() => navigate("../details")}
             />
-            <NavLink
-              key="users"
-              style={{
-                color: pathname === "/users" ? "#087f5b" : "inherit",
-                backgroundColor:
-                  pathname === "/users" ? "rgba(8, 127, 91, 0.1)" : "inherit",
-              }}
-              label={
-                <div style={{ textAlign: "center" }}>
-                  <Tooltip
-                    label="Users"
-                    position="right-end"
-                    offset={10}
-                    withArrow
-                    arrowOffset={12}
-                  >
-                    <IconUsersGroup
-                      width={25}
-                      height={25}
-                      style={{ marginBottom: "5px", marginTop: "10px" }}
-                    />
-                  </Tooltip>
-                </div>
-              }
-              onClick={() => navigate("../users")}
-            />
+            {(persona === "scc" || persona === "ccc") && (
+              <NavLink
+                key="users"
+                style={{
+                  color: pathname === "/users" ? "#087f5b" : "inherit",
+                  backgroundColor:
+                    pathname === "/users" ? "rgba(8, 127, 91, 0.1)" : "inherit",
+                }}
+                label={
+                  <div style={{ textAlign: "center" }}>
+                    <Tooltip
+                      label="Users"
+                      position="right-end"
+                      offset={10}
+                      withArrow
+                      arrowOffset={12}
+                    >
+                      <IconUsersGroup
+                        width={25}
+                        height={25}
+                        style={{ marginBottom: "5px", marginTop: "10px" }}
+                      />
+                    </Tooltip>
+                  </div>
+                }
+                onClick={() => navigate("../users")}
+              />
+            )}
             <NavLink
               key="Maintenance"
               style={{
@@ -337,32 +340,35 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
             }
             onClick={() => navigate("../details")}
           />
-          <NavLink
-            key="users"
-            style={{
-              color: pathname === "/users" ? "#087f5b" : "inherit",
-              backgroundColor:
-                pathname === "/users" ? "rgba(8, 127, 91, 0.1)" : "inherit",
-            }}
-            label={
-              <div style={{ textAlign: "center" }}>
-                <Tooltip
-                  label="Users"
-                  position="right-end"
-                  offset={10}
-                  withArrow
-                  arrowOffset={12}
-                >
-                  <IconUsersGroup
-                    width={25}
-                    height={25}
-                    style={{ marginBottom: "5px", marginTop: "10px" }}
-                  />
-                </Tooltip>
-              </div>
-            }
-            onClick={() => navigate("../users")}
-          />
+          {(persona === "scc" || persona === "ccc") && (
+            <NavLink
+              key="users"
+              style={{
+                color: pathname === "/users" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/users" ? "rgba(8, 127, 91, 0.1)" : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Users"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
+                    <IconUsersGroup
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
+                    />
+                  </Tooltip>
+                </div>
+              }
+              onClick={() => navigate("../users")}
+            />
+          )}
+
           <NavLink
             key="Maintenance"
             style={{

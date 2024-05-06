@@ -175,12 +175,12 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
                   { value: "select", label: "Select One" },
                   { value: "LMAS", label: "LMAS" },
                   { value: "Smart Earthing", label: "Smart Earthing" },
-                  { value: "R-FERM", label: "R-FERM" },
+                  { value: "RFERM", label: "RFERM" },
                   {
                     value: "Maintenance Assistance",
                     label: "Maintenance Assistance",
                   },
-                  { value: "Order Placing", label: "Order Placing" },
+                  { value: "Placing Order", label: "Placing Order" },
                   { value: "Other", label: "Other" },
                 ]}
                 required
@@ -251,44 +251,42 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
               {/* <h2 style={{ textAlign: "center" }}>CONTACT DETAILS</h2> */}
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Address
+                  Address :
                 </Text>
                 <Text style={{ textAlign: "left" }}>
-                  : #28, PUNARVASU, 2nd & 3rd Floor, East End Main Road, 4th T
+                  #28, PUNARVASU, 2nd & 3rd Floor, East End Main Road, 4th T
                   Block Jayanagar
                 </Text>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  City
+                  City :
                 </Text>
-                <Text style={{ textAlign: "left" }}>: Bangalore</Text>
+                <Text style={{ textAlign: "left" }}>Bangalore</Text>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Country
+                  Country :
                 </Text>
-                <Text style={{ textAlign: "left" }}>: India</Text>
+                <Text style={{ textAlign: "left" }}>India</Text>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Phone
+                  Phone :
                 </Text>
-                <Text style={{ textAlign: "left" }}>: +91 123-456-7890</Text>
+                <Text style={{ textAlign: "left" }}>+91 123-456-7890</Text>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Email
+                  Email :
                 </Text>
-                <Text style={{ textAlign: "left" }}>
-                  : info@manavenergy.com
-                </Text>
+                <Text style={{ textAlign: "left" }}>info@manavenergy.com</Text>
               </div>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Working Hours
+                  Working Hours :
                 </Text>
-                <Text style={{ textAlign: "left" }}>: 09:30 AM - 06:30 PM</Text>
+                <Text style={{ textAlign: "left" }}> 09:30 AM - 06:30 PM</Text>
               </div>
             </div>
           </Card>

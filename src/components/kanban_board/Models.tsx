@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SetStateAction } from "react";
 import {
   Button,
-  Input,
   Avatar,
   Badge,
   Grid,
@@ -10,6 +9,10 @@ import {
   Modal,
   Tooltip,
   useComputedColorScheme,
+  TextInput,
+  Title,
+  Select,
+  Text,
 } from "@mantine/core";
 
 // import AssignmentModal from "./AssignmentModal";
@@ -23,6 +26,7 @@ import { CircleCheck, AlertCircle } from "tabler-icons-react";
 
 import { HTML5Backend } from "react-dnd-html5-backend";
 import axios from "axios";
+import { DateInput } from "@mantine/dates";
 
 ///Kanban dragable items
 
@@ -67,7 +71,7 @@ const DraggableTask: React.FC<{
     if (typeof name === "string" && name.trim() !== "") {
       return name
         .split(" ")
-        .map((word) => word.charAt(0))
+        .map((word) => word.slice(0, 2))
         .join("");
     }
 
@@ -75,8 +79,23 @@ const DraggableTask: React.FC<{
   };
 
   const getRandomColor = (index: number) => {
-    const colors = ["red", "green", "blue", "orange", "purple", "pink"];
+    const colors = [
+      "#F34141",
+      "#6BD731",
+      "#099CFF",
+      "#FFAB09",
+      "#8931B2",
+      "#F01879",
+    ];
     return colors[index % colors.length];
+  };
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
 
   return (
@@ -96,7 +115,26 @@ const DraggableTask: React.FC<{
       }}
     >
       <div key={task.id}>
-        <Card shadow="xl" padding="lg" radius="xl" withBorder>
+        <Card
+          shadow="xl"
+          padding="lg"
+          radius="xl"
+          withBorder
+          style={{
+            transform: isHovered ? "scale(1.05)" : "scale(1)",
+            transition: "transform 0.8s ease",
+            boxShadow: isHovered ? `0px 0px 5px #147F5B ` : "none",
+            // boxShadow: "red",
+            // // boxShadow: isHovered
+            // //   ? `0px 0px 20px ${
+            // //       getRandomColor(index) && `${getRandomColor(index)}4D`
+            // //     }`
+            // //   : "red",
+            cursor: "pointer",
+          }}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <div
             style={{
               display: "flex",
@@ -128,7 +166,7 @@ const DraggableTask: React.FC<{
             <div>
               <Tooltip label={task.assigned}>
                 <Avatar size={30} radius="lg" color={getRandomColor(index)}>
-                  {getInitials(task.assigned)}
+                  <Text tt="uppercase">{getInitials(task.assigned)}</Text>
                 </Avatar>
               </Tooltip>
             </div>
@@ -172,6 +210,8 @@ const DroppableColumn: React.FC<{
   });
 
   const tasksInColumn = tasks.filter((task) => task.status === status);
+
+  // console.log("Task sent", tasks);
 
   return (
     <div
@@ -225,11 +265,26 @@ const DroppableColumn: React.FC<{
 
 //Main Function
 
+interface UserData {
+  persona: SetStateAction<string | null>;
+  firstname: string;
+  lastname: string;
+  email: string;
+}
+
 const Models = () => {
   const computedColorScheme = useComputedColorScheme();
+  console.log(computedColorScheme);
 
   const [, setData] = useState([]);
   const [opened, { open, close }] = useDisclosure(false);
+  const useremail = localStorage.getItem("userEmail");
+  const plantName = localStorage.getItem("plantName");
+  const domain_version = localStorage.getItem("user");
+  const persona_set = localStorage.getItem("persona");
+  const name = localStorage.getItem("userFirstname");
+  const [personalData, setPersonalData] = useState<UserData[]>([]);
+  const [persona, setPersona] = useState<string | null>(persona_set);
 
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -262,23 +317,36 @@ const Models = () => {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newAssigned, setNewAssigned] = useState("");
-  const [newDate, setNewDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [newDate, setNewDate] = useState<Date | null>(null);
   const [newStatus, setNewStatus] = useState("tasks");
 
   //Get Values from Kanban Mysql Table
 
-  const fetchData = () => {
-    console.log("fetch2");
-    axios
-      .get("http://192.168.10.251:3000/api/list")
-      .then((response) => {
-        setTasks(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching tasks: ", error);
+  const fetchData = async () => {
+    // console.log("fetch2");
+    try {
+      console.log("FETCH DATA IN BOARD....");
+      const response = await axios.post("/api/show_task", {
+        email: useremail,
+        plant_name: plantName,
+        persona: persona_set,
+        name: name,
       });
+      // setTasks([...tasks, response.data]);
+
+      console.log("response in tasks", response.data.user_data);
+      setTasks(response.data.user_data);
+    } catch (error) {
+      console.error("Error fetching map data:", error);
+    }
+    // axios
+    //   .get("http://192.168.10.251:3000/api/list")
+    //   .then((response) => {
+    //     setTasks(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching tasks: ", error);
+    //   });
   };
 
   // Fetch tasks from the backend when the component mounts
@@ -286,40 +354,51 @@ const Models = () => {
     fetchData();
   }, []);
 
+  console.log("Tasks", tasks);
   //Add task to database
-  const addTask = () => {
-    if (newTaskTitle.trim() !== "") {
+  const addTask = async () => {
+    if (
+      newTaskTitle.trim() !== "" ||
+      newTaskDescription.trim() !== "" ||
+      newAssigned !== "" ||
+      newStatus !== ""
+    ) {
       const newTask = {
         title: newTaskTitle,
         description: newTaskDescription,
         assigned: newAssigned,
         date: newDate,
-        status: newStatus,
+        status: "tasks",
+        plant_name: plantName,
+        domain_version: domain_version,
+        persona: persona,
       };
 
       console.log("add task", newTask);
 
-      axios
-        .post("http://192.168.10.251:3000/api/tasks", newTask)
-        .then((response) => {
-          console.log("Task added to the database!");
-          // Now update the local state with the new task
-          setTasks([...tasks, response.data]);
-        })
-        .catch((error) => {
-          console.error("Error adding task: ", error);
-          notifications.show({
-            title: "Request Failed",
-            message:
-              "An Error has occured , try again if not please contact us by clicking on contact us page",
-            color: "red",
-            icon: <AlertCircle size={24} color="black" />,
-          });
+      try {
+        console.log("FETCH DATA IN BOARD....");
+        const response = await axios.post("/api/tasks", {
+          title: newTaskTitle,
+          description: newTaskDescription,
+          assigned: newAssigned,
+          date: newDate,
+          status: "tasks",
+          plant_name: plantName,
+          domain_version: domain_version,
+          persona: persona,
         });
+        setTasks([...tasks, response.data]);
+      } catch (error) {
+        console.error("Error fetching map data:", error);
+      }
+
+      console.log("Tasks after update", tasks);
+
       setNewTaskTitle("");
       setNewTaskDescription("");
       setNewAssigned("");
-      setNewDate("");
+      setNewDate(null);
       notifications.show({
         title: "Success !!",
         message: "Task added sucessfully",
@@ -327,29 +406,30 @@ const Models = () => {
         icon: <CircleCheck size={24} color="white" />,
       });
 
-      axios
-        .get("http://192.168.10.251:3000/api/data")
-        .then((response) => {
-          setData(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          notifications.show({
-            title: "Request Failed",
-            message:
-              "An Error has occured , try again if not please contact us by clicking on contact us page",
-            color: "red",
-            icon: <AlertCircle size={24} color="black" />,
-          });
+      try {
+        console.log("FETCH DATA IN BOARD....");
+        const response = await axios.post("/api/show_task", {
+          email: useremail,
+          plant_name: plantName,
+          persona: persona_set,
         });
+        // setTasks([...tasks, response.data]);
+
+        console.log("response in data", response.data.user_data);
+        setData(response.data.user_data);
+      } catch (error) {
+        console.error("Error fetching map data:", error);
+      }
     }
+
+    close();
   };
 
   //Deleting Tasks
   const deleteTask = (taskID: string) => {
     console.log("task ID", taskID);
     axios
-      .delete(`http://192.168.10.251:3000/api/tasks/${taskID}`)
+      .delete(`/api/delete_task/${taskID}`)
       .then(() => {
         console.log("Task deleted from the database!");
         // Update the local state to remove the deleted task
@@ -382,7 +462,7 @@ const Models = () => {
     setTasks(updatedTasks);
     // Send a PUT or PATCH request to the backend to update the task status in the database
     axios
-      .put(`http://192.168.10.251:3000/api/tasks/${taskID}`, {
+      .put(`/api/move_task/${taskID}`, {
         status: newStatus,
       })
       .then(() => {
@@ -421,6 +501,39 @@ const Models = () => {
 
   console.log("tasks data structure", moveTask);
 
+  axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
+
+  useEffect(() => {
+    const fetchPersonalData = async () => {
+      try {
+        console.log("FETCH DATA IN BOARD....");
+        const response = await axios.post("/api/maint/users", {
+          email: useremail,
+          plant_name: plantName,
+        });
+        setPersonalData(response.data.user_data);
+      } catch (error) {
+        console.error("Error fetching map data:", error);
+      }
+    };
+    fetchPersonalData();
+  }, []);
+  console.log("Response data", personalData);
+
+  const handleAssignChange = (value: string | null) => {
+    if (value !== null) {
+      const selectedPersonalData = personalData.find(
+        (data) => data.email === value
+      );
+      console.log("pp", selectedPersonalData);
+
+      if (selectedPersonalData) {
+        setNewAssigned(value);
+        setPersona(selectedPersonalData.persona);
+      }
+    }
+  };
+
   return (
     <div style={{ gap: 20, justifyContent: "center" }}>
       <div style={{ marginTop: 20, marginBottom: 50 }}>
@@ -428,16 +541,7 @@ const Models = () => {
           <Button onClick={open} size="compact-lg">
             +
           </Button>
-
-          {/* <Button onClick={handleOpenAssignmentModal} radius="xl">
-            Inventory Task
-          </Button> */}
         </Group>
-        {/* Assigmnent Modal needs to be changed */}
-        {/* <AssignmentModal
-          assignmentModalOpenend={isModalOpen}
-          onClose={handleCloseAssignmentModal}
-        /> */}
 
         <Modal
           opened={opened}
@@ -445,49 +549,54 @@ const Models = () => {
           //title="Instructions"
           centered
         >
-          <Card>
-            <Input
+          <Card shadow="xl" withBorder radius="lg">
+            <Title order={4} ta="center" td="underline">
+              Assign Task
+            </Title>
+            <TextInput
               value={newTaskTitle}
               onChange={(event) => setNewTaskTitle(event.currentTarget.value)}
               placeholder="Enter a new task title..."
-              style={{ marginBottom: 10 }}
+              label="Task Name"
+              mt="lg"
+              required
+              withAsterisk
             />
-            <Input
+            <TextInput
               value={newTaskDescription}
               onChange={(event) =>
                 setNewTaskDescription(event.currentTarget.value)
               }
               placeholder="Enter a new task description..."
-              style={{ marginBottom: 10 }}
-            />
-            <Input
-              value={newAssigned}
-              onChange={(event) => setNewAssigned(event.currentTarget.value)}
-              placeholder="Task Assigned to"
-              style={{ marginBottom: 10 }}
-            />
-            <input
-              type="date"
-              value={newDate}
-              onChange={(event) => setNewDate(event.target.value)}
-              style={{
-                marginBottom: 10,
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                backgroundColor:
-                  computedColorScheme === "dark" ? "#25262b" : "#fff",
-                color: computedColorScheme === "dark" ? "#495057" : "#A6A7AB", // Set text color based on theme
-              }}
+              mt="lg"
+              label="Task Description"
+              required
+              withAsterisk
             />
 
-            <Button
-              onClick={addTask}
-              radius="xl"
-              ml="xl"
-              mt="xl"
-              variant="gradient"
-            >
+            <Select
+              data={personalData.map((data) => ({
+                label: data.firstname,
+                value: data.email,
+              }))}
+              label="Assign"
+              required
+              withAsterisk
+              value={newAssigned} // Set the value of the Select component
+              onChange={handleAssignChange} // Handle change to update the selected value
+              mt="md"
+            />
+
+            <DateInput
+              value={newDate}
+              onChange={setNewDate}
+              label="End Date"
+              placeholder="End Date"
+              mt="lg"
+              required
+            />
+
+            <Button onClick={addTask} radius="xl" ml="xl" mt="xl">
               Submit
             </Button>
           </Card>

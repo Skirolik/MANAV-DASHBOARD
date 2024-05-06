@@ -76,6 +76,8 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
   };
   useEffect(() => {
     calculateDaysRemaining();
+    localStorage.removeItem("selectedMacId");
+    localStorage.removeItem("slectedUserName");
   }, []);
 
   const handleRenewSubscription = async () => {
@@ -231,24 +233,24 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
             >
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Plant Name
+                  Plant Name :
                 </Text>
-                <Text style={{ textAlign: "left" }}>: {userCompany}</Text>
+                <Text style={{ textAlign: "left" }}>{userCompany}</Text>
               </div>
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Product
+                  Product :
                 </Text>
                 <Text tt="uppercase" style={{ textAlign: "left" }}>
-                  : {userDomain}
+                  {userDomain}
                 </Text>
               </div>
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Full Name
+                  Full Name :
                 </Text>
                 <Text style={{ textAlign: "left" }}>
-                  : {userFirstname} {userLastname}
+                  {userFirstname} {userLastname}
                 </Text>
               </div>
               {userDomain !== "Lmas" && (
@@ -257,32 +259,32 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
                     style={{ minWidth: "125px", textAlign: "left" }}
                     mb="md"
                   >
-                    Persona
+                    Persona :
                   </Text>
                   <Text tt="uppercase" style={{ textAlign: "left" }}>
-                    : {userPersona}
+                    {userPersona}
                   </Text>
                 </div>
               )}
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Start Date
+                  Start Date :
                 </Text>
                 <Text style={{ textAlign: "left" }}>
-                  : {subscriptionStartDate.toDateString()}
+                  {subscriptionStartDate.toDateString()}
                 </Text>
               </div>
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  End Date
+                  End Date :
                 </Text>
                 <Text style={{ textAlign: "left" }}>
-                  : {subscriptionEndDate.toDateString()}
+                  {subscriptionEndDate.toDateString()}
                 </Text>
               </div>
               <div style={{ display: "flex", gap: "10px" }}>
                 <Text style={{ minWidth: "125px", textAlign: "left" }} mb="md">
-                  Remaining
+                  Remaining :
                 </Text>
                 <Text
                   style={{
@@ -290,7 +292,7 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
                     color: daysRemaining < 30 ? "red" : "inherit",
                   }}
                 >
-                  : {daysRemaining}
+                  {daysRemaining} days
                 </Text>
               </div>
             </div>

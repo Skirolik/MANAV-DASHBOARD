@@ -7,6 +7,8 @@ import Device_entries from "./components/common/Device_entries";
 
 const Earthpit_data: React.FC<{ back: string }> = ({ back }) => {
   const iconStyle = { width: rem(12), height: rem(12) };
+  localStorage.removeItem("selectedMacId");
+  localStorage.removeItem("slectedUserName");
   return (
     <div>
       <Tabs defaultValue="entry" variant="outline">

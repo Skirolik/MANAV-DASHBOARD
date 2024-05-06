@@ -1,4 +1,4 @@
-import _React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Grid,
@@ -94,11 +94,13 @@ const PCC_details = () => {
       pit.pit_name.toLowerCase().includes(searchValue.toLowerCase())
     );
     setSearchResult(result);
+    setSelectedFilter("");
   };
 
   const handleClearSearch = () => {
     setSearchResult([]);
     setSearchValue("");
+    setSelectedFilter("");
   };
 
   const handleSelectChange = (value: string) => {
@@ -143,7 +145,7 @@ const PCC_details = () => {
     }
   });
 
-  let backgroundColor = localStorage.getItem("selectedColor") || "#FFFFFF";
+  const backgroundColor = localStorage.getItem("selectedColor") || "#FFFFFF";
 
   const backGroundColorFromStorage = (bgColor: string): string => {
     // Convert the background color to RGB
@@ -166,7 +168,7 @@ const PCC_details = () => {
   };
 
   // Call the function to get the text color based on the background color
-  let textColor = backGroundColorFromStorage(backgroundColor);
+  const textColor = backGroundColorFromStorage(backgroundColor);
 
   if (isLoading) {
     return (
@@ -266,7 +268,15 @@ const PCC_details = () => {
           No data available
         </Text>
       )}
-      <Modal opened={opened} onClose={close} size="calc(100vw - 3rem)">
+      <Modal
+        opened={opened}
+        onClose={close}
+        size="calc(100vw - 3rem)"
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
         {selectedPitData && <CardModal pitData={selectedPitData} />}
       </Modal>
     </>

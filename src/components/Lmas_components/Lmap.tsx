@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Map, Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import LazyLoad from "react-lazy-load";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoic2tpcm8iLCJhIjoiY2w1aTZjN2x2MDI3ODNkcHp0cnhuZzVicSJ9.HMjwHtHf_ttkh_aImSX-oQ";
@@ -44,33 +45,35 @@ const Lmap: React.FC<MapProp> = (data) => {
   // console.log("latitudel", lat);
   return (
     <div>
-      <Map
-        initialViewState={{
-          latitude: 23.1957247,
-          longitude: 77.7908816,
-          zoom: 3.5,
-        }}
-        style={{ width: "100%", height: 450 }}
-        mapStyle="mapbox://styles/mapbox/streets-v9"
-        mapboxAccessToken={MAPBOX_TOKEN}
-      >
-        <Marker longitude={long} latitude={lat}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="45"
-            height="60"
-            viewBox="0 0 24 24"
-            fill={color}
-            stroke="#000000"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="feather feather-map-pin"
-          >
-            <path d="M12 2c-3.313 0-6 2.687-6 6 0 5.25 6 12 6 12s6-6.75 6-12c0-3.313-2.687-6-6-6zm0 9c-1.656 0-3-1.344-3-3s1.344-3 3-3 3 1.344 3 3-1.344 3-3 3z"></path>
-          </svg>
-        </Marker>
-      </Map>
+      <LazyLoad>
+        <Map
+          initialViewState={{
+            latitude: 23.1957247,
+            longitude: 77.7908816,
+            zoom: 3.5,
+          }}
+          style={{ width: "100%", height: 450 }}
+          mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
+          mapboxAccessToken={MAPBOX_TOKEN}
+        >
+          <Marker longitude={long} latitude={lat}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="45"
+              height="60"
+              viewBox="0 0 24 24"
+              fill={color}
+              stroke="#000000"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="feather feather-map-pin"
+            >
+              <path d="M12 2c-3.313 0-6 2.687-6 6 0 5.25 6 12 6 12s6-6.75 6-12c0-3.313-2.687-6-6-6zm0 9c-1.656 0-3-1.344-3-3s1.344-3 3-3 3 1.344 3 3-1.344 3-3 3z"></path>
+            </svg>
+          </Marker>
+        </Map>
+      </LazyLoad>
     </div>
   );
 };

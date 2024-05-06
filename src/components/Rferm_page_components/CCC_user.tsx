@@ -64,6 +64,8 @@ const CCC_user: React.FC<CccProps> = ({ data }) => {
         // setIsLoading(false);
       }
     };
+    localStorage.removeItem("selectedMacId");
+    localStorage.removeItem("slectedUserName");
 
     fetchMapData();
   }, []);

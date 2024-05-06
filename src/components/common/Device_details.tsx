@@ -161,7 +161,7 @@ const Device_details = () => {
                 style={{ display: "inline-block", marginLeft: "8px" }}
               />
             ) : null}
-            <Button type="submit" mt="xl" radius="xl" variant="gradient">
+            <Button type="submit" mt="xl" radius="xl">
               Submit
             </Button>
           </form>

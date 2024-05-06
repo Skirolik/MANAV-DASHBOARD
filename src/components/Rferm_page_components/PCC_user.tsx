@@ -152,7 +152,10 @@ const PCC_user: React.FC<Props> = ({ data }) => {
       <Grid mt="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
         <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-          <Card>
+          <Card withBorder radius="lg" shadow="lg">
+            <Text ta="center" size="xl" fw={800} td="underline">
+              Grid Resistance
+            </Text>
             <Fault_chart data={Grid_resistance} color="#3A99FA" />
           </Card>
         </Grid.Col>

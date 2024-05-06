@@ -39,6 +39,7 @@ interface DataItem {
 }
 
 const SCC_user: React.FC<SccProps> = ({ data }) => {
+  console.log("data in scc", data);
   // Set the default base URL for Axios
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
   const [mapData, setMapData] = useState<any[]>([]);
@@ -68,7 +69,12 @@ const SCC_user: React.FC<SccProps> = ({ data }) => {
     fetchMapData();
   }, []);
 
-  const { danger_count, unhealthy_count, healthy, total } = data[0];
+  const {
+    danger_count = 0,
+    unhealthy_count = 0,
+    healthy = 0,
+    total = 0,
+  } = data[0] || {};
 
   let totalData: DataItem[];
 
