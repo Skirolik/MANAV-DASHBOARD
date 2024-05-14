@@ -15,7 +15,7 @@ const Progress_bar: React.FC<ProgressProps> = ({
   pressure,
   humidity,
 }) => {
-  //   console.log("nar", data);
+  // console.log("nar", data);
   // console.log("val", temp);
   const initialYValue = data.length > 0 ? data[0].y : 0;
   //   console.log("yval", initialYValue);
@@ -41,7 +41,8 @@ const Progress_bar: React.FC<ProgressProps> = ({
     const updateTemperatureValue = () => {
       if (temp.length > 0) {
         const lastTempPoint = temp[temp.length - 1];
-        const latestTempValue = lastTempPoint.y;
+        let latestTempValue = lastTempPoint.y - 272.15;
+        latestTempValue = Math.round(latestTempValue * 100) / 100;
         const zeroTime = 10 * 60 * 1000; // 10 minutes in milliseconds
         const timeNow = new Date().getTime();
         const savedTime = new Date(lastTempPoint.x).getTime();

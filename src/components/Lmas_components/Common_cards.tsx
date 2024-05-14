@@ -1,9 +1,9 @@
-import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
-import React, { useState } from "react";
+import { Group, Loader, Paper, SimpleGrid, Text } from "@mantine/core";
+import React, { useEffect, useState } from "react";
 
 interface CardItem {
   title: string;
-  value: string | number;
+  value: { name: string; totalCount: number }[];
   description: string;
 }
 
@@ -13,19 +13,18 @@ interface LmasCardProps {
 }
 
 const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  //   console.log("data for individual cards", data);
-  if (!data) {
-    return <Paper p="md">Loading...</Paper>; // Or a custom message
-  }
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === data.value.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 30000); // Flip every 30 seconds
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
+    return () => clearInterval(interval);
+  }, [data.value.length]);
+
   return (
     <Paper
       withBorder
@@ -33,37 +32,34 @@ const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
       radius="md"
       style={{
         borderLeft: `6px solid ${color}`,
-        transform: isHovered ? "scale(1.05)" : "scale(1)",
-        transition: "transform 0.8s ease",
-        boxShadow: isHovered ? `0px 0px 40px ${color && `${color}4D`}` : "none",
+        transition: "transform 1s ease", // CSS transition
+        transform: `rotateY(${currentIndex % 2 === 0 ? 0 : -360}deg)`, // Apply flip based on currentIndex
+        boxShadow: `0px 0px 40px ${color && `${color}4D`}`, // Add boxShadow directly
+        cursor: "pointer",
       }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
-      <Text c="dimmed" fw={700} size="md">
-        {data.description}
-      </Text>
-      <Group justify="space-between">
-        {data.title === "Battery" ? (
-          <Text c={color} fw={700} size="xl" style={{ fontSize: "2.5rem" }}>
-            {data.value} %
+      {data.value.length > 0 ? (
+        <>
+          <Text c="dimmed" fw={700} size="md">
+            {data.value[currentIndex].name} : {data.description}
           </Text>
-        ) : (
-          <Text
-            c={color}
-            fw={700}
-            size="xl"
-            style={{
-              fontSize: "2.5rem",
-              textShadow: isHovered
-                ? `2px 2px 4px ${color && `${color}4D`}`
-                : "none",
-            }}
-          >
-            {data.value}
-          </Text>
-        )}
-      </Group>
+          <Group justify="space-between">
+            <Text
+              c={color}
+              fw={700}
+              size="xl"
+              style={{
+                fontSize: "2.5rem",
+                textShadow: `2px 2px 4px ${color && `${color}4D`}`,
+              }}
+            >
+              {data.value[currentIndex].totalCount}
+            </Text>
+          </Group>
+        </>
+      ) : (
+        <Loader />
+      )}
       <Group justify="flex-start">
         <Text ta="center" fw={700} tt="uppercase">
           {data.title}
@@ -78,12 +74,8 @@ interface LmasDataProp {
 }
 
 const CommonCards: React.FC<LmasDataProp> = ({ data }) => {
-  if (!data) {
-    return <p>Data is not available yet.</p>;
-  }
-  //   console.log("data in common cards", data);
   const colors = ["#c51d31", "#d14d14", "#24782c", "#1dbac5", "#cf9a14"];
-
+  console.log("Data in cards", data);
   return (
     <SimpleGrid cols={{ base: 1, xs: 2, md: 5 }}>
       {colors.map((color, index) => (

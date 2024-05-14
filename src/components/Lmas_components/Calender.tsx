@@ -11,7 +11,7 @@ interface CalendarProps {
 }
 
 const Calender: React.FC<CalendarProps> = ({ data }) => {
-  console.log("calender.data", data);
+  // console.log("calender.data", data);
 
   const computedColorScheme = useComputedColorScheme();
 

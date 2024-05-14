@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button, Text } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazy-load";
@@ -24,10 +25,18 @@ const DetailsMap: React.FC<{
   data: DetailsMapData[];
   onPinClick: (macId: string) => void;
 }> = ({ data, onPinClick }) => {
+  console.log("Data in map", data);
+  const [viewport, setViewport] = useState({
+    latitude: 23.1957247,
+    longitude: 77.7908816,
+    zoom: 10,
+    transitionDuration: 2000, // Adjust transition duration in milliseconds
+  });
   const [selectedMarker, setSelectedMarker] = useState<DetailsMapData | null>(
     null
   );
   const [selectedMacId] = useState<string | null>(null);
+  console.log("select", selectedMacId);
 
   const popupStyle = {
     // backgroundColor: "lightgray",
@@ -55,20 +64,43 @@ const DetailsMap: React.FC<{
   };
 
   useEffect(() => {
-    console.log("selectedmacid", selectedMacId);
-  }, [selectedMacId]);
+    // Zoom to marker location on initial data load
+    console.log("in use Effect data", data);
+    if (data.length > 0) {
+      const firstMarker = data[0];
+      console.log("first", firstMarker.lat);
+
+      // Create a new viewport object with defaults
+      let newViewport = {
+        latitude: firstMarker.lat,
+        longitude: firstMarker.lon,
+        zoom: 10, // Adjust initial zoom level
+        transitionDuration: 5000,
+      };
+
+      // Optionally, merge existing viewport properties if necessary
+      if (viewport) {
+        newViewport = {
+          ...viewport, // Spread existing properties
+          ...newViewport, // Override with new values
+        };
+      }
+
+      setViewport(newViewport); // Update viewport state
+      console.log("viewports", viewport);
+    } else {
+      console.log("not in if");
+    }
+  }, [data]);
   return (
     <div>
       <LazyLoad>
         <Map
           style={{ width: "100%", height: 450 }}
-          initialViewState={{
-            latitude: 23.1957247,
-            longitude: 77.7908816,
-            zoom: 3.5,
-          }}
           mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
           mapboxAccessToken={MAPBOX_TOKEN}
+          initialViewState={viewport}
+          // onViewportChange={setViewport} // Update viewport state on map interactions
         >
           {data.map((entry) => (
             <Marker

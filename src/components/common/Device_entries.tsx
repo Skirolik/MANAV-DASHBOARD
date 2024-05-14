@@ -8,6 +8,7 @@ import {
   Grid,
   Modal,
   Group,
+  Title,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { CircleCheck, EditOff, Lock } from "tabler-icons-react";
@@ -90,7 +91,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [data]);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -271,8 +272,10 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
 
   return (
     <div>
-      <h1 style={{ color: getTextColor(back) }}>Saved Data</h1>
-      <Grid>
+      <Title order={2} td="underline" c={getTextColor(back)} ta="center">
+        View Pit Data
+      </Title>
+      <Grid mt="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
           <Card>

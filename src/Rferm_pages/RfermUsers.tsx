@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, Loader } from "@mantine/core";
+import { Loader, Title } from "@mantine/core";
 import { getTextColor } from "../components/utils";
 import UserTable from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
 import { UserTableProp } from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
@@ -79,10 +79,9 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
 
   return (
     <div>
-      <Text ta="center" fw={800} fz="xl" td="underline" c={getTextColor(back)}>
-        {" "}
-        Parallel pit data, {username || "Guest"}
-      </Text>
+      <Title order={2} td="underline" c={getTextColor(back)} ta="center">
+        Welcome, {username || "Guest"}{" "}
+      </Title>
 
       {persona == "pcc" && <Grid_resistance_select data={dataGridTable} />}
       {persona == "scc" && <UserTable data={dataUserTable} />}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, Loader } from "@mantine/core";
+import { Loader, Title } from "@mantine/core";
 import axios from "axios";
 import { getTextColor } from "../components/utils";
 import PCC_user, {
@@ -70,10 +70,9 @@ const HomeRferm: React.FC<{ back: string }> = ({ back }) => {
 
   return (
     <div className="App" style={{ marginTop: 20 }}>
-      <Text ta="center" fw={800} fz="xl" td="underline" c={getTextColor(back)}>
-        {" "}
+      <Title order={2} td="underline" c={getTextColor(back)} ta="center">
         Welcome, {username || "Guest"}{" "}
-      </Text>
+      </Title>
       {persona === "pcc" && <PCC_user data={data} back={back} />}
       {persona === "scc" && <SCC_user data={data} back={back} />}
       {persona === "ccc" && <CCC_user data={data} back={back} />}

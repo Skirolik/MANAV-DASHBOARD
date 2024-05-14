@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Text, Modal } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazy-load";
@@ -7,6 +8,7 @@ import {
   GeolocateControl,
   NavigationControl,
   Popup,
+  FullscreenControl,
 } from "react-map-gl";
 
 import NormalReadingGraph from "./NormalReadingGraph";
@@ -23,8 +25,17 @@ interface RfermMapData {
   name: string;
   unique_id: string;
 }
+interface NewViewState {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  pitch: number;
+  bearing: number;
+}
 
 export const Rferm_map: React.FC<{ data: RfermMapData[] }> = ({ data }) => {
+  const [viewState, setViewState] = useState<NewViewState | null>(null);
+
   const [selectedMarker, setSelectedMarker] = useState<RfermMapData | null>(
     null
   );
@@ -65,23 +76,42 @@ export const Rferm_map: React.FC<{ data: RfermMapData[] }> = ({ data }) => {
   };
 
   useEffect(() => {
-    console.log("selectedmacid", selectedMacId);
-  }, [selectedMacId]);
+    // Zoom to marker location on initial data load
+    if (data.length > 0) {
+      const firstMarker = data[0];
+      console.log(firstMarker);
+
+      const newViewState = {
+        latitude: firstMarker.lat,
+        longitude: firstMarker.lon,
+        zoom: 5,
+        pitch: 0,
+        bearing: 4,
+      };
+      setViewState(newViewState);
+
+      // Optionally, merge existing viewport properties if necessary
+    }
+  }, [data]);
 
   console.log("map-data-", data[0]);
+
+  const onMove = (event: any) => {
+    setViewState(event.viewState);
+    console.log("VSADB", viewState);
+  };
 
   return (
     <div>
       <LazyLoad>
         <Map
+          {...viewState}
+          onMove={onMove}
           style={{ width: "100%", height: 450 }}
-          initialViewState={{
-            latitude: 23.1957247,
-            longitude: 77.7908816,
-            zoom: 3.5,
-          }}
           mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
           mapboxAccessToken={MAPBOX_TOKEN}
+
+          // onViewportChange={setViewport} // Update viewport state on map interactions
         >
           {data.map(
             (entry) =>
@@ -97,6 +127,8 @@ export const Rferm_map: React.FC<{ data: RfermMapData[] }> = ({ data }) => {
           )}
           <GeolocateControl position="top-left" />
           <NavigationControl position="top-left" />
+          <FullscreenControl />
+
           {selectedMarker && (
             <Popup
               latitude={selectedMarker.lat}

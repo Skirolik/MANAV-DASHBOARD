@@ -1,4 +1,6 @@
+import { Badge } from "@mantine/core";
 import { useState, useEffect } from "react";
+
 import axios from "axios";
 import {
   Grid,
@@ -14,9 +16,10 @@ import {
 } from "@mantine/core";
 // import { Details } from "../components/testingData/Details";
 import PitCard from "../components/Rferm_page_components/Rferm_special_componts/PitCard";
-import CardModal from "../components/Rferm_page_components/Rferm_special_componts/CardModal";
+
 import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
+import Analysis_modal from "../components/Rferm_page_components/Rferm_special_componts/Analysis_modal";
 
 interface SelectedPitStructure {
   pit_name: string;
@@ -31,7 +34,7 @@ interface SelectedPitStructure {
   mac_id: string;
 }
 
-const PCC_details = () => {
+const Analysis = () => {
   const cardName = localStorage.getItem("cardname");
 
   const totalPitsString = localStorage.getItem("totalpits");
@@ -65,7 +68,7 @@ const PCC_details = () => {
           persona: persona,
         });
         setPersonaData(response.data.data);
-        console.log("data made-", response.data.data);
+        console.log("data-", personaData);
         setTimeout(() => {
           setIsLoading(false);
         }, 10);
@@ -188,6 +191,7 @@ const PCC_details = () => {
 
   return (
     <>
+      <Badge>Beta</Badge>
       {personaData[0].mac_id !== "" && (
         <Grid mt="xl">
           <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
@@ -277,10 +281,10 @@ const PCC_details = () => {
           blur: 3,
         }}
       >
-        {selectedPitData && <CardModal pitData={selectedPitData} />}
+        {selectedPitData && <Analysis_modal pitData={selectedPitData} />}
       </Modal>
     </>
   );
 };
 
-export default PCC_details;
+export default Analysis;

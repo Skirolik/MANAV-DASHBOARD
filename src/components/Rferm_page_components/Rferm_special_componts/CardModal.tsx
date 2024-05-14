@@ -48,6 +48,7 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
   // const [error, setError] = useState<string | null>(null);
 
   // const [fault_value, setFaultValue] = useState(true);

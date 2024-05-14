@@ -70,7 +70,6 @@ const PCC_user: React.FC<Props> = ({ data }) => {
     unhealthy_count = 0,
     healthy = 0,
     total = 0,
-    Grid_resistance = [],
   } = data[0];
 
   localStorage.setItem("totalpits", total.toString());
@@ -149,7 +148,7 @@ const PCC_user: React.FC<Props> = ({ data }) => {
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
       </Grid>
-      <Grid mt="xl">
+      {/* <Grid mt="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
         <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
           <Card withBorder radius="lg" shadow="lg">
@@ -161,7 +160,7 @@ const PCC_user: React.FC<Props> = ({ data }) => {
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-      </Grid>
+      </Grid> */}
       <Grid mt="xl" mb="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
         <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>

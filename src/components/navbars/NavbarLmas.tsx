@@ -192,7 +192,7 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
                 >
                   <Button
                     variant="light"
-                    color="red"
+                    color="#F34141"
                     size="compact-md"
                     onClick={handleLogoutClick}
                   >
@@ -340,7 +340,7 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
               >
                 <Button
                   variant="light"
-                  color="red"
+                  color="#F34141"
                   size="compact-md"
                   onClick={handleLogoutClick}
                 >

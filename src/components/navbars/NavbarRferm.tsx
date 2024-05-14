@@ -221,6 +221,34 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
               }
               onClick={() => navigate("../earthpit")}
             />
+            <NavLink
+              key="Analysis"
+              style={{
+                color: pathname === "/analysis" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/analysis"
+                    ? "rgba(8, 127, 91, 0.1)"
+                    : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Analysis"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
+                    <IconMapPin
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
+                    />
+                  </Tooltip>
+                </div>
+              }
+              onClick={() => navigate("../analysis")}
+            />
           </AppShell.Section>
           <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
             <AppShell.Section mt="xl">
@@ -253,7 +281,7 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
                 >
                   <Button
                     variant="light"
-                    color="red"
+                    color="#F34141"
                     size="compact-md"
                     onClick={handleLogoutClick}
                   >
@@ -276,8 +304,10 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
+              cursor: "pointer",
             }}
-            src="./src/assets/ManavLogo2021.png"
+            src="./src/assets/Mini_logo_4-removebg.png"
+            onClick={() => navigate("../")}
           />{" "}
         </AppShell.Section>
         <AppShell.Section component={ScrollArea} my="md" scrollbars="y" mt="xl">
@@ -423,6 +453,32 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
             }
             onClick={() => navigate("../earthpit")}
           />
+          <NavLink
+            key="Analysis"
+            style={{
+              color: pathname === "/analysis" ? "#087f5b" : "inherit",
+              backgroundColor:
+                pathname === "/analysis" ? "rgba(8, 127, 91, 0.1)" : "inherit",
+            }}
+            label={
+              <div style={{ textAlign: "center" }}>
+                <Tooltip
+                  label="Analysis"
+                  position="right-end"
+                  offset={10}
+                  withArrow
+                  arrowOffset={12}
+                >
+                  <IconMapPin
+                    width={25}
+                    height={25}
+                    style={{ marginBottom: "5px", marginTop: "10px" }}
+                  />
+                </Tooltip>
+              </div>
+            }
+            onClick={() => navigate("../analysis")}
+          />
         </AppShell.Section>
         <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
           <AppShell.Section mt="xl">
@@ -455,7 +511,7 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
               >
                 <Button
                   variant="light"
-                  color="red"
+                  color="#F34141"
                   size="compact-md"
                   onClick={handleLogoutClick}
                 >

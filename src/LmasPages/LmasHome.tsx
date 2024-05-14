@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
 import { getTextColor } from "../components/utils";
 import useWebsocket from "../components/customhooks/useWebsocket";
@@ -11,45 +12,59 @@ import HomeTable from "../components/Lmas_components/HomeTable";
 import Lmap from "../components/Lmas_components/Lmap";
 import Calender from "../components/Lmas_components/Calender";
 
+interface ChartDataItem extends Array<string | number | Date> {}
+
 const LmasHome: React.FC<{ back: string }> = ({ back }) => {
   const useremail = localStorage.getItem("userEmail") || "";
 
   console.log("email i get", useremail);
-  const { data, chartData } = useWebsocket(useremail);
+  const { data, chartData, latestData, uniqueDataLast10Minutes } =
+    useWebsocket(useremail);
   const username = localStorage.getItem("userFirstname");
+  //@ts-expect-error
+  const chartDataArray: ChartDataItem[] = chartData;
 
   // console.log("data in home page", data);
-  // console.log("CD in home page", chartData);
+  console.log("CD in home page", chartData);
+  console.log("Latest values", uniqueDataLast10Minutes);
 
-  const transformedData = chartData
+  const transformedData = latestData
     .map((row) => ({
       x: row[25],
       y: Number(row[9]),
     }))
     .reverse();
 
-  const batteryData = chartData.map((row) => ({
+  // const transformeData = latestData
+  //   .map((row) => ({
+  //     x: Number(row[8]),
+  //     y: row[1],
+  //   }))
+  //   .reverse();
+
+  const batteryData = chartDataArray.map((row) => ({
     x: row[25],
     y: Number(row[24]),
+    z: row[1],
   }));
 
   // const { totalBatteryCount } = useBatteryCal({ data: batteryData });
 
-  const diaDataElectroStatic = chartData
+  const diaDataElectroStatic = latestData
     .map((row) => ({
       x: row[25],
       y: row[5],
     }))
     .reverse();
 
-  const diaDataSpark = chartData
+  const diaDataSpark = latestData
     .map((row) => ({
       x: row[25],
       y: row[6],
     }))
     .reverse();
 
-  const diaDataEnvironment = chartData
+  const diaDataEnvironment = latestData
     .map((row) => ({
       x: row[25],
       y: row[7],
@@ -61,7 +76,7 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
   //   y: Number(row[9]),
   // }));
 
-  const mapData = chartData.map((row) => ({
+  const mapData = chartDataArray.map((row) => ({
     x: Number(row[3]),
     y: Number(row[4]),
     z: Number(row[9]),
@@ -70,18 +85,22 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
   const staticData = data.map((row) => ({
     x: row[25],
     y: row[5],
+    z: row[1],
   }));
   const sparkData = data.map((row) => ({
     x: row[25],
     y: row[6],
+    z: row[1],
   }));
   const envData = data.map((row) => ({
     x: row[25],
     y: row[7],
+    z: row[1],
   }));
   const hoot = data.map((row) => ({
     x: row[25],
     y: row[8],
+    z: row[1],
   }));
 
   const temp = data.map((row) => ({
@@ -108,33 +127,38 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
   const totalCounts = [
     {
       title: "Count",
-      value: useVariablecount({ data: hoot }).totalCount,
+      value: useVariablecount({ data: hoot }),
       description: "Warning",
     },
     {
       title: "Static Count",
-      value: useVariablecount({ data: staticData }).totalCount,
+      value: useVariablecount({ data: staticData }),
       description: "Static",
     },
 
     {
       title: "Spark Count",
-      value: useVariablecount({ data: sparkData }).totalCount,
+      value: useVariablecount({ data: sparkData }),
       description: "Spark",
     },
     {
       title: "Weather",
-      value: useVariablecount({ data: envData }).totalCount,
+      value: useVariablecount({ data: envData }),
       description: "Environment ",
     },
     {
       title: "Battery",
-      value: useBatteryCal({ data: batteryData }).totalBatteryCount,
-      description: "Battery value",
+      //@ts-expect-error
+      value: useBatteryCal({ data: batteryData }),
+      description: "Battery ",
     },
   ];
 
-  // console.log("Total counts", totalCounts);
+  // const { nameCounts } = useVariablecount({
+  //   data: data.map((row) => ({ x: row[25], y: row[8], z: row[1] })),
+  // });
+
+  console.log("Total counts", totalCounts);
 
   return (
     <>
@@ -161,7 +185,7 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
                 />
               </Grid.Col>{" "}
               <Grid.Col span={{ base: 12, md: 0.5, lg: 0.5 }}></Grid.Col>
-              <Grid.Col span={{ base: 12, md: 11, lg: 6 }}>
+              <Grid.Col span={{ base: 12, md: 11, lg: 3 }}>
                 <Field_values
                   data={diaDataElectroStatic}
                   color="yellow"
@@ -174,6 +198,7 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
                   title="Environment"
                 />
               </Grid.Col>{" "}
+              <Grid.Col span={{ base: 12, md: 5, lg: 3 }}></Grid.Col>
               <Grid.Col span={{ base: 12, md: 5, lg: 0.5 }}></Grid.Col>{" "}
             </Grid>
           </Card>

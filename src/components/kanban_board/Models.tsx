@@ -352,7 +352,7 @@ const Models = () => {
   // Fetch tasks from the backend when the component mounts
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [tasks]);
 
   console.log("Tasks", tasks);
   //Add task to database
@@ -585,6 +585,7 @@ const Models = () => {
               value={newAssigned} // Set the value of the Select component
               onChange={handleAssignChange} // Handle change to update the selected value
               mt="md"
+              searchable
             />
 
             <DateInput

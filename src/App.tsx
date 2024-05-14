@@ -25,7 +25,7 @@ const App = () => {
   const [user, setUser] = useState("");
   const [navbarOpened] = useState(false);
 
-  const computedColorScheme = useComputedColorScheme("light");
+  const computedColorScheme = useComputedColorScheme("dark");
 
   const backGroundColorFromStorage = localStorage.getItem("selectedColor");
   const defaultColor = "#FFFFFF";

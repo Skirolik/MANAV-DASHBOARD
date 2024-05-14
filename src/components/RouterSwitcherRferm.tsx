@@ -5,6 +5,7 @@ import Settings from "../Settings";
 import Maintenace from "../Maintenace";
 import Earthpit_data from "../Earthpit_data";
 import RfermUsers from "../Rferm_pages/RfermUsers";
+import Analysis from "../Rferm_pages/Analysis";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -19,6 +20,7 @@ const RouterSwitcherRferm: React.FC<{ backcolor: string }> = ({
       <Route path="/settings" element={<Settings back={backcolor} />} />
       <Route path="/maintenance" element={<Maintenace back={backcolor} />} />
       <Route path="/earthpit" element={<Earthpit_data back={backcolor} />} />
+      <Route path="/analysis" element={<Analysis />} />
     </Routes>
   );
 };
