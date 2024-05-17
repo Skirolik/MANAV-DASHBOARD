@@ -20,7 +20,7 @@ const RouterSwitcherRferm: React.FC<{ backcolor: string }> = ({
       <Route path="/settings" element={<Settings back={backcolor} />} />
       <Route path="/maintenance" element={<Maintenace back={backcolor} />} />
       <Route path="/earthpit" element={<Earthpit_data back={backcolor} />} />
-      <Route path="/analysis" element={<Analysis />} />
+      <Route path="/analysis" element={<Analysis back={backcolor} />} />
     </Routes>
   );
 };

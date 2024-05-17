@@ -100,7 +100,7 @@ const App = () => {
               style={{
                 background:
                   computedColorScheme === "dark"
-                    ? `linear-gradient(to bottom, ${backgroundColor} 10%, #1e1e1e 60%)`
+                    ? `linear-gradient(to bottom, ${backgroundColor} 2%, #1e1e1e 60%)`
                     : backgroundColor,
               }}
             >

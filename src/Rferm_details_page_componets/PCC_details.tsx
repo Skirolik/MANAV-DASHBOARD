@@ -47,6 +47,7 @@ const PCC_details = () => {
   const [selectedPitData, setSelectedPitData] =
     useState<SelectedPitStructure | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [personaData, setPersonaData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

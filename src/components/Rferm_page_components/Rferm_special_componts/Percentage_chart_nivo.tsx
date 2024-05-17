@@ -1,5 +1,6 @@
 import React from "react";
 import { ResponsivePie } from "@nivo/pie";
+import { useComputedColorScheme } from "@mantine/core";
 
 interface PieData {
   id: string;
@@ -16,10 +17,20 @@ interface CustomColors {
 const Percentage_chart_nivo: React.FC<PercentageChartNivoProps> = ({
   data,
 }) => {
+  const computedColorScheme = useComputedColorScheme("dark");
+
   const customColors: CustomColors = {
     Danger: "#c51d31",
     Unhealthy: "#d14d14",
     Healthy: "#24782c",
+  };
+  const theme = {
+    tooltip: {
+      container: {
+        background: computedColorScheme === "dark" ? "#333" : "#fff", // Background color of the tooltip
+        color: computedColorScheme === "dark" ? "#fff" : "#333", // Text color of the tooltip
+      },
+    },
   };
 
   return (
@@ -34,81 +45,11 @@ const Percentage_chart_nivo: React.FC<PercentageChartNivoProps> = ({
         borderWidth={1}
         borderColor={{
           from: "color",
-          modifiers: [["darker", 0]],
+          modifiers: [["darker", 0.2]],
         }}
         enableArcLinkLabels={false}
         enableArcLabels={false}
-        arcLinkLabelsSkipAngle={6}
-        arcLinkLabelsTextColor="#333333"
-        arcLinkLabelsOffset={2}
-        arcLinkLabelsThickness={2}
-        arcLinkLabelsColor={{ from: "color" }}
-        arcLabelsRadiusOffset={0.65}
-        arcLabelsSkipAngle={9}
-        defs={[
-          {
-            id: "dots",
-            type: "patternDots",
-            background: "inherit",
-            color: "rgba(255, 255, 255, 0.3)",
-            size: 4,
-            padding: 1,
-            stagger: true,
-          },
-          {
-            id: "lines",
-            type: "patternLines",
-            background: "inherit",
-            color: "rgba(255, 255, 255, 0.3)",
-            rotation: -45,
-            lineWidth: 6,
-            spacing: 10,
-          },
-        ]}
-        // fill={[
-        //   {
-        //     match: {
-        //       id: "Danger",
-        //     },
-        //     id: "dots",
-        //   },
-        //   {
-        //     match: {
-        //       id: "go",
-        //     },
-        //     id: "dots",
-        //   },
-        //   {
-        //     match: {
-        //       id: "python",
-        //     },
-        //     id: "dots",
-        //   },
-        //   {
-        //     match: {
-        //       id: "scala",
-        //     },
-        //     id: "lines",
-        //   },
-        //   {
-        //     match: {
-        //       id: "lisp",
-        //     },
-        //     id: "lines",
-        //   },
-        //   {
-        //     match: {
-        //       id: "elixir",
-        //     },
-        //     id: "lines",
-        //   },
-        //   {
-        //     match: {
-        //       id: "javascript",
-        //     },
-        //     id: "lines",
-        //   },
-        // ]}
+        theme={theme}
         legends={[
           {
             anchor: "bottom",

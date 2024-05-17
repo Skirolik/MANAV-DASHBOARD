@@ -51,9 +51,11 @@ const UserTable: React.FC<{ data: UserTableProp[] }> = ({ data }) => {
           <Card p="xl" withBorder radius="lg" shadow="xl">
             <Table striped highlightOnHover withTableBorder withColumnBorders>
               <Table.Thead>
-                <Table.Th>Name</Table.Th>
-                <Table.Th>Email</Table.Th>
-                <Table.Th>Status</Table.Th>
+                <Table.Tr>
+                  <Table.Th>Name</Table.Th>
+                  <Table.Th>Email</Table.Th>
+                  <Table.Th>Status</Table.Th>
+                </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {paginatedData.map((item, index) => (

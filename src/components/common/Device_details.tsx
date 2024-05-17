@@ -70,12 +70,12 @@ const Device_details = () => {
       setDescription("");
       notifications.show({
         title: "Form Submited",
-        message: "Check Data tab ",
+        message: "Data accepted",
         color: "teal",
         icon: <CircleCheck size={24} color="white" />,
       });
+      window.location.reload();
     } catch (error) {
-      console.error("Error Sending dorm data", error);
       notifications.show({
         title: "Network Error",
         message: "Check Network or Contact us",
@@ -130,7 +130,7 @@ const Device_details = () => {
     <Grid mt="xl">
       <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
       <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Card shadow="sm" padding="lg" radius="lg" withBorder>
           <form onSubmit={handleSubmit}>
             <TextInput
               value={latitude}
@@ -199,24 +199,30 @@ const Device_details = () => {
         </Card>{" "}
       </Grid.Col>
       <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-        <Map
-          initialViewState={{
-            latitude: 23.1957247,
-            longitude: 77.7908816,
-            zoom: 3.5,
-          }}
-          style={{ width: "100%", height: 620 }}
-          mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
-          mapboxAccessToken={MAPBOX_TOKEN}
-          onClick={handleAddClick}
-          onRender={(event) => event.target.resize()}
-        >
-          {newPlace && (
-            <Marker longitude={longitude} latitude={latitude} color="blue" />
-          )}
-          <GeolocateControl position="top-left" />
-          <NavigationControl position="top-left" />
-        </Map>
+        <Card shadow="sm" padding="lg" radius="lg" withBorder>
+          <Map
+            initialViewState={{
+              latitude: 23.1957247,
+              longitude: 77.7908816,
+              zoom: 3.5,
+            }}
+            style={{ width: "100%", height: 575 }}
+            mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
+            mapboxAccessToken={MAPBOX_TOKEN}
+            onClick={handleAddClick}
+            onRender={(event) => event.target.resize()}
+          >
+            {newPlace && (
+              <Marker
+                longitude={longitude}
+                latitude={latitude}
+                color="#F34141"
+              />
+            )}
+            <GeolocateControl position="top-left" />
+            <NavigationControl position="top-left" />
+          </Map>
+        </Card>
       </Grid.Col>
       <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
     </Grid>

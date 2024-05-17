@@ -91,7 +91,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -268,6 +268,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
       color: "teal",
       icon: <CircleCheck size={24} color="white" />,
     });
+    setDeleteConfirmation(false);
   };
 
   return (
@@ -278,7 +279,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
       <Grid mt="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Card>
+          <Card shadow="sm" padding="lg" radius="lg" withBorder>
             <Table
               striped
               highlightOnHover
@@ -289,7 +290,6 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
             >
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>ID</Table.Th>
                   <Table.Th>Value</Table.Th>
                   <Table.Th>Collected</Table.Th>
                   <Table.Th>Next Date</Table.Th>
@@ -300,7 +300,6 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
               <Table.Tbody>
                 {getPaginatedData().map((row) => (
                   <Table.Tr key={row.id} onClick={() => handleRowClick(row)}>
-                    <Table.Td>{row.id}</Table.Td>
                     <Table.Td>
                       {editedRowId === row.id ? (
                         // Render input field for editing resistance value
@@ -395,7 +394,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
-          <Card style={{ height: "100%", overflow: "hidden" }}>
+          <Card shadow="sm" padding="lg" radius="lg" withBorder>
             <LazyLoad>
               <Map
                 style={{ width: "100%", height: 450 }}
@@ -442,7 +441,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
                       >
                         Close
                       </button>
-                      <h3>Details of the Entry ID {selectedMarker.id}</h3>
+                      <h3>Details of :{selectedMarker.name}</h3>
                       <p>Latitude: {selectedMarker.latitude}</p>
                       <p>Longitude: {selectedMarker.longitude}</p>
                       <p>Resistance: {selectedMarker.resistance}</p>
@@ -460,7 +459,7 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
         <Modal
           opened={!!selectedEntry}
           onClose={() => setSelectedEntry(null)}
-          title={`Details of the Entry ID ${selectedEntry.id}`}
+          title={`Details of  ${selectedEntry.title}`}
         >
           <div>
             <Text mt="xl">Title: {selectedEntry.title}</Text>

@@ -352,7 +352,7 @@ const Models = () => {
   // Fetch tasks from the backend when the component mounts
   useEffect(() => {
     fetchData();
-  }, [tasks]);
+  }, []);
 
   console.log("Tasks", tasks);
   //Add task to database
@@ -377,7 +377,7 @@ const Models = () => {
       console.log("add task", newTask);
 
       try {
-        console.log("FETCH DATA IN BOARD....");
+        console.log("FETCH DATAS IN BOARD....");
         const response = await axios.post("/api/tasks", {
           title: newTaskTitle,
           description: newTaskDescription,
@@ -421,6 +421,7 @@ const Models = () => {
         console.error("Error fetching map data:", error);
       }
     }
+    window.location.reload();
 
     close();
   };
@@ -506,7 +507,7 @@ const Models = () => {
   useEffect(() => {
     const fetchPersonalData = async () => {
       try {
-        console.log("FETCH DATA IN BOARD....");
+        console.log("FETCH DATA IN BOARD.s...");
         const response = await axios.post("/api/maint/users", {
           email: useremail,
           plant_name: plantName,

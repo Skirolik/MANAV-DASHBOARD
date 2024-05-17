@@ -20,6 +20,7 @@ import {
   IconLayoutKanban,
   IconMapPin,
   IconUsersGroup,
+  IconDeviceAnalytics,
 } from "@tabler/icons-react";
 
 export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
@@ -239,7 +240,7 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
                     withArrow
                     arrowOffset={12}
                   >
-                    <IconMapPin
+                    <IconDeviceAnalytics
                       width={25}
                       height={25}
                       style={{ marginBottom: "5px", marginTop: "10px" }}
@@ -463,13 +464,13 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
             label={
               <div style={{ textAlign: "center" }}>
                 <Tooltip
-                  label="Analysis"
+                  label="Analysis: Beta"
                   position="right-end"
                   offset={10}
                   withArrow
                   arrowOffset={12}
                 >
-                  <IconMapPin
+                  <IconDeviceAnalytics
                     width={25}
                     height={25}
                     style={{ marginBottom: "5px", marginTop: "10px" }}

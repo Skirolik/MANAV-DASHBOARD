@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Legned from "./Legned";
@@ -39,7 +40,7 @@ interface CardProps {
 }
 
 const CardModal: React.FC<CardProps> = ({ pitData }) => {
-  console.log("Pit data in modal", pitData.mac_id);
+  console.log("Pit data in modal", pitData);
 
   // Set the default base URL for Axios
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
@@ -234,7 +235,7 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
               warning_two={warning_two}
             />
             <Card.Section mt="sm">
-              <Legned />
+              <Legned warning_one={warning_one} warning_two={warning_two} />
             </Card.Section>
           </Card.Section>
         )}
@@ -311,13 +312,15 @@ const CardModal: React.FC<CardProps> = ({ pitData }) => {
             </Flex>
             <Table striped highlightOnHover withTableBorder withColumnBorders>
               <Table.Thead>
-                <Table.Th>Sr</Table.Th>
-                <Table.Th>Date & Time</Table.Th>
-                <Table.Th>Resistance (Ω)</Table.Th>
-                <Table.Th>Ground Step (V)</Table.Th>
-                <Table.Th>Ground Touch (V)</Table.Th>
-                <Table.Th>Lightning Step (V)</Table.Th>
-                <Table.Th>Lightning Touch (V)</Table.Th>
+                <Table.Tr>
+                  <Table.Th>Sr</Table.Th>
+                  <Table.Th>Date & Time</Table.Th>
+                  <Table.Th>Resistance (Ω)</Table.Th>
+                  <Table.Th>Ground Step (V)</Table.Th>
+                  <Table.Th>Ground Touch (V)</Table.Th>
+                  <Table.Th>Lightning Step (V)</Table.Th>
+                  <Table.Th>Lightning Touch (V)</Table.Th>
+                </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {paginatedDataFault.map((item: any, index: number) => (

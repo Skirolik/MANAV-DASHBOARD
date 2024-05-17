@@ -48,7 +48,7 @@ interface HomeTableProps {
 const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState(data);
-  const isLargeScreen = useMediaQuery("(min-width:1880px)");
+  const isLargeScreen = useMediaQuery("(min-width:1280px)");
 
   const rowsPerPage = isLargeScreen ? 8 : 5;
   const [selectedRow, setSelectedRow] = useState<DataRow | null>(null);

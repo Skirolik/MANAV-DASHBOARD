@@ -84,7 +84,7 @@ export const Rferm_map: React.FC<{ data: RfermMapData[] }> = ({ data }) => {
       const newViewState = {
         latitude: firstMarker.lat,
         longitude: firstMarker.lon,
-        zoom: 5,
+        zoom: 6,
         pitch: 0,
         bearing: 4,
       };

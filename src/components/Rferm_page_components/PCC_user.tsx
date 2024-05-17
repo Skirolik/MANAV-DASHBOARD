@@ -70,7 +70,7 @@ const PCC_user: React.FC<Props> = ({ data }) => {
     unhealthy_count = 0,
     healthy = 0,
     total = 0,
-  } = data[0];
+  } = data[0] || {};
 
   localStorage.setItem("totalpits", total.toString());
   console.log("total-", typeof total);

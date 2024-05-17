@@ -51,7 +51,7 @@ const Lmap: React.FC<MapProp> = (data) => {
       const newViewState = {
         latitude: firstMarker.x,
         longitude: firstMarker.y,
-        zoom: 15,
+        zoom: 12,
         pitch: 0,
         bearing: 4,
       };

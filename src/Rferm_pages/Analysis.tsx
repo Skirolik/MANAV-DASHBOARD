@@ -1,4 +1,5 @@
-import { Badge } from "@mantine/core";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Badge, Title } from "@mantine/core";
 import { useState, useEffect } from "react";
 
 import axios from "axios";
@@ -21,6 +22,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import Analysis_modal from "../components/Rferm_page_components/Rferm_special_componts/Analysis_modal";
 
+import { getTextColor } from "../components/utils";
+
 interface SelectedPitStructure {
   pit_name: string;
   status: string;
@@ -34,7 +37,7 @@ interface SelectedPitStructure {
   mac_id: string;
 }
 
-const Analysis = () => {
+const Analysis: React.FC<{ back: string }> = ({ back }) => {
   const cardName = localStorage.getItem("cardname");
 
   const totalPitsString = localStorage.getItem("totalpits");
@@ -190,8 +193,14 @@ const Analysis = () => {
   }
 
   return (
-    <>
-      <Badge>Beta</Badge>
+    <div>
+      <Title order={2} td="underline" c={getTextColor(back)} ta="center">
+        Analysis{" "}
+        <Badge ml="xs" variant="outline">
+          Beta
+        </Badge>
+      </Title>
+
       {personaData[0].mac_id !== "" && (
         <Grid mt="xl">
           <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
@@ -283,7 +292,7 @@ const Analysis = () => {
       >
         {selectedPitData && <Analysis_modal pitData={selectedPitData} />}
       </Modal>
-    </>
+    </div>
   );
 };
 

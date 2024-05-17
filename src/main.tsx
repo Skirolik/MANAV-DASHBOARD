@@ -22,7 +22,7 @@ const theme = createTheme({
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <MantineProvider theme={theme} defaultColorScheme="dark">
+  <MantineProvider theme={theme} defaultColorScheme="auto">
     <React.StrictMode>
       <BrowserRouter>
         <Notifications />

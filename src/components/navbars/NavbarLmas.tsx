@@ -24,9 +24,9 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
   Onlogout,
 }) => {
   const { pathname } = useLocation();
-  console.log("pathname", pathname);
+  // console.log("pathname", pathname);
   const navigate = useNavigate();
-  const isLargeScreen = useMediaQuery("(min-width:800px");
+  const isLargeScreen = useMediaQuery("(min-width:1200px");
   const name = localStorage.getItem("userFirstname") || "";
   const lastName = localStorage.getItem("userLastname") || "";
 
@@ -216,7 +216,7 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
               left: "50%",
               transform: "translate(-50%, -50%)",
             }}
-            src="./src/assets/ManavLogo2021.png"
+            src="./src/assets/Mini_logo_4-removebg.png"
           />{" "}
         </AppShell.Section>
         <AppShell.Section component={ScrollArea} my="md" scrollbars="y" mt="xl">

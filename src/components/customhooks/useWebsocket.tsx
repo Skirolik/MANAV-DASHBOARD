@@ -13,7 +13,7 @@ const useWebsocket = (email: string) => {
   console.log("emial-websocket-", email);
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://127.0.0.1:7000`);
+    const socket = new WebSocket(`ws://52.172.4.41:7000`);
 
     socket.onopen = () => {
       console.log("Websocket connection established");

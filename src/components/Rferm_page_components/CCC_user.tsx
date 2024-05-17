@@ -72,7 +72,12 @@ const CCC_user: React.FC<CccProps> = ({ data }) => {
 
   console.log("Data SCC_user", data);
 
-  const { danger_count, unhealthy_count, healthy, total } = data[0];
+  const {
+    danger_count = 0,
+    unhealthy_count = 0,
+    healthy = 0,
+    total = 0,
+  } = data[0] || {};
 
   let totalData: DataItem[];
 

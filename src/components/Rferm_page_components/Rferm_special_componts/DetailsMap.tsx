@@ -20,23 +20,25 @@ interface DetailsMapData {
   name: string;
   unique_id: string;
 }
+interface NewViewState {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  pitch: number;
+  bearing: number;
+}
 
 const DetailsMap: React.FC<{
   data: DetailsMapData[];
   onPinClick: (macId: string) => void;
 }> = ({ data, onPinClick }) => {
-  console.log("Data in map", data);
-  const [viewport, setViewport] = useState({
-    latitude: 23.1957247,
-    longitude: 77.7908816,
-    zoom: 10,
-    transitionDuration: 2000, // Adjust transition duration in milliseconds
-  });
+  // console.log("Data in map", data);
+  const [viewState, setViewState] = useState<NewViewState | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<DetailsMapData | null>(
     null
   );
-  const [selectedMacId] = useState<string | null>(null);
-  console.log("select", selectedMacId);
+  // const [selectedMacId] = useState<string | null>(null);
+  // console.log("select", selectedMacId);
 
   const popupStyle = {
     // backgroundColor: "lightgray",
@@ -65,41 +67,39 @@ const DetailsMap: React.FC<{
 
   useEffect(() => {
     // Zoom to marker location on initial data load
-    console.log("in use Effect data", data);
     if (data.length > 0) {
       const firstMarker = data[0];
-      console.log("first", firstMarker.lat);
+      console.log(firstMarker);
 
-      // Create a new viewport object with defaults
-      let newViewport = {
+      const newViewState = {
         latitude: firstMarker.lat,
         longitude: firstMarker.lon,
-        zoom: 10, // Adjust initial zoom level
-        transitionDuration: 5000,
+        zoom: 4,
+        pitch: 0,
+        bearing: 4,
       };
+      setViewState(newViewState);
 
       // Optionally, merge existing viewport properties if necessary
-      if (viewport) {
-        newViewport = {
-          ...viewport, // Spread existing properties
-          ...newViewport, // Override with new values
-        };
-      }
-
-      setViewport(newViewport); // Update viewport state
-      console.log("viewports", viewport);
-    } else {
-      console.log("not in if");
     }
   }, [data]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onMove = (event: any) => {
+    setViewState(event.viewState);
+    console.log("VSADB", viewState);
+  };
+
   return (
     <div>
       <LazyLoad>
         <Map
+          {...viewState}
+          onMove={onMove}
           style={{ width: "100%", height: 450 }}
           mapStyle="mapbox://styles/skiro/cluji92k700h401nt0jv6751e"
           mapboxAccessToken={MAPBOX_TOKEN}
-          initialViewState={viewport}
+
           // onViewportChange={setViewport} // Update viewport state on map interactions
         >
           {data.map((entry) => (
