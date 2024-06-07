@@ -22,7 +22,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 
 import { notifications } from "@mantine/notifications";
-import { CircleCheck, AlertCircle } from "tabler-icons-react";
 
 import { HTML5Backend } from "react-dnd-html5-backend";
 import axios from "axios";
@@ -176,7 +175,6 @@ const DraggableTask: React.FC<{
           {task.status === "finished" && (
             <>
               <Button
-                radius="xl"
                 style={{ marginTop: 8 }}
                 onClick={handleDeleteConfirmation}
               >
@@ -403,7 +401,6 @@ const Models = () => {
         title: "Success !!",
         message: "Task added sucessfully",
         color: "teal",
-        icon: <CircleCheck size={24} color="white" />,
       });
 
       try {
@@ -444,14 +441,12 @@ const Models = () => {
           message:
             "An Error has occured , try again if not please contact us by clicking on contact us page",
           color: "red",
-          icon: <AlertCircle size={24} color="black" />,
         });
       });
     notifications.show({
       title: "Success !!",
       message: "Task deleted sucessfully",
       color: "teal",
-      icon: <CircleCheck size={24} color="white" />,
     });
   };
   // Moving Tasks
@@ -482,7 +477,6 @@ const Models = () => {
           message:
             "An Error has occured , try again if not please contact us by clicking on contact us page",
           color: "red",
-          icon: <AlertCircle size={24} color="black" />,
         });
       });
   };
@@ -539,9 +533,17 @@ const Models = () => {
     <div style={{ gap: 20, justifyContent: "center" }}>
       <div style={{ marginTop: 20, marginBottom: 50 }}>
         <Group align="center">
-          <Button onClick={open} size="compact-lg">
-            +
-          </Button>
+          <Tooltip
+            arrowOffset={10}
+            arrowSize={4}
+            label="Add Task"
+            withArrow
+            position="top-start"
+          >
+            <Button onClick={open} size="compact-lg">
+              +
+            </Button>
+          </Tooltip>
         </Group>
 
         <Modal
@@ -598,7 +600,7 @@ const Models = () => {
               required
             />
 
-            <Button onClick={addTask} radius="xl" ml="xl" mt="xl">
+            <Button onClick={addTask} ml="xl" mt="xl">
               Submit
             </Button>
           </Card>

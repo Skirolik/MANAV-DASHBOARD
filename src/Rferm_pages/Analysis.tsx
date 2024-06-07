@@ -23,6 +23,7 @@ import { IconSearch } from "@tabler/icons-react";
 import Analysis_modal from "../components/Rferm_page_components/Rferm_special_componts/Analysis_modal";
 
 import { getTextColor } from "../components/utils";
+import ComingSoon from "../components/common/ComingSoon";
 
 interface SelectedPitStructure {
   pit_name: string;
@@ -65,13 +66,12 @@ const Analysis: React.FC<{ back: string }> = ({ back }) => {
   useEffect(() => {
     const fetchPersonaData = async () => {
       try {
-        console.log("Fetching data...");
         const response = await axios.post("/api/rferm/persona/data", {
           email: useremail,
           persona: persona,
         });
         setPersonaData(response.data.data);
-        console.log("data-", personaData);
+
         setTimeout(() => {
           setIsLoading(false);
         }, 10);
@@ -193,106 +193,111 @@ const Analysis: React.FC<{ back: string }> = ({ back }) => {
   }
 
   return (
-    <div>
-      <Title order={2} td="underline" c={getTextColor(back)} ta="center">
-        Analysis{" "}
-        <Badge ml="xs" variant="outline">
-          Beta
-        </Badge>
-      </Title>
+    <>
+      {persona == "pcc" && (
+        <div>
+          <Title order={2} td="underline" c={getTextColor(back)} ta="center">
+            Analysis{" "}
+            <Badge ml="xs" variant="outline">
+              Beta
+            </Badge>
+          </Title>
 
-      {personaData[0].mac_id !== "" && (
-        <Grid mt="xl">
-          <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-          <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
-            <Group mb="xl" justify="space-between">
-              <Select
-                data={[
-                  { label: "All", value: "" },
-                  { label: "Danger", value: "Danger" },
-                  { label: "Unhealthy", value: "Unhealthy" },
-                  { label: "Healthy", value: "Healthy" },
-                  { label: "Battery < 10", value: "lt10" },
-                  { label: "Battery 10 - 50", value: "10to50" },
-                  { label: "Battery > 50", value: "gt50" },
-                  { label: "Fault < 10", value: "lt10fault" },
-                  { label: "Fault 10 - 20", value: "10to20fault" },
-                  { label: "Fault > 20", value: "gt20fault" },
-                ]}
-                placeholder="Select status"
-                value={selectedFilter}
-                onChange={(value) => handleSelectChange(value || "")}
-                radius="md"
-                mt="xl"
-              />
-              <Group>
-                <TextInput
-                  leftSection={icon}
-                  value={searchValue}
-                  onChange={(event) =>
-                    setSearchValue(event.currentTarget.value)
-                  }
-                  placeholder="Search by pit name"
-                  radius="md"
-                  mt="xl"
-                />
-                <Button mt="xl" onClick={handleSearchByPitName}>
-                  Search
-                </Button>
-                <Button mt="xl" onClick={handleClearSearch}>
-                  Clear
-                </Button>
-              </Group>
-            </Group>
-
-            <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} spacing="lg">
-              {(searchResult.length > 0 ? searchResult : filteredPitData)
-                .slice(startIndex, endIndex)
-                .map((personaData, index) => (
-                  <PitCard
-                    key={index}
-                    pitData={personaData}
-                    onClick={() => handleCardClick(personaData)}
+          {personaData[0].mac_id !== "" && (
+            <Grid mt="xl">
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+              <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
+                <Group mb="xl" justify="space-between">
+                  <Select
+                    data={[
+                      { label: "All", value: "" },
+                      { label: "Danger", value: "Danger" },
+                      { label: "Unhealthy", value: "Unhealthy" },
+                      { label: "Healthy", value: "Healthy" },
+                      { label: "Battery < 10", value: "lt10" },
+                      { label: "Battery 10 - 50", value: "10to50" },
+                      { label: "Battery > 50", value: "gt50" },
+                      { label: "Fault < 10", value: "lt10fault" },
+                      { label: "Fault 10 - 20", value: "10to20fault" },
+                      { label: "Fault > 20", value: "gt20fault" },
+                    ]}
+                    placeholder="Select status"
+                    value={selectedFilter}
+                    onChange={(value) => handleSelectChange(value || "")}
+                    radius="md"
+                    mt="xl"
                   />
-                ))}
-            </SimpleGrid>
-            <Pagination
+                  <Group>
+                    <TextInput
+                      leftSection={icon}
+                      value={searchValue}
+                      onChange={(event) =>
+                        setSearchValue(event.currentTarget.value)
+                      }
+                      placeholder="Search by pit name"
+                      radius="md"
+                      mt="xl"
+                    />
+                    <Button mt="xl" onClick={handleSearchByPitName}>
+                      Search
+                    </Button>
+                    <Button mt="xl" onClick={handleClearSearch}>
+                      Clear
+                    </Button>
+                  </Group>
+                </Group>
+
+                <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} spacing="lg">
+                  {(searchResult.length > 0 ? searchResult : filteredPitData)
+                    .slice(startIndex, endIndex)
+                    .map((personaData, index) => (
+                      <PitCard
+                        key={index}
+                        pitData={personaData}
+                        onClick={() => handleCardClick(personaData)}
+                      />
+                    ))}
+                </SimpleGrid>
+                <Pagination
+                  mt="xl"
+                  value={currentPage}
+                  onChange={handlePageChange}
+                  total={Math.ceil(
+                    (searchResult.length > 0 ? searchResult : filteredPitData)
+                      .length / itemsPerPage
+                  )}
+                />
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
+            </Grid>
+          )}
+          {personaData[0].mac_id === "" && (
+            <Text
+              ta="center"
+              pt="10%"
               mt="xl"
-              value={currentPage}
-              onChange={handlePageChange}
-              total={Math.ceil(
-                (searchResult.length > 0 ? searchResult : filteredPitData)
-                  .length / itemsPerPage
-              )}
-            />
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
-        </Grid>
+              style={{
+                color: textColor,
+              }}
+            >
+              No data available
+            </Text>
+          )}
+          <Modal
+            opened={opened}
+            onClose={close}
+            size="calc(100vw - 3rem)"
+            overlayProps={{
+              backgroundOpacity: 0.55,
+              blur: 3,
+            }}
+          >
+            {selectedPitData && <Analysis_modal pitData={selectedPitData} />}
+          </Modal>
+        </div>
       )}
-      {personaData[0].mac_id === "" && (
-        <Text
-          ta="center"
-          pt="10%"
-          mt="xl"
-          style={{
-            color: textColor,
-          }}
-        >
-          No data available
-        </Text>
-      )}
-      <Modal
-        opened={opened}
-        onClose={close}
-        size="calc(100vw - 3rem)"
-        overlayProps={{
-          backgroundOpacity: 0.55,
-          blur: 3,
-        }}
-      >
-        {selectedPitData && <Analysis_modal pitData={selectedPitData} />}
-      </Modal>
-    </div>
+      {persona == "scc" || (persona == "ccc" && <ComingSoon />)}
+    </>
   );
 };
 

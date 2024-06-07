@@ -42,7 +42,7 @@ const ForgotPassword = () => {
       });
       if (response.data.message === "Password reset email sent.") {
         setIsLoading(false);
-        console.log("api-", response.data);
+
         notifications.show({
           title: "Request sent.",
           message:
@@ -52,7 +52,7 @@ const ForgotPassword = () => {
       } else {
         setIsLoading(false);
         // You can show an error message here or handle unsuccessful login
-        console.log("Invalid email");
+
         notifications.show({
           title: "Invalid Email",
           message: "Please check your email address.",
@@ -120,7 +120,7 @@ const ForgotPassword = () => {
         <Group justify="space-between" mt="lg">
           {/* <Checkbox label="Remember me" /> */}
         </Group>
-        <Button fullWidth mt="lg" bg="teal" onClick={handlePasswordReset}>
+        <Button fullWidth mt="lg" onClick={handlePasswordReset}>
           Submit
         </Button>
       </Paper>

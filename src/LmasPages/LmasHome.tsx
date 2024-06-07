@@ -2,7 +2,7 @@
 import React from "react";
 import { getTextColor } from "../components/utils";
 import useWebsocket from "../components/customhooks/useWebsocket";
-import { Card, Grid, Text } from "@mantine/core";
+import { Card, Grid, Title } from "@mantine/core";
 import Progress_bar from "../components/Lmas_components/Progress_bar";
 import Field_values from "../components/Lmas_components/Field_values";
 import CommonCards from "../components/Lmas_components/Common_cards";
@@ -14,24 +14,25 @@ import Calender from "../components/Lmas_components/Calender";
 
 interface ChartDataItem extends Array<string | number | Date> {}
 
+interface UniqueRow {
+  id: number;
+  name: string;
+}
+
 const LmasHome: React.FC<{ back: string }> = ({ back }) => {
   const useremail = localStorage.getItem("userEmail") || "";
 
-  console.log("email i get", useremail);
   const { data, chartData, latestData, uniqueDataLast10Minutes } =
     useWebsocket(useremail);
   const username = localStorage.getItem("userFirstname");
   //@ts-expect-error
   const chartDataArray: ChartDataItem[] = chartData;
 
-  // console.log("data in home page", data);
-  console.log("CD in home page", chartData);
-  console.log("Latest values", uniqueDataLast10Minutes);
-
   const transformedData = latestData
     .map((row) => ({
       x: row[25],
       y: Number(row[9]),
+      z: row[1],
     }))
     .reverse();
 
@@ -158,22 +159,26 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
   //   data: data.map((row) => ({ x: row[25], y: row[8], z: row[1] })),
   // });
 
-  console.log("Total counts", totalCounts);
+  const transformedUniqueData: UniqueRow[] = uniqueDataLast10Minutes.map(
+    (name, index) => ({
+      id: index + 1,
+      name,
+    })
+  );
 
   return (
     <>
-      <Text ta="center" fw={800} fz="xl" td="underline" c={getTextColor(back)}>
-        {" "}
+      <Title order={2} td="underline" ta="center" c={getTextColor(back)}>
         Welcome,{username || "Guest"}
-      </Text>
+      </Title>
       <Grid mt="xl">
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 10, lg: 10 }}>
           <Card shadow="xl" withBorder radius="lg">
-            <Text fz="xl" ta="center" fw="bold" mb="lg" td="underline">
-              Live Warning
-            </Text>
+            <Title order={2} ta="center" td="underline">
+              Live Lightning Status
+            </Title>
             <Grid>
               <Grid.Col span={{ base: 12, md: 0.5, lg: 0.5 }}></Grid.Col>{" "}
               <Grid.Col span={{ base: 12, md: 11, lg: 5 }}>
@@ -220,7 +225,7 @@ const LmasHome: React.FC<{ back: string }> = ({ back }) => {
 
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>
           <Card withBorder radius="lg" shadow="lg">
-            <HomeTable data={data} />
+            <HomeTable data={data} uniqueValues={transformedUniqueData} />
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 5, lg: 5 }}>

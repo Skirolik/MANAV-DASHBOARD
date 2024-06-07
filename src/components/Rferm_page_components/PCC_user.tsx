@@ -7,7 +7,6 @@ import RecentActivity from "./Rferm_special_componts/RecentActivity";
 import PercentageCalculator from "./Rferm_special_componts/PercentageCalculator";
 // import { Map_data } from "../testingData/Map_data";
 import { Rferm_map } from "./Rferm_special_componts/Rferm_map";
-import Fault_chart from "./Rferm_special_componts/Fault_chart";
 
 export interface RfermHomeData {
   danger_count: number;
@@ -50,7 +49,7 @@ const PCC_user: React.FC<Props> = ({ data }) => {
           persona: persona,
         });
         setMapData(response.data.data);
-        console.log("mapData", response.data.data);
+
         // setTimeout(() => {
         //   setIsLoading(false);
         // }, 1);
@@ -63,8 +62,6 @@ const PCC_user: React.FC<Props> = ({ data }) => {
     fetchMapData();
   }, []);
 
-  console.log("Data PCC_user", data);
-
   const {
     danger_count = 0,
     unhealthy_count = 0,
@@ -73,7 +70,6 @@ const PCC_user: React.FC<Props> = ({ data }) => {
   } = data[0] || {};
 
   localStorage.setItem("totalpits", total.toString());
-  console.log("total-", typeof total);
 
   const totalData = [
     {

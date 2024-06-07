@@ -93,7 +93,7 @@ const Grid_resistance_chart: React.FC<GraphProp> = ({
       toolbar: {
         show: true,
         tools: {
-          download: false,
+          download: true,
           selection: true,
           zoom: true,
           zoomin: true,
@@ -111,7 +111,7 @@ const Grid_resistance_chart: React.FC<GraphProp> = ({
     xaxis: {
       labels: {
         style: {
-          colors: computedColorScheme === "dark" ? "#fff" : "000",
+          colors: computedColorScheme === "dark" ? "red" : "000",
         },
       },
       title: {

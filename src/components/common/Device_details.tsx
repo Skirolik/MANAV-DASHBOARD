@@ -11,7 +11,6 @@ import {
 import { DateInput } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import axios from "axios";
-import { CircleCheck, AlertCircle } from "tabler-icons-react";
 
 import { Map, Marker, GeolocateControl, NavigationControl } from "react-map-gl";
 import { MapMouseEvent } from "mapbox-gl";
@@ -72,7 +71,6 @@ const Device_details = () => {
         title: "Form Submited",
         message: "Data accepted",
         color: "teal",
-        icon: <CircleCheck size={24} color="white" />,
       });
       window.location.reload();
     } catch (error) {
@@ -80,7 +78,6 @@ const Device_details = () => {
         title: "Network Error",
         message: "Check Network or Contact us",
         color: "red",
-        icon: <AlertCircle size={24} color="black" />,
       });
     }
 
@@ -192,7 +189,7 @@ const Device_details = () => {
                 style={{ display: "inline-block", marginLeft: "8px" }}
               />
             ) : null}
-            <Button type="submit" mt="xl" radius="xl">
+            <Button type="submit" mt="xl">
               Submit
             </Button>
           </form>

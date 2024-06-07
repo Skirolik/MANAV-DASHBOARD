@@ -6,14 +6,13 @@ import UserTable from "../components/Rferm_page_components/Rferm_special_compont
 import { UserTableProp } from "../components/Rferm_page_components/Rferm_special_componts/UserTable";
 
 // import { GridData } from "../components/testingData/GridData";
-import Grid_resistance_select from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_select";
-import { GripTable } from "../components/Rferm_page_components/Rferm_special_componts/Grid_resistance_table";
+
+import ComingSoon from "../components/common/ComingSoon";
 
 const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
   // Set the default base URL for Axios
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
   const [dataUserTable, setUserTable] = useState<UserTableProp[]>([]);
-  const [dataGridTable, setGridTable] = useState<GripTable[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,17 +25,12 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
     // Function to fetch data from backend API
     const fetchData = async () => {
       try {
-        console.log("Fetching data...");
         const response = await axios.post("/api/rferm/user/data", {
           email: useremail,
           persona: persona,
         });
-        console.log("Data fetched successfully:", response.data.data);
-        if (persona === "pcc") {
-          setGridTable(response.data.data);
-        } else {
-          setUserTable(response.data.data);
-        }
+
+        setUserTable(response.data.data);
 
         setTimeout(() => {
           setIsLoading(false);
@@ -53,13 +47,9 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
       console.warn("User data not available. Skipping API call.");
     }
 
-    // console.log("grid-", dataGridTable);
-    // console.log("user-", dataUserTable);
     localStorage.removeItem("selectedMacId");
     localStorage.removeItem("slectedUserName");
   }, []);
-
-  console.log("bred", dataUserTable);
 
   if (isLoading) {
     return (
@@ -83,7 +73,7 @@ const RfermUsers: React.FC<{ back: string }> = ({ back }) => {
         Welcome, {username || "Guest"}{" "}
       </Title>
 
-      {persona == "pcc" && <Grid_resistance_select data={dataGridTable} />}
+      {persona == "pcc" && <ComingSoon />}
       {persona == "scc" && <UserTable data={dataUserTable} />}
       {persona == "ccc" && <UserTable data={dataUserTable} />}
     </div>

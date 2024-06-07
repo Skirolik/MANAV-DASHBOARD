@@ -67,11 +67,11 @@ const Color_Swatch: React.FC<ColorSwatchProps> = ({ onSelect }) => {
 
   const saveBackgroundColor = async (color: string) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await axios.post("/api/settings", {
         email: useremail,
         bgColor: color,
       });
-      console.log("Background color saved successfully:", response.data);
     } catch (error) {
       console.error("Error saving background color:", error);
     }

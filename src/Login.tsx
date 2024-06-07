@@ -26,7 +26,6 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  console.log("login");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -36,9 +35,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
 
   const handleSignin = async () => {
-    console.log("singin clicked");
-    console.log(userName);
-    console.log(password);
     try {
       setIsLoading(true);
       const response = await axios.post(
@@ -51,8 +47,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           withCredentials: true, // Include credentials (cookies) in cross-origin requests
         }
       );
-
-      console.log("response", response);
 
       if (response.data.message === "Login successful") {
         setIsLoading(false);
@@ -83,8 +77,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
         const bgColorSelected = userBgColor;
 
-        console.log(userEmail, userFirstname, userStartDate, userEndDate);
-
         notifications.show({
           title: "Login Success",
           message: "Login Successful: Welcome back! ",
@@ -94,8 +86,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         // window.location.reload();
       } else {
         setIsLoading(false);
-        // You can show an error message here or handle unsuccessful login
-        console.log("Invalid credentials");
+
         notifications.show({
           title: "Invalid Credentials",
           message: "Please check your username and password.",
@@ -174,7 +165,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               Forgot password?
             </Anchor>
           </Group>
-          <Button fullWidth mt="xl" bg="teal" onClick={handleSignin}>
+          <Button fullWidth mt="xl" onClick={handleSignin}>
             Sign in
           </Button>
         </Paper>

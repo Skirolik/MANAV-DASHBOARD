@@ -146,7 +146,6 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
           title: "Date Passed",
           message: `Next Collection date for ID ${row.id}  has passed.`,
           color: "red",
-          icon: <AlertCircle size={24} color="black" />,
         });
       }
     }
@@ -161,8 +160,6 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
           title: "Date Passed",
           message: `Next Collection date for ID ${entry.id}  has passed.`,
           color: "red",
-
-          icon: <AlertCircle size={24} color="black" />,
         });
       }
     });
@@ -259,14 +256,12 @@ const Device_entries: React.FC<{ back: string }> = ({ back }) => {
           message:
             "An Error has occured , try again if not please contact us by clicking on contact us page",
           color: "red",
-          icon: <AlertCircle size={24} color="black" />,
         });
       });
     notifications.show({
       title: "Success !!",
       message: "Task deleted sucessfully",
       color: "teal",
-      icon: <CircleCheck size={24} color="white" />,
     });
     setDeleteConfirmation(false);
   };

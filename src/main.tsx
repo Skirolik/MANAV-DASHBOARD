@@ -12,8 +12,6 @@ import { BrowserRouter } from "react-router-dom";
 
 const color = localStorage.getItem("color") || "teal";
 
-console.log("color in main", color);
-
 const theme = createTheme({
   fontFamily: "Verdana, sans-serif",
   headings: { fontFamily: "Greycliff CF, sans-serif" },

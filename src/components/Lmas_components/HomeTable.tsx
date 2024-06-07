@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import {
   Button,
+  Card,
   Divider,
   Modal,
   Pagination,
   Paper,
+  Select,
   Table,
   Text,
-  TextInput,
+  Tooltip,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
+import { IconRefresh } from "@tabler/icons-react";
 
 interface DataRow {
   0: number;
@@ -41,11 +44,18 @@ interface DataRow {
   25: string;
 }
 
-interface HomeTableProps {
-  data: DataRow[];
+interface UniqueRow {
+  id: number;
+  name: string;
 }
 
-const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
+interface HomeTableProps {
+  data: DataRow[];
+  uniqueValues: UniqueRow[];
+}
+
+const HomeTable: React.FC<HomeTableProps> = ({ data, uniqueValues }) => {
+  console.log("Data in table", uniqueValues);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState(data);
   const isLargeScreen = useMediaQuery("(min-width:1280px)");
@@ -55,17 +65,19 @@ const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterDateTime, setFilterDateTime] = useState("");
   const [filterAlert, setFilterAlert] = useState("");
+  const [filterName, setFilterName] = useState("");
 
   useEffect(() => {
-    if (filterDateTime !== "" || filterAlert !== "") {
+    if (filterDateTime !== "" || filterAlert !== "" || filterName !== "") {
       applyFilters();
     } else {
       setFilteredData(data);
     }
-  }, [filterDateTime, filterAlert, data]);
+  }, [filterDateTime, filterAlert, filterName, data]);
 
   const applyFilters = () => {
     let filtered = data;
+    console.log("Filterd Data", filterName);
 
     if (filterDateTime !== "") {
       filtered = filtered.filter((row) => {
@@ -81,12 +93,17 @@ const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
       filtered = filtered.filter((row) => row[8] === filterAlert);
     }
 
+    if (filterName !== "") {
+      filtered = filtered.filter((row) => row[1] === filterName);
+    }
+
     setFilteredData(filtered);
   };
 
   const resetFilters = () => {
     setFilterDateTime("");
     setFilterAlert("");
+    setFilterName("");
   };
 
   const handlePageChange = (newPage: number) => {
@@ -109,7 +126,6 @@ const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
 
   const handleRowClick = (row: DataRow) => {
     setSelectedRow(row);
-
     setIsModalOpen(true);
   };
 
@@ -120,62 +136,94 @@ const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
 
   return (
     <>
-      <Text ta="center" fz="xl" fw={800}>
+      <Text ta="center" fz="xl" fw={800} mb="xs">
         Data Table
       </Text>
-      <Divider size="lg" />
+      <Divider size="md" />
+      <>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "8px",
+            marginBottom: "8px",
+          }}
+        >
+          <Select
+            data={[
+              { label: "Name", value: "" },
+              ...uniqueValues.map((item) => ({
+                label: item.name,
+                value: item.name,
+              })),
+            ]}
+            placeholder="Filter Name"
+            value={filterName}
+            onChange={(value) => setFilterName(value || "")}
+            style={{ marginRight: "10px" }}
+          />
+          <Select
+            data={[
+              { label: "Status", value: "" },
+              { label: "Yes", value: "1" },
+              { label: "No", value: "0" },
+            ]}
+            placeholder="Filter Alert"
+            value={filterAlert}
+            onChange={(value) => setFilterAlert(value || "")}
+            style={{ marginRight: "10px" }}
+          />
+          <DateInput
+            value={
+              isValidDate(filterDateTime) ? new Date(filterDateTime) : null
+            }
+            placeholder="Filter Date & Time"
+            onChange={(value) =>
+              setFilterDateTime(value ? value.toISOString() : "")
+            }
+            style={{ marginRight: "10px" }} // Add margin-right to separate from the next element
+          />
+          <Tooltip
+            arrowOffset={10}
+            arrowSize={4}
+            label="Reset"
+            withArrow
+            position="top-start"
+          >
+            <Button variant="outline" size="compact-xs" onClick={resetFilters}>
+              <IconRefresh stroke={2} />
+            </Button>
+          </Tooltip>
+        </div>
 
-      <Table mt="xl" striped highlightOnHover withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>
-              <TextInput
-                value={filterAlert}
-                placeholder="Filter Alert (0 or 1)"
-                onChange={(event) => setFilterAlert(event.target.value)}
-              />
-              Alert
-            </Table.Th>
-            <Table.Th>
-              <DateInput
-                value={
-                  isValidDate(filterDateTime) ? new Date(filterDateTime) : null
-                }
-                placeholder="Filter Date & Time"
-                onChange={(value) =>
-                  setFilterDateTime(value ? value.toISOString() : "")
-                }
-              />{" "}
-              Date
-            </Table.Th>
-            <Table.Th>
-              <Button
-                variant="outline"
-                size="xs"
-                style={{ padding: "5px 10px" }}
-                onClick={resetFilters}
-              >
-                Reset
-              </Button>
-            </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {getPaginatedData().map((row) => (
-            <Table.Tr
-              key={row[0]}
-              onClick={() => handleRowClick(row)}
-              style={{ cursor: "pointer" }}
-            >
-              <Table.Td>{row[1]}</Table.Td>
-              <Table.Td>{row[8]}</Table.Td>
-              <Table.Td>{row[25]}</Table.Td>
+        <Table mt="xs" striped highlightOnHover withColumnBorders>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th style={{ textAlign: "center" }}>Name</Table.Th>
+              <Table.Th style={{ textAlign: "center" }}>Warning</Table.Th>
+              <Table.Th style={{ textAlign: "center" }}>Date</Table.Th>
             </Table.Tr>
-          ))}
-        </Table.Tbody>
-      </Table>
-
+          </Table.Thead>
+          <Table.Tbody>
+            {getPaginatedData().map((row) => (
+              <Table.Tr
+                key={row[0]}
+                onClick={() => handleRowClick(row)}
+                style={{ cursor: "pointer" }}
+              >
+                <Table.Td style={{ width: "250px" }}>{row[1]}</Table.Td>
+                <Table.Td style={{ width: "250px", textAlign: "center" }}>
+                  {row[8] === "1" ? "Yes" : "No"}
+                </Table.Td>
+                <Table.Td style={{ width: "250px", textAlign: "center" }}>
+                  {row[25]}
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </>
       {totalPages > 1 && (
         <Pagination
           total={totalPages}
@@ -187,7 +235,6 @@ const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
           style={{ marginTop: "20px" }}
         />
       )}
-
       {selectedRow && (
         <Modal
           opened={isModalOpen}
@@ -200,18 +247,33 @@ const HomeTable: React.FC<HomeTableProps> = ({ data }) => {
           }}
         >
           <Paper shadow="md" radius="lg" p="xl">
-            <Text mt="xl">ID: {selectedRow[0]}</Text>
+            <Text mt="xl" hidden>
+              ID: {selectedRow[0]}
+            </Text>
             <Text mt="xl">Name: {selectedRow[1]}</Text>
-            <Text mt="xl">Date and Time: {selectedRow[4]}</Text>
+            <Text mt="xl">Date and Time: {selectedRow[22]}</Text>
             <Text mt="xl">Electro Static: {selectedRow[5]}</Text>
             <Text mt="xl">Spark: {selectedRow[6]}</Text>
             <Text mt="xl">Environment: {selectedRow[7]}</Text>
-            <Text mt="xl">Alert: {selectedRow[8]}</Text>
+            <Text mt="xl">
+              Warning: {selectedRow[8] === "1" ? "Yes" : "No"}
+            </Text>
           </Paper>
         </Modal>
       )}
-
-      {data.length === 0 && <Text>No data available.</Text>}
+      {data.length === 0 && (
+        <Card
+          withBorder
+          radius="lg"
+          mb="xl"
+          mt="xl"
+          style={{ height: "100%", overflow: "hidden" }}
+        >
+          <Text ta="center" mt="xl" mb="xl">
+            No data available.
+          </Text>
+        </Card>
+      )}
     </>
   );
 };

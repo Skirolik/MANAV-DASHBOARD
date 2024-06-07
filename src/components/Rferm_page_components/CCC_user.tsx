@@ -55,7 +55,7 @@ const CCC_user: React.FC<CccProps> = ({ data }) => {
           persona: persona,
         });
         setMapData(response.data.data);
-        console.log("mapData", response.data.data);
+
         // setTimeout(() => {
         //   setIsLoading(false);
         // }, 1);
@@ -70,8 +70,6 @@ const CCC_user: React.FC<CccProps> = ({ data }) => {
     fetchMapData();
   }, []);
 
-  console.log("Data SCC_user", data);
-
   const {
     danger_count = 0,
     unhealthy_count = 0,
@@ -80,8 +78,6 @@ const CCC_user: React.FC<CccProps> = ({ data }) => {
   } = data[0] || {};
 
   let totalData: DataItem[];
-
-  console.log("Data SCC_user", data);
 
   if (total === 1) {
     totalData = [

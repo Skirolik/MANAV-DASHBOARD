@@ -14,6 +14,7 @@ interface LmasCardProps {
 
 const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  console.log("Vlaues i want %", data);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,20 +42,34 @@ const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
       {data.value.length > 0 ? (
         <>
           <Text c="dimmed" fw={700} size="md">
-            {data.value[currentIndex].name} : {data.description}
+            {data.value[currentIndex].name}
           </Text>
           <Group justify="space-between">
-            <Text
-              c={color}
-              fw={700}
-              size="xl"
-              style={{
-                fontSize: "2.5rem",
-                textShadow: `2px 2px 4px ${color && `${color}4D`}`,
-              }}
-            >
-              {data.value[currentIndex].totalCount}
-            </Text>
+            {data.title === "Battery" ? (
+              <Text
+                c={color}
+                fw={700}
+                size="xl"
+                style={{
+                  fontSize: "2.5rem",
+                  textShadow: `2px 2px 4px ${color && `${color}4D`}`,
+                }}
+              >
+                {data.value[currentIndex].totalCount} %
+              </Text>
+            ) : (
+              <Text
+                c={color}
+                fw={700}
+                size="xl"
+                style={{
+                  fontSize: "2.5rem",
+                  textShadow: `2px 2px 4px ${color && `${color}4D`}`,
+                }}
+              >
+                {data.value[currentIndex].totalCount}
+              </Text>
+            )}
           </Group>
         </>
       ) : (
@@ -62,7 +77,7 @@ const IndividualCard: React.FC<LmasCardProps> = ({ color, data }) => {
       )}
       <Group justify="flex-start">
         <Text ta="center" fw={700} tt="uppercase">
-          {data.title}
+          {data.description}
         </Text>
       </Group>
     </Paper>

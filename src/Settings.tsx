@@ -47,15 +47,11 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
   // Initialize loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log("start-", userEmail);
-  console.log("end-", userEndDate);
-
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
   const [opened, { open, close }] = useDisclosure(false);
 
   const toggleColorScheme = () => {
-    console.log("color Change");
     setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
   };
   const contactDetailsStyle = {
@@ -85,7 +81,6 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
     setIsLoading(true);
 
     try {
-      console.log("Fetching data...");
       const response = await axios.post("/renew-enquiry", {
         email: userEmail,
         firstname: userFirstname,
@@ -97,7 +92,7 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
 
       if (response.data.message === "Request sent successfully.") {
         setIsLoading(false);
-        console.log("api-", response.data);
+
         notifications.show({
           title: "Renewal Request Sent",
           message:
@@ -106,8 +101,7 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
         });
       } else {
         setIsLoading(false);
-        // You can show an error message here or handle unsuccessful login
-        console.log("Renewal Request Failed");
+
         notifications.show({
           title: "Renewal Request Failed",
           message:
@@ -128,7 +122,6 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
   };
 
   const handleSelectColor = (color: string) => {
-    console.log("color", color);
     localStorage.setItem("color", color);
     window.location.reload();
   };
@@ -302,9 +295,7 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
 
             <div style={{ textAlign: "center" }}>
               <Button
-                radius="xl"
                 mt="md"
-                size="sm"
                 // mt="xl"
                 onClick={handleRenewSubscription}
               >
@@ -328,7 +319,7 @@ const Settings: React.FC<{ back: string }> = ({ back }) => {
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 1, lg: 1 }}></Grid.Col>
       </Grid>
-      <GetInTouch back={back} />
+      <GetInTouch />
     </div>
   );
 };

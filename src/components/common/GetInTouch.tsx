@@ -14,12 +14,12 @@ import {
   // getPrimaryContrastColor,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
-import { LoremIpsum } from "react-lorem-ipsum";
+
 // import { getTextColor } from "../utils";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
 
-const GetInTouch: React.FC<{ back: string }> = ({}) => {
+const GetInTouch = () => {
   axios.defaults.baseURL = import.meta.env.VITE_LOGIN_API_URL;
 
   const userEmail = localStorage.getItem("userEmail");
@@ -130,7 +130,7 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
             withBorder
             style={{ minHeight: "520px" }}
           >
-            <Paper p="md" style={{ boxShadow: "none" }}>
+            <Paper p="md" style={{ boxShadow: "none" }} bg="transparent">
               <Text
                 fz="xl"
                 fw={800}
@@ -196,16 +196,7 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
                 error={messageError}
               />
               <div style={{ textAlign: "center" }}>
-                <Button
-                  type="submit"
-                  radius="xl"
-                  // ml="xl"
-                  // mb="md"
-                  mt="md"
-                  size="sm"
-                  onClick={handleSubmit}
-                  // loading={isLoading}
-                >
+                <Button type="submit" mt="md" onClick={handleSubmit}>
                   Submit
                 </Button>
                 {isLoading && (
@@ -324,24 +315,39 @@ const GetInTouch: React.FC<{ back: string }> = ({}) => {
               }}
             >
               <Accordion.Item value="Question:1">
-                <Accordion.Control>Question:1</Accordion.Control>
+                <Accordion.Control>
+                  What is the maximum detection range of the LMAS for lightning
+                  strikes?
+                </Accordion.Control>
                 <Accordion.Panel>
                   {" "}
-                  <LoremIpsum p={2} />
+                  LMAS is a lightning prediction and alert system that monitors
+                  changes in conditions such as electrostatic fields, sparks,
+                  and weather within a 40 km radius. By analyzing these factors,
+                  LMAS can predict the likelihood of a lightning strike
+                  occurring within the next 15-30 minutes.
                 </Accordion.Panel>
               </Accordion.Item>
               <Accordion.Item value="Question:2">
-                <Accordion.Control>Question:2</Accordion.Control>
+                <Accordion.Control>R-Ferm data not visible?</Accordion.Control>
                 <Accordion.Panel>
-                  {" "}
-                  <LoremIpsum p={2} />
+                  Please check if you have received any email from Manav
+                  regarding device failure or any other issue. If it is a server
+                  issue, you will be notified and the problem will be resolved
+                  shortly. If you have not received any communication from Manav
+                  about server maintenance or server failure, please use the
+                  contact form above to register your complaint. Our engineer
+                  will get in touch with you as soon as possible.
                 </Accordion.Panel>
               </Accordion.Item>
               <Accordion.Item value="Question:3">
-                <Accordion.Control>Question:3</Accordion.Control>
+                <Accordion.Control>
+                  My question is not listed.
+                </Accordion.Control>
                 <Accordion.Panel>
                   {" "}
-                  <LoremIpsum p={2} />
+                  If your question or query is not listed in this list, please
+                  contact us and our engineer will be in touch with you soon.
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>

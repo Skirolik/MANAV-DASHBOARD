@@ -35,7 +35,7 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
   const lastName = localStorage.getItem("userLastname") || "";
   const persona = localStorage.getItem("persona") || "";
 
-  console.log("name", lastName);
+  // console.log("name", lastName);
 
   const firstNameInitial = name.charAt(0).toUpperCase();
   const lastNameInitial = lastName.charAt(0).toUpperCase();
@@ -222,34 +222,36 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
               }
               onClick={() => navigate("../earthpit")}
             />
-            <NavLink
-              key="Analysis"
-              style={{
-                color: pathname === "/analysis" ? "#087f5b" : "inherit",
-                backgroundColor:
-                  pathname === "/analysis"
-                    ? "rgba(8, 127, 91, 0.1)"
-                    : "inherit",
-              }}
-              label={
-                <div style={{ textAlign: "center" }}>
-                  <Tooltip
-                    label="Analysis"
-                    position="right-end"
-                    offset={10}
-                    withArrow
-                    arrowOffset={12}
-                  >
-                    <IconDeviceAnalytics
-                      width={25}
-                      height={25}
-                      style={{ marginBottom: "5px", marginTop: "10px" }}
-                    />
-                  </Tooltip>
-                </div>
-              }
-              onClick={() => navigate("../analysis")}
-            />
+            {persona === "pcc" && (
+              <NavLink
+                key="Analysis"
+                style={{
+                  color: pathname === "/analysis" ? "#087f5b" : "inherit",
+                  backgroundColor:
+                    pathname === "/analysis"
+                      ? "rgba(8, 127, 91, 0.1)"
+                      : "inherit",
+                }}
+                label={
+                  <div style={{ textAlign: "center" }}>
+                    <Tooltip
+                      label="Analysis"
+                      position="right-end"
+                      offset={10}
+                      withArrow
+                      arrowOffset={12}
+                    >
+                      <IconDeviceAnalytics
+                        width={25}
+                        height={25}
+                        style={{ marginBottom: "5px", marginTop: "10px" }}
+                      />
+                    </Tooltip>
+                  </div>
+                }
+                onClick={() => navigate("../analysis")}
+              />
+            )}
           </AppShell.Section>
           <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
             <AppShell.Section mt="xl">
@@ -454,32 +456,36 @@ export const NavbarRferm: React.FC<{ Onlogout: () => void }> = ({
             }
             onClick={() => navigate("../earthpit")}
           />
-          <NavLink
-            key="Analysis"
-            style={{
-              color: pathname === "/analysis" ? "#087f5b" : "inherit",
-              backgroundColor:
-                pathname === "/analysis" ? "rgba(8, 127, 91, 0.1)" : "inherit",
-            }}
-            label={
-              <div style={{ textAlign: "center" }}>
-                <Tooltip
-                  label="Analysis: Beta"
-                  position="right-end"
-                  offset={10}
-                  withArrow
-                  arrowOffset={12}
-                >
-                  <IconDeviceAnalytics
-                    width={25}
-                    height={25}
-                    style={{ marginBottom: "5px", marginTop: "10px" }}
-                  />
-                </Tooltip>
-              </div>
-            }
-            onClick={() => navigate("../analysis")}
-          />
+          {persona === "pcc" && (
+            <NavLink
+              key="Analysis"
+              style={{
+                color: pathname === "/analysis" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/analysis"
+                    ? "rgba(8, 127, 91, 0.1)"
+                    : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Analysis: Beta"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
+                    <IconDeviceAnalytics
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
+                    />
+                  </Tooltip>
+                </div>
+              }
+              onClick={() => navigate("../analysis")}
+            />
+          )}
         </AppShell.Section>
         <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
           <AppShell.Section mt="xl">

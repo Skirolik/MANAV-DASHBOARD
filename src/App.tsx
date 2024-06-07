@@ -34,7 +34,6 @@ const App = () => {
     backGroundColorFromStorage ? backGroundColorFromStorage : defaultColor
   );
   const [modalOpened, setModalOpened] = useState(false);
-  console.log("background color", backgroundColor);
 
   const getTextColor = (bgColor: string) => {
     // Convert the background color to RGB

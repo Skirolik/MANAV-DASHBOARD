@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Progress, Card, Text, Grid } from "@mantine/core";
+import { Progress, Card, Text, Grid, Title } from "@mantine/core";
 // import Field_values from "./Field_values";
 
 interface ProgressProps {
-  data: { x: number; y: number }[];
+  data: { x: number; y: number; z: string }[];
   temp: { x: number; y: number }[];
   pressure: { x: number; y: number }[];
   humidity: { x: number; y: number }[];
@@ -34,6 +34,7 @@ const Progress_bar: React.FC<ProgressProps> = ({
     useState(initialHumidityValue);
 
   const [latestYValue, setLatestYValue] = useState(initialYValue);
+  const latestName = data.length > 0 ? data[0].z : "";
 
   //Temperature Display
   useEffect(() => {
@@ -169,9 +170,10 @@ const Progress_bar: React.FC<ProgressProps> = ({
     <>
       <Grid>
         <Grid.Col span={{ base: 12, md: 12, lg: 12 }}>
-          <Text fz="lg" fw={800}>
-            Lightning Status
-          </Text>
+          <Title order={2} ta="center" td="underline">
+            {latestName}
+          </Title>
+
           <Progress
             value={latestYValue}
             color={color}

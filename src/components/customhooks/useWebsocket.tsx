@@ -46,8 +46,6 @@ const useWebsocket = (email: string) => {
       console.log("Set chart Datra", chartData);
       setLatestData(lastTenData);
 
-      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
-      console.log("10m in", tenMinutesAgo);
       const uniqueNamesSet = new Set<string>();
 
       newData.forEach((item: (string | number | Date)[]) => {

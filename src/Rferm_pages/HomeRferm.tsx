@@ -25,16 +25,12 @@ const HomeRferm: React.FC<{ back: string }> = ({ back }) => {
     // Function to fetch data from backend API
     const fetchData = async () => {
       try {
-        console.log("Fetching data...");
         const response = await axios.post("/api/rferm/home", {
           email: useremail,
           persona: persona,
           plantName: userplantname,
         });
-        console.log(
-          "Data fetched successfully:",
-          response.data.data[0].activity
-        );
+
         setData(response.data.data);
         setTimeout(() => {
           setIsLoading(false);

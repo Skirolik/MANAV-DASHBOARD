@@ -18,6 +18,7 @@ import {
   IconPower,
   IconLayoutKanban,
   IconMapPin,
+  IconHomeBolt,
 } from "@tabler/icons-react";
 
 export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
@@ -159,6 +160,34 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
                 </div>
               }
               onClick={() => navigate("../earthpit")}
+            />
+            <NavLink
+              key="Smart Earthing"
+              style={{
+                color: pathname === "/smart_earthing" ? "#087f5b" : "inherit",
+                backgroundColor:
+                  pathname === "/smart_earthing"
+                    ? "rgba(8, 127, 91, 0.1)"
+                    : "inherit",
+              }}
+              label={
+                <div style={{ textAlign: "center" }}>
+                  <Tooltip
+                    label="Smart Earthing"
+                    position="right-end"
+                    offset={10}
+                    withArrow
+                    arrowOffset={12}
+                  >
+                    <IconHomeBolt
+                      width={25}
+                      height={25}
+                      style={{ marginBottom: "5px", marginTop: "10px" }}
+                    />
+                  </Tooltip>
+                </div>
+              }
+              onClick={() => navigate("../smart_earthing")}
             />
           </AppShell.Section>
           <div style={{ position: "absolute", bottom: 30, width: "100%" }}>
@@ -307,6 +336,34 @@ export const NavbarLmas: React.FC<{ Onlogout: () => void; back: string }> = ({
               </div>
             }
             onClick={() => navigate("../earthpit")}
+          />
+          <NavLink
+            key="Smart Earthing"
+            style={{
+              color: pathname === "/smart_earthing" ? "#087f5b" : "inherit",
+              backgroundColor:
+                pathname === "/smart_earthing"
+                  ? "rgba(8, 127, 91, 0.1)"
+                  : "inherit",
+            }}
+            label={
+              <div style={{ textAlign: "center" }}>
+                <Tooltip
+                  label="Smart Earthing"
+                  position="right-end"
+                  offset={10}
+                  withArrow
+                  arrowOffset={12}
+                >
+                  <IconHomeBolt
+                    width={25}
+                    height={25}
+                    style={{ marginBottom: "5px", marginTop: "10px" }}
+                  />
+                </Tooltip>
+              </div>
+            }
+            onClick={() => navigate("../smart_earthing")}
           />
         </AppShell.Section>
         <div style={{ position: "absolute", bottom: 30, width: "100%" }}>

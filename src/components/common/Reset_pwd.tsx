@@ -138,7 +138,7 @@ const Reset_pwd = () => {
         withBorder
         style={{ minHeight: "510px" }}
       >
-        <Paper p="md" style={{ boxShadow: "none" }}>
+        <Paper p="md" style={{ boxShadow: "none" }} bg="transparent">
           <Text
             fz="xl"
             fw={800}
@@ -180,9 +180,7 @@ const Reset_pwd = () => {
           <div style={{ textAlign: "center" }}>
             <Button
               type="submit"
-              radius="xl"
               mt="md"
-              size="sm"
               // ml="xl"
               onClick={handlePasswordChange}
             >
